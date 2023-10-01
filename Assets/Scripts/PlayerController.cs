@@ -13,11 +13,6 @@ public class PlayerController : MonoBehaviour
     public float baseSpeed = 5f;
     public float speedModifier = 1f;
 
-    [Header("Stats")]
-    public float maxHealth = 100f;
-    public float damageResistance = 0.2f;
-    public float immunityDuration = 1f;
-
     [Header("Melee Attack")]
     public GameObject meleeAttackPrefab;
     public float meleeDamageModifier = 1f;
@@ -34,15 +29,25 @@ public class PlayerController : MonoBehaviour
     public GameObject rangedProjectilePrefab;
     public float rangedDamageModifier = 1f;
     public float projectileSpeed = 10f;
-    public float projectileSize = 1f;
-    public float projectileDeceleration = 2f;
+    //public float projectileSize = 1f;
+    //public float projectileDeceleration = 2f;
     public float projectileDuration = 2f;
-    public bool destroyProjectileOnImpact = true;
+    //public bool destroyProjectileOnImpact = true;
     public float rangedAttackCooldown = 1f;
     private float lastShotTime = 0f;
 
-    private float currentHealth;
-    private float immunityTimer;
+    [Header("Dash")]
+    public bool isDashing;
+    public bool canDash = true;
+    public float dashForce = 1;
+    public float dashTime = 1;
+    public float dashRecoveryTime = 1f;
+    private float lastDash = 0;
+    private int consecutiveDash = 0;
+    public int maxConsecutiveDash = 1;
+    public float dashRememberTime = 0.2f;
+    private Coroutine dashRememberCor;
+
     private Vector2 movementInput;
     private Vector2 aimInput;
     private bool meleeAttacking;
@@ -77,6 +82,8 @@ public class PlayerController : MonoBehaviour
         actions.Player.MousePos.performed += mousePosition;
         actions.Player.ChangeAttackMode.Enable();
         actions.Player.ChangeAttackMode.performed += ChangeMode;
+        actions.Player.Dash.Enable();
+        actions.Player.Dash.performed += OnDash;
         if (usingController)
         {
             actions.Player.Fire.Enable();
@@ -118,23 +125,27 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleMeleeAttack();
         HandleRangedAttack();
+        HandleDash();
     }
 
     private void HandleMovement()
     {
         Vector2 input = movementInput.normalized;
-        if (input.magnitude > 0.1f)
+        if (!isDashing)
         {
-            Vector2 velocity = rb.velocity;
-            velocity = Vector2.Lerp(velocity, input * baseSpeed * speedModifier, acceleration * Time.fixedDeltaTime);
-            rb.velocity = velocity;
+            if (input.magnitude > 0.1f)
+            {
+                Vector2 velocity = rb.velocity;
+                velocity = Vector2.Lerp(velocity, input * baseSpeed * speedModifier, acceleration * Time.fixedDeltaTime);
+                rb.velocity = velocity;
 
-        }
-        else
-        {
-            Vector2 velocity = rb.velocity;
-            velocity = Vector2.Lerp(velocity, Vector2.zero, deceleration * Time.fixedDeltaTime);
-            rb.velocity = velocity;
+            }
+            else
+            {
+                Vector2 velocity = rb.velocity;
+                velocity = Vector2.Lerp(velocity, Vector2.zero, deceleration * Time.fixedDeltaTime);
+                rb.velocity = velocity;
+            }
         }
     }
 
@@ -187,13 +198,72 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void HandleDash()
+    {
+        if (isDashing)
+        {
+            Vector2 velocity = rb.velocity;
+            velocity = Vector2.Lerp(velocity, direction * dashForce, dashTime * Time.fixedDeltaTime);
+            rb.velocity = velocity;
+        }
+    }
+
     public void OnMove(InputAction.CallbackContext context)
     {
         movementInput = context.ReadValue<Vector2>();
-        if (movementInput.magnitude > 0)
+        if (movementInput.magnitude > 0 && !isDashing)
         {
             direction = movementInput;
         }
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (canDash && !isDashing && ((lastDash + dashRecoveryTime < Time.timeSinceLevelLoad) || consecutiveDash < maxConsecutiveDash))
+        {
+            if (lastDash + dashRecoveryTime < Time.timeSinceLevelLoad)
+            {
+                consecutiveDash = 0;
+            }
+            consecutiveDash++;
+            isDashing = true;
+            Invoke("StopDash", dashTime);
+        }
+        else if (canDash && isDashing)
+        {
+            if (dashRememberCor != null)
+            {
+                StopCoroutine(dashRememberCor);
+            }
+            dashRememberCor = StartCoroutine(rememberDash());
+        }
+    }
+
+    IEnumerator rememberDash()
+    {
+        float currentTime = 0;
+        while (currentTime < dashRememberTime)
+        {
+            if (canDash && !isDashing && ((lastDash + dashRecoveryTime < Time.timeSinceLevelLoad) || consecutiveDash < maxConsecutiveDash))
+            {
+                InputAction.CallbackContext cont = new();
+                OnDash(cont);
+                break;
+            }
+            else
+            {
+                currentTime += Time.deltaTime;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        dashRememberCor = null;
+    }
+
+    public void StopDash()
+    {
+        isDashing = false;
+        lastDash = Time.timeSinceLevelLoad;
+        rb.velocity = baseSpeed * speedModifier * direction;
     }
 
     public void mousePosition(InputAction.CallbackContext context)
@@ -261,28 +331,6 @@ public class PlayerController : MonoBehaviour
             rangedAttacking = false;
         }
     }
-
-
-    //private void HandleImmunity()
-    //{
-    //    if (immunityTimer > 0f)
-    //    {
-    //        // Handle immunity logic, e.g., making the player flash
-    //        immunityTimer -= Time.deltaTime;
-    //    }
-    //}
-
-    //public void TakeDamage(float damage)
-    //{
-    //    if (immunityTimer <= 0f)
-    //    {
-    //        float effectiveDamage = damage * (1f - damageResistance);
-    //        currentHealth -= effectiveDamage;
-    //        immunityTimer = immunityDuration;
-
-    //        // Update health bar/UI here
-    //    }
-    //}
 }
 
 [System.Serializable]
