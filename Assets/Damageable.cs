@@ -67,8 +67,14 @@ public class Damageable : MonoBehaviour
 
     public void SetCurrentHealthBar()
     {
-        HealthBar.setPercentage((currentHealth * 100) / maxHealth);
-        currentHealthText.text = ((int)currentHealth).ToString();
+        if (HealthBar != null)
+        {
+            HealthBar.setPercentage((currentHealth * 100) / maxHealth);
+        }
+        if (currentHealthText != null)
+        {
+            currentHealthText.text = ((int)currentHealth).ToString();
+        }
     }
 
     public void SetMaxHealthBar(float value, bool additive)
@@ -86,8 +92,10 @@ public class Damageable : MonoBehaviour
                 currentHealth = maxHealth;
             }
         }
-
-        maxHealthText.text = (maxHealth).ToString();
+        if (maxHealthText != null)
+        {
+            maxHealthText.text = (maxHealth).ToString();
+        }
         SetCurrentHealthBar();
     }
 

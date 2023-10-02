@@ -46,20 +46,27 @@ public class MalattiaHandler : MonoBehaviour
         TakeIllOverTime(1,tipiDiDanno.time);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void updateIllBar()
     {
-        IllBar.setPercentage(currentMalattia);
-        percTextIll.text = ((int)currentMalattia).ToString() + "%";
+        if (IllBar != null)
+        {
+            IllBar.setPercentage(currentMalattia);
+        }
+        if (percTextIll != null)
+        {
+            percTextIll.text = ((int)currentMalattia).ToString() + "%";
+        }
     }
     public void updateCorruptionBar()
     {
-        CorruptionBar.setPercentage(currentCorruzione);
-        percTextCorruption.text = ((int)currentCorruzione).ToString() + "%";
+        if (CorruptionBar != null)
+        {
+            CorruptionBar.setPercentage(currentCorruzione);
+        }
+        else
+        {
+            percTextCorruption.text = ((int)currentCorruzione).ToString() + "%";
+        }
     }
 
     public void gainMalattia(float percValue)
