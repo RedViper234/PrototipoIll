@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4387930199647561570}
   - component: {fileID: 4947241316243565806}
+  - component: {fileID: 8423183583764808600}
   - component: {fileID: 4387930199647561571}
   - component: {fileID: 9146762240366839577}
   m_Layer: 0
@@ -48,6 +49,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statisticheNemico: {fileID: 11400000, guid: 3ba6f1bde39e5e345b9506ce735e7db0, type: 2}
+--- !u!114 &8423183583764808600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4387930199647561568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5955718e38b3d6a4890301c19250ff09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 100
+  damageResistance: 0
+  damageImmunity: 0
+  immunityFrameDuration: 0
 --- !u!61 &4387930199647561571
 BoxCollider2D:
   m_ObjectHideFlags: 0

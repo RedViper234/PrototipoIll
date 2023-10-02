@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Terreno
+    uniqueID: 1507223483
+    locked: 0
+  - name: Entities/Player
+    uniqueID: 1830533227
+    locked: 0
+  - name: Entities/Nemici/MobTest
+    uniqueID: 1885312813
+    locked: 0
