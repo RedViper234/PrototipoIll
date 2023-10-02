@@ -344,111 +344,103 @@ public class stat
     public Sprite image;
 }
 
-[System.Serializable]
-public class statCombat : stat
-{
-    //The Combat statistic influences your damage and the speed of your shots.
-    public List<StatValueDictionaryEntry> damageProgression;
-    public List<StatValueDictionaryEntry> shootProgression;
+//[System.Serializable]
+//public class statCombat : stat
+//{
+//    //The Combat statistic influences your damage and the speed of your shots.
+//    public List<StatValueDictionaryEntry> damageProgression;
+//    public List<StatValueDictionaryEntry> shootProgression;
 
-    public void setStat()
-    {
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<CombatStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Combat.livello.ToString();
+//    public void setStat()
+//    {
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<CombatStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Combat.livello.ToString();
 
-        //float valueDamage = BattleManager.Instance.player.Combat.damageProgression.Find(f => f.level == BattleManager.Instance.player.Combat.livello).value;
-        //BattleManager.Instance.player.Damage = (int)valueDamage;
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<DamageStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueDamage.ToString();
+//        //float valueDamage = BattleManager.Instance.player.Combat.damageProgression.Find(f => f.level == BattleManager.Instance.player.Combat.livello).value;
+//        //BattleManager.Instance.player.Damage = (int)valueDamage;
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<DamageStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueDamage.ToString();
 
-        //float valueShootForce = BattleManager.Instance.player.Combat.shootProgression.Find(f => f.level == BattleManager.Instance.player.Combat.livello).value;
-        //BattleManager.Instance.player.shootForce = valueShootForce;
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<ShootForceStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueShootForce.ToString();
+//        //float valueShootForce = BattleManager.Instance.player.Combat.shootProgression.Find(f => f.level == BattleManager.Instance.player.Combat.livello).value;
+//        //BattleManager.Instance.player.shootForce = valueShootForce;
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<ShootForceStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueShootForce.ToString();
 
-    }
-}
+//    }
+//}
 
-[System.Serializable]
-public class statSpeed : stat
-{
-    public List<StatValueDictionaryEntry> speedProgression;
-    public List<StatValueDictionaryEntry> fireRateProgression;
-    public List<StatValueDictionaryEntry> jumpForceProgression;
+//[System.Serializable]
+//public class statSpeed : stat
+//{
+//    public List<StatValueDictionaryEntry> speedProgression;
+//    public List<StatValueDictionaryEntry> fireRateProgression;
+//    public List<StatValueDictionaryEntry> jumpForceProgression;
 
-    public void setStat()
-    {
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<SpeedStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Speed.livello.ToString();
+//    public void setStat()
+//    {
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<SpeedStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Speed.livello.ToString();
 
-        //float valueSpeed = BattleManager.Instance.player.Speed.speedProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
-        //BattleManager.Instance.player.maxSpeed = valueSpeed;
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<MovementSpeedStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueSpeed.ToString();
-
-
-        //float valueFireRate = BattleManager.Instance.player.Speed.fireRateProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
-        //BattleManager.Instance.player.fireRate = valueFireRate;
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<FireRateStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueFireRate.ToString() + " s";
+//        //float valueSpeed = BattleManager.Instance.player.Speed.speedProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
+//        //BattleManager.Instance.player.maxSpeed = valueSpeed;
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<MovementSpeedStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueSpeed.ToString();
 
 
-        //float valueJump = BattleManager.Instance.player.Speed.jumpForceProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
-        //BattleManager.Instance.player.jumpForce = valueJump;
-    }
-}
-
-[System.Serializable]
-public class statResistence : stat
-{
-    public List<StatValueDictionaryEntry> maxLifeProgression;
-    public List<StatValueDictionaryEntry> immunityTimeProgression;
-
-    public void setStat()
-    {
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<ResistanceStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Resistance.livello.ToString();
-
-        //float valueMaxLife = BattleManager.Instance.player.Resistance.maxLifeProgression.Find(f => f.level == BattleManager.Instance.player.Resistance.livello).value;
-        //float difference = 0;
-        //difference = valueMaxLife - GameManager.Instance.playerLifeMax;
-        //BattleManager.Instance.player.GetComponent<Damageable>().MaxLife = (int)valueMaxLife;
-        //if (livello == 1)
-        //{
-        //    BattleManager.Instance.player.GetComponent<Damageable>().life = BattleManager.Instance.player.GetComponent<Damageable>().MaxLife;
-        //}
-        //else
-        //{
-        //    BattleManager.Instance.player.GetComponent<Damageable>().life += (int)difference;
-        //}
-        //if (BattleManager.Instance.player.GetComponent<Damageable>().life > BattleManager.Instance.player.GetComponent<Damageable>().MaxLife)
-        //{
-        //    BattleManager.Instance.player.GetComponent<Damageable>().life = BattleManager.Instance.player.GetComponent<Damageable>().MaxLife;
-        //}
-
-        //GameManager.Instance.playerLifeMax = (int)valueMaxLife;
-        //if (livello == 1)
-        //{
-        //    GameManager.Instance.playerLife = GameManager.Instance.playerLifeMax;
-        //}
-        //else
-        //{
-        //    GameManager.Instance.playerLife += (int)difference;
-        //}
-        //if (GameManager.Instance.playerLife > GameManager.Instance.playerLifeMax)
-        //{
-        //    GameManager.Instance.playerLife = GameManager.Instance.playerLifeMax;
-        //}
-
-        //UIManager.Instance.setPlayerMaxLifeUI();
-        //UIManager.Instance.setPlayerActualLifeUI();
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<HealthStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueMaxLife.ToString();
+//        //float valueFireRate = BattleManager.Instance.player.Speed.fireRateProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
+//        //BattleManager.Instance.player.fireRate = valueFireRate;
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<FireRateStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueFireRate.ToString() + " s";
 
 
-        //float valueImmunityTime = BattleManager.Instance.player.Resistance.immunityTimeProgression.Find(f => f.level == BattleManager.Instance.player.Resistance.livello).value;
-        //BattleManager.Instance.player.GetComponent<Damageable>().playerImmunityTime = valueImmunityTime;
-        //UIManager.Instance.PlayerStats.GetComponentInChildren<ImmunityStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueImmunityTime.ToString() + " s"; ;
+//        //float valueJump = BattleManager.Instance.player.Speed.jumpForceProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
+//        //BattleManager.Instance.player.jumpForce = valueJump;
+//    }
+//}
 
-    }
-}
+//[System.Serializable]
+//public class statResistence : stat
+//{
+//    public List<StatValueDictionaryEntry> maxLifeProgression;
+//    public List<StatValueDictionaryEntry> immunityTimeProgression;
+
+//    public void setStat()
+//    {
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<ResistanceStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Resistance.livello.ToString();
+
+//        //float valueMaxLife = BattleManager.Instance.player.Resistance.maxLifeProgression.Find(f => f.level == BattleManager.Instance.player.Resistance.livello).value;
+//        //float difference = 0;
+//        //difference = valueMaxLife - GameManager.Instance.playerLifeMax;
+//        //BattleManager.Instance.player.GetComponent<Damageable>().MaxLife = (int)valueMaxLife;
+//        //if (livello == 1)
+//        //{
+//        //    BattleManager.Instance.player.GetComponent<Damageable>().life = BattleManager.Instance.player.GetComponent<Damageable>().MaxLife;
+//        //}
+//        //else
+//        //{
+//        //    BattleManager.Instance.player.GetComponent<Damageable>().life += (int)difference;
+//        //}
+//        //if (BattleManager.Instance.player.GetComponent<Damageable>().life > BattleManager.Instance.player.GetComponent<Damageable>().MaxLife)
+//        //{
+//        //    BattleManager.Instance.player.GetComponent<Damageable>().life = BattleManager.Instance.player.GetComponent<Damageable>().MaxLife;
+//        //}
+
+//        //GameManager.Instance.playerLifeMax = (int)valueMaxLife;
+//        //if (livello == 1)
+//        //{
+//        //    GameManager.Instance.playerLife = GameManager.Instance.playerLifeMax;
+//        //}
+//        //else
+//        //{
+//        //    GameManager.Instance.playerLife += (int)difference;
+//        //}
+//        //if (GameManager.Instance.playerLife > GameManager.Instance.playerLifeMax)
+//        //{
+//        //    GameManager.Instance.playerLife = GameManager.Instance.playerLifeMax;
+//        //}
+
+//        //UIManager.Instance.setPlayerMaxLifeUI();
+//        //UIManager.Instance.setPlayerActualLifeUI();
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<HealthStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueMaxLife.ToString();
 
 
-[System.Serializable]
-public class StatValueDictionaryEntry
-{
-    public int level;
-    public float value;
-}
+//        //float valueImmunityTime = BattleManager.Instance.player.Resistance.immunityTimeProgression.Find(f => f.level == BattleManager.Instance.player.Resistance.livello).value;
+//        //BattleManager.Instance.player.GetComponent<Damageable>().playerImmunityTime = valueImmunityTime;
+//        //UIManager.Instance.PlayerStats.GetComponentInChildren<ImmunityStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueImmunityTime.ToString() + " s"; ;
+
+//    }
+//}

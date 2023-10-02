@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 5664604751966636656}
   - component: {fileID: 5664604751966636653}
   - component: {fileID: 1404821118485055086}
-  m_Layer: 0
+  - component: {fileID: 2125458318}
+  - component: {fileID: 7155375835084060804}
+  m_Layer: 6
   m_Name: PG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +159,81 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  currentHealth: 100
+  currentHealth: 70
   damageResistance: 0
   damageImmunity: 0
-  immunityDuration: 0
+  immunityFrameDuration: 0.5
+  HealthBar: {fileID: 0}
+  currentHealthText: {fileID: 0}
+  maxHealthText: {fileID: 0}
+--- !u!114 &2125458318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664604751966636657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92469b636ca94a341ae4aaeb6a6aa503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MalattiaLevel: 0
+  MalattiaPoints: 100
+  MalattiaProgression:
+  - level: 0
+    expRequired: 0
+  - level: 1
+    expRequired: 6
+  - level: 2
+    expRequired: 30
+  - level: 3
+    expRequired: 60
+  - level: 4
+    expRequired: 100
+  - level: 5
+    expRequired: 150
+  MalattiaProgressBar: {fileID: 0}
+  levelMalattia: {fileID: 0}
+  GuarigioneLevel: 0
+  GuarigionePoints: 99
+  GuarigioneProgression:
+  - level: 0
+    expRequired: 0
+  - level: 1
+    expRequired: 6
+  - level: 2
+    expRequired: 30
+  - level: 3
+    expRequired: 60
+  - level: 4
+    expRequired: 100
+  - level: 5
+    expRequired: 150
+  GuarigioneProgressBar: {fileID: 0}
+  levelGuarigione: {fileID: 0}
+  maxPercMalattia: 100
+  currentMalattia: 71.33
+  malattiaResistance: 0
+  malattiaImmunity: 0
+  IllBar: {fileID: 0}
+  percTextIll: {fileID: 0}
+  currentCorruzione: 36.34
+  CorruptionBar: {fileID: 0}
+  percTextCorruption: {fileID: 0}
+--- !u!70 &7155375835084060804
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664604751966636657}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1, y: 2}
+  m_Direction: 0
