@@ -215,6 +215,17 @@
                 },
                 {
                     "name": "",
+                    "id": "942d1410-7103-4b54-bc02-b4392a972584",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeAttackMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "b5353b9c-63a4-43f1-a9d6-ac82378466b1",
                     "path": "<Keyboard>/space",
                     "interactions": "",

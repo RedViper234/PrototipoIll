@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Damageable : MonoBehaviour
@@ -12,10 +13,23 @@ public class Damageable : MonoBehaviour
     private float immunityTimer = 0;
     private List<coroutineDiCura> healOverTimeCoroutine = new();
     private List<coroutineDiDanno> damageOverTimeCoroutine = new();
-    // Start is called before the first frame update
+
+    [Header("OnlyPlayerSetup")]
+    public MeshMaskUI HealthBar;
+    public TextMeshProUGUI currentHealthText;
+    public TextMeshProUGUI maxHealthText;
+
     void Start()
     {
-        currentHealth = maxHealth;
+        //currentHealth = maxHealth;
+        StartCoroutine(LateStart());
+    }
+
+    IEnumerator LateStart()
+    {
+        // Attendi un frame
+        yield return null;
+        SetMaxHealthBar(0, true);
     }
 
     // Update is called once per frame
@@ -33,16 +47,48 @@ public class Damageable : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public bool TakeDamage(float damage)
     {
         if (immunityTimer <= 0f && !damageImmunity)
         {
             float effectiveDamage = damage * (1f - damageResistance);
-            currentHealth -= (int)effectiveDamage;
+            currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
             immunityTimer = immunityFrameDuration;
 
             // Update health bar/UI here
+            SetCurrentHealthBar();
+            return true;
         }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void SetCurrentHealthBar()
+    {
+        HealthBar.setPercentage((currentHealth * 100) / maxHealth);
+        currentHealthText.text = ((int)currentHealth).ToString();
+    }
+
+    public void SetMaxHealthBar(float value, bool additive)
+    {
+        if (additive)
+        {
+            maxHealth = Mathf.Max(maxHealth + (int)value, 0);
+            currentHealth = Mathf.Max(currentHealth + (int)value, 0);
+        }
+        else
+        {
+            maxHealth = (int)value;
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
+        }
+
+        maxHealthText.text = (maxHealth).ToString();
+        SetCurrentHealthBar();
     }
 
     public void StopTakeDamage(tipiDiDanno tipo)
@@ -74,21 +120,23 @@ public class Damageable : MonoBehaviour
     {
         float damageAmount = 0.1f * damagePerSecond;
 
-        while (currentHealth < maxHealth)
+        while (true)
         {
-            currentHealth = Mathf.Max(currentHealth - damageAmount, 0);
+            if (currentHealth > 0)
+            {
+                currentHealth = Mathf.Max(currentHealth - damageAmount, 0);
 
-            // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
-
+                // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
+                SetCurrentHealthBar();
+            }
             yield return new WaitForSeconds(0.1f);
         }
-
-        // Assicurati di reimpostare healOverTimeCoroutine a null quando la coroutine è terminata.
     }
 
     public void Healing(float heal)
     {
         currentHealth = (currentHealth + (int)heal > maxHealth ? maxHealth : currentHealth + (int)heal);
+        SetCurrentHealthBar();
     }
 
     public void StopHealing(tipiDiCure tipo)
@@ -120,16 +168,17 @@ public class Damageable : MonoBehaviour
     {
         float healAmount = 0.1f * healPerSecond;
 
-        while (currentHealth < maxHealth)
+        while (true)
         {
-            currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
+            if (currentHealth < maxHealth)
+            {
+                currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
 
-            // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
-
+                // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
+                SetCurrentHealthBar();
+            }
             yield return new WaitForSeconds(0.1f);
         }
-
-        // Assicurati di reimpostare healOverTimeCoroutine a null quando la coroutine è terminata.
     }
 
     public enum tipiDiCure
