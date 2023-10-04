@@ -1,0 +1,35 @@
+Per usare questo pattern bisognerà utilizzare tre "elementi" ovvero:
+-L'interfaccia IMessager;
+-L'interfeccia IMessage;
+-La classe statica Publisher;
+
+Allora ti divido le cose in step almeno sono più semplici le cose da spiegare.
+
+1) Implementiamo l'interfaccia IMessager a chi vogliamo far "arrivare i messaggi", nel tuo caso
+	sarà uno UIManager magare, e implementiamo la classe dell'interfaccia che sarà OnPublish.
+
+2) Come seconda cosa devi creare uno struct che implementerà poi l'interfaccia IMessage, essa non avrà niente dentro
+	e a noi va bene così perche tanto ci farà solo da placeholder.
+
+3)Adesso prendiamo e implementiamo invece l'interfaccia ISubscriber allo script che userà il pub sub.
+	Implementa la funzione e per ora lasciala li.
+
+3) Dopo che abbiamo creato lo struct che farà da messaggio e implementato l'interfaccia ISubscriber, dovremmo prendere ed inserire i messaggi dentro il pubsub.
+   
+   Publisher.Subscribe(this,new MessaggioDiProva()) * MessaggioDiProva è un esempio *
+
+   MessaggioDiProva sarà la struct a cui abbiamo dato la interfaccia IMessage mentre * this * sarà lo script in cui è stato implementato ISubscriber.
+
+4) Come ultimo passo dobbiamo far partire questi eventi e dobbiamo riceverli, per farli partire dobbiamo scrivere:
+	Publisher.Publish(new MessaggioDiProva());
+	Invece per riceverli, chi ha implementato l'interfaccia ISubscriber, se si è sottoscritto prima, potrà ricevere i messaggi tramite il metodo OnPublish
+	il codice quindi verrebbe:
+
+	public void OnPublish(IMessage message)
+    {
+        if(message is MessaggioDiProva)
+        {
+            Debug.LogWarning("SEI GAY E USI IL PUB SUB");
+        }
+    }
+
