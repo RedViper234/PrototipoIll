@@ -7,7 +7,7 @@ public class EnemyManager : MonoBehaviour
 {
     private static EnemyManager m_instance;
 
-    public List<BaseEnemyController> m_activeEnemyList;
+    public List<GameObject> m_activeEnemyList;
     public static EnemyManager Instance
     {
         get
@@ -17,7 +17,7 @@ public class EnemyManager : MonoBehaviour
                 m_instance = FindAnyObjectByType<EnemyManager>();
                 if(m_instance == null) 
                 {
-                    m_instance = new GameObject("EnemyManager").AddComponent<EnemyManager>();
+                    m_instance = new UnityEngine.GameObject("EnemyManager").AddComponent<EnemyManager>();
                 }
                 
             }
@@ -29,9 +29,15 @@ public class EnemyManager : MonoBehaviour
     {
         GetAllEnemyInScene();
     }
-
+    private void OnDisable() => m_activeEnemyList.Clear();
     private void GetAllEnemyInScene()
     {
-        //BaseEnemyController[] allEnemiesInScene = FindObjectsOfTypeAll(typeof BaseEnemyController));
+        EnemyController[] allEnemiesInScene = FindObjectsByType<EnemyController>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+        foreach (var enemy in allEnemiesInScene)
+        {
+            m_activeEnemyList.Add(enemy.gameObject);
+        }
+
     }
+
 }

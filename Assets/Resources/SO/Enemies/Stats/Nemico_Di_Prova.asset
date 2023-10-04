@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03fe1eb4867773f4a816b804238f3517, type: 3}
   m_Name: Nemico_Di_Prova
   m_EditorClassIdentifier: 
-  vitaMassima: 0
+  vitaMassima: 100
   currentHealth: 0
+  enemySpeed: 4
+  enemyAcceleration: 10
+  resistenzaKnockback: 0
+  resistenzaAlDannoSottrattiva: 0
+  resistenzaAlDannoPercentuale: 0
   listaDiAttacchiNemico:
   - {fileID: 11400000, guid: 46af921f6dd6a884784dbb9b4ac156c1, type: 2}
-  - {fileID: 11400000, guid: fa0db93c66196614b8973b29438d3c1b, type: 2}
-  - {fileID: 11400000, guid: 6bbc9903c2d0ee24694038eba5c9da4e, type: 2}
   OnAttack:
     m_PersistentCalls:
       m_Calls: []

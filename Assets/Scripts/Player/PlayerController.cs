@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public float speedModifier = 1f;
 
     [Header("Melee Attack")]
-    public GameObject meleeAttackPrefab;
+    public UnityEngine.GameObject meleeAttackPrefab;
     public float meleeDamageModifier = 1f;
     public float meleeKnockbackForce = 10f;
     public float meleeKnockbackDuration = 0.5f;
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     private float attackRange = 1f;
 
     [Header("Ranged Attack")]
-    public GameObject rangedProjectilePrefab;
+    public UnityEngine.GameObject rangedProjectilePrefab;
     public float rangedDamageModifier = 1f;
     public float projectileSpeed = 10f;
     //public float projectileSize = 1f;
@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
     private void attackMelee()
     {
         lastAttackTime = Time.timeSinceLevelLoad;
-        GameObject attack = Instantiate(meleeAttackPrefab, new Vector3(GetComponent<Transform>().position.x + attackRange * direction.x, GetComponent<Transform>().position.y + attackRange * direction.y, 1), Quaternion.identity);
+        UnityEngine.GameObject attack = Instantiate(meleeAttackPrefab, new Vector3(GetComponent<Transform>().position.x + attackRange * direction.x, GetComponent<Transform>().position.y + attackRange * direction.y, 1), Quaternion.identity);
         // Calcola l'angolo di rotazione in base a direction
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
@@ -179,7 +179,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!meleeMode && rangedAttacking && Time.timeSinceLevelLoad - lastShotTime >= rangedAttackCooldown)
         {
-            GameObject projectile = Instantiate(rangedProjectilePrefab, GetComponent<Transform>().position, Quaternion.identity);
+            UnityEngine.GameObject projectile = Instantiate(rangedProjectilePrefab, GetComponent<Transform>().position, Quaternion.identity);
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
             if (!usingController)
             {
