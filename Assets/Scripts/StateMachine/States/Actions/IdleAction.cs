@@ -25,4 +25,9 @@ public class IdleAction : Action, ISubscriber
             Debug.LogWarning("SEI GAY E USI IL PUB SUB");
         }
     }
+
+    public override void ActOnEntryState(StateMachineController controller)
+    {
+        return;
+    }
 }

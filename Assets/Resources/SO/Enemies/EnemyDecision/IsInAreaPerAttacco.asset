@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5785a32c199f8d409c59f918a71f3c6, type: 3}
   m_Name: IsInAreaPerAttacco
   m_EditorClassIdentifier: 
-  gizmosColor: {r: 0.9339623, g: 0.9339623, b: 0.9339623, a: 0}
-  areaRadious: 3
+  gizmosColor: {r: 1, g: 0, b: 0, a: 1}
+  areaRadious: 1
   searchMask:
     serializedVersion: 2
     m_Bits: 64

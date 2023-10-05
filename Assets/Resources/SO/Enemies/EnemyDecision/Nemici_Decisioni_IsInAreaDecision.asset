@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5785a32c199f8d409c59f918a71f3c6, type: 3}
   m_Name: Nemici_Decisioni_IsInAreaDecision
   m_EditorClassIdentifier: 
-  gizmosColor: {r: 0.09401086, g: 0.9811321, b: 0, a: 0}
+  gizmosColor: {r: 0.09401086, g: 0.9811321, b: 0, a: 1}
   areaRadious: 10
   searchMask:
     serializedVersion: 2

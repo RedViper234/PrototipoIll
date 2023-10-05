@@ -31,7 +31,7 @@ public class IsInAreaDecision : Decision
 
     public override void DrawMyGizmos(StateMachineController controller)
     {
-        Gizmos.color = Color.blue;
+        Gizmos.color = gizmosColor;
         Gizmos.DrawWireSphere(controller.transform.position, areaRadious);
     }
 }

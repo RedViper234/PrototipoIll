@@ -4,27 +4,28 @@ using UnityEngine;
 
     public static class Publisher
     {
-        private static Dictionary<ValueType, List<ISubscriber>> _allSubscribers = new Dictionary<ValueType, List<ISubscriber>>();
+        private static Dictionary<Type, List<ISubscriber>> _allSubscribers = new Dictionary<Type, List<ISubscriber>>();
 
         public static void Subscribe(ISubscriber subscriber, ValueType messageType)
         {
-            if (_allSubscribers.ContainsKey(messageType))
+            Type tipoMessaggio = messageType.GetType();
+            if (_allSubscribers.ContainsKey(tipoMessaggio))
             {
-                _allSubscribers[messageType].Add(subscriber);
+                _allSubscribers[tipoMessaggio].Add(subscriber);
             }
             else
             {
                 List<ISubscriber> subscribers = new List<ISubscriber> { subscriber };
 
-                _allSubscribers.Add(messageType, subscribers);
+                _allSubscribers.Add(tipoMessaggio, subscribers);
             }
         }
 
         public static void Publish(IMessage message)
         {
             ValueType messageType = message as ValueType;
-
-            if (!_allSubscribers.ContainsKey(messageType))
+            
+            if (!_allSubscribers.ContainsKey(messageType.GetType()))
             {
                 Debug.Log("Messagio di tipo: "+messageType);
                 return;
@@ -34,7 +35,7 @@ using UnityEngine;
                 Debug.LogWarning("Contengono la chiave");
             }
 
-            foreach (ISubscriber subscriber in _allSubscribers[messageType])
+            foreach (ISubscriber subscriber in _allSubscribers[messageType.GetType()])
             {
                 subscriber.OnPublish(message);
             }
@@ -42,9 +43,9 @@ using UnityEngine;
 
         public static void Unsubscribe(ISubscriber subscriber, ValueType messageType)
         {
-            if (_allSubscribers.ContainsKey(messageType))
+            if (_allSubscribers.ContainsKey(messageType.GetType()))
             {
-                _allSubscribers[messageType].Remove(subscriber);
+                _allSubscribers[messageType.GetType()].Remove(subscriber);
             }
         }
     }

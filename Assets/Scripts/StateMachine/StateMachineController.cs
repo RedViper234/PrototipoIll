@@ -42,7 +42,9 @@ public class StateMachineController : MonoBehaviour
     {
         if(nextState != remainInState)
         {
+            currentState.OnExitActions(this);
             currentState = nextState;
+            currentState.OnEntryActions(this);
         }
     }
 

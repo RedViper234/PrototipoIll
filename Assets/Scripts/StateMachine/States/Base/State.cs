@@ -15,9 +15,22 @@ public class State : ScriptableObject
         DoActions(controller);
         CheckTransitions(controller);
     }
-    public void OnExitState()
+    public void OnExitState(StateMachineController controller)
     {
+        OnExitActions(controller);
+    }
+    public void OnEntryState(StateMachineController controller)
+    {
+        OnEntryActions(controller);
+    }
 
+    public void OnEntryActions(StateMachineController controller)
+    {
+        for (int i = 0; i < actions.Count; i++)
+        {
+            var action = actions[i];
+            action.ActOnEntryState(controller);
+        }
     }
     public void OnExitActions(StateMachineController controller)
     {
@@ -52,10 +65,6 @@ public class State : ScriptableObject
             bool decisionSucceded = transitions[i].decision.Decide(controller);
             if(decisionSucceded)
             {
-                if (transitions[i].decision != controller.remainInState) 
-                { 
-                    OnExitActions(controller);
-                }
                 controller.TransitionToState(transitions[i].trueState);
             }
             else
