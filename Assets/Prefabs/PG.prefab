@@ -104,16 +104,20 @@ MonoBehaviour:
   direction: {x: 0, y: -1}
   acceleration: 5
   deceleration: 5
-  baseSpeed: 5
+  baseSpeed: 10
   speedModifier: 1
   meleeAttackPrefab: {fileID: 6087447557202039915, guid: d60783e6955d3ee4b8bf08f3e3d1618d, type: 3}
+  meleeDamage: 1
   meleeDamageModifier: 1
   meleeKnockbackForce: 10
   meleeKnockbackDuration: 0.5
   meleeHitTime: 0.2
   meleeHitDelay: 0.1
   meleeRecoveryTime: 0.5
+  stunTime: 0.1
+  critChance: 0.05
   rangedProjectilePrefab: {fileID: 2749492156157453024, guid: 283ba4cd63e7dd44cbfbeeef21e16015, type: 3}
+  rangedDamage: 1
   rangedDamageModifier: 1
   projectileSpeed: 10
   projectileDuration: 2
@@ -125,6 +129,169 @@ MonoBehaviour:
   dashRecoveryTime: 0.5
   maxConsecutiveDash: 3
   dashRememberTime: 0.1
+  merchantSales: 0
+  Strenght:
+    name: 
+    livello: 1
+    description: 
+    image: {fileID: 0}
+    damageProgression:
+    - level: 0
+      value: 20
+    - level: 0
+      value: 25
+    - level: 0
+      value: 30
+    - level: 0
+      value: 35
+    - level: 0
+      value: 40
+    stunTimeProgression:
+    - level: 0
+      value: 0.1
+    - level: 0
+      value: 0.15
+    - level: 0
+      value: 0.2
+    - level: 0
+      value: 0.25
+    - level: 0
+      value: 0.3
+    pc: {fileID: 0}
+  Speed:
+    name: "Velocit\xE0"
+    livello: 1
+    description: 
+    image: {fileID: 0}
+    speedProgression:
+    - level: 1
+      value: 5
+    - level: 2
+      value: 5.5
+    - level: 7
+      value: 6
+    - level: 8
+      value: 6.5
+    - level: 0
+      value: 7
+    attackRateProgression:
+    - level: 0
+      value: 0.5
+    - level: 0
+      value: 0.45
+    - level: 0
+      value: 0.4
+    - level: 0
+      value: 0.35
+    - level: 0
+      value: 0.3
+    dashRecoverProgression:
+    - level: 0
+      value: 0.5
+    - level: 0
+      value: 0.45
+    - level: 0
+      value: 0.4
+    - level: 0
+      value: 0.35
+    - level: 0
+      value: 0.3
+    pc: {fileID: 0}
+  Aim:
+    name: Mira
+    livello: 1
+    description: 
+    image: {fileID: 0}
+    fireRateProgression:
+    - level: 0
+      value: 1
+    - level: 0
+      value: 0.9
+    - level: 0
+      value: 0.8
+    - level: 0
+      value: 0.7
+    - level: 0
+      value: 0.6
+    fireDamageProgression:
+    - level: 0
+      value: 10
+    - level: 0
+      value: 12.5
+    - level: 0
+      value: 15
+    - level: 0
+      value: 17.5
+    - level: 0
+      value: 20
+    projectileSpeedProgression:
+    - level: 0
+      value: 10
+    - level: 0
+      value: 12.5
+    - level: 0
+      value: 15
+    - level: 0
+      value: 17.5
+    - level: 0
+      value: 20
+    pc: {fileID: 0}
+  Constitution:
+    name: Costituzione
+    livello: 1
+    description: 
+    image: {fileID: 0}
+    healthProgression:
+    - level: 0
+      value: 100
+    - level: 0
+      value: 125
+    - level: 0
+      value: 150
+    - level: 0
+      value: 175
+    - level: 0
+      value: 200
+    illGainRateProgression:
+    - level: 0
+      value: 0.5
+    - level: 0
+      value: 0.45
+    - level: 0
+      value: 0.4
+    - level: 0
+      value: 0.35
+    - level: 0
+      value: 0.3
+    pc: {fileID: 0}
+  Resolve:
+    name: 
+    livello: 1
+    description: 
+    image: {fileID: 0}
+    merchantSalesProgression:
+    - level: 0
+      value: 0
+    - level: 0
+      value: 5
+    - level: 0
+      value: 10
+    - level: 0
+      value: 15
+    - level: 0
+      value: 20
+    critChanceProgression:
+    - level: 0
+      value: 0
+    - level: 0
+      value: 0
+    - level: 0
+      value: 0
+    - level: 0
+      value: 0
+    - level: 0
+      value: 0
+    pc: {fileID: 0}
 --- !u!50 &5664604751966636653
 Rigidbody2D:
   serializedVersion: 4
@@ -163,9 +330,6 @@ MonoBehaviour:
   damageResistance: 0
   damageImmunity: 0
   immunityFrameDuration: 0.5
-  HealthBar: {fileID: 0}
-  currentHealthText: {fileID: 0}
-  maxHealthText: {fileID: 0}
 --- !u!114 &2125458318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,6 +342,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92469b636ca94a341ae4aaeb6a6aa503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  malattiaGainPerSecond: 0.5
+  malattiaResistance: 0
+  malattiaImmunity: 0
   MalattiaLevel: 0
   MalattiaPoints: 100
   MalattiaProgression:
@@ -193,8 +360,6 @@ MonoBehaviour:
     expRequired: 100
   - level: 5
     expRequired: 150
-  MalattiaProgressBar: {fileID: 0}
-  levelMalattia: {fileID: 0}
   GuarigioneLevel: 0
   GuarigionePoints: 99
   GuarigioneProgression:
@@ -210,17 +375,9 @@ MonoBehaviour:
     expRequired: 100
   - level: 5
     expRequired: 150
-  GuarigioneProgressBar: {fileID: 0}
-  levelGuarigione: {fileID: 0}
   maxPercMalattia: 100
   currentMalattia: 71.33
-  malattiaResistance: 0
-  malattiaImmunity: 0
-  IllBar: {fileID: 0}
-  percTextIll: {fileID: 0}
   currentCorruzione: 36.34
-  CorruptionBar: {fileID: 0}
-  percTextCorruption: {fileID: 0}
 --- !u!70 &7155375835084060804
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

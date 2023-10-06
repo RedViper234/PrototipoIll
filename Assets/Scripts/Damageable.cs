@@ -15,6 +15,15 @@ public class Damageable : MonoBehaviour
     private List<coroutineDiCura> healOverTimeCoroutine = new();
     private List<coroutineDiDanno> damageOverTimeCoroutine = new();
 
+    private void Awake()
+    {
+        if (GetComponent<PlayerController>()) //se è il player lascio che sia la statistica ad impostare la vita
+        {
+            maxHealth = 0;
+            currentHealth = 0;
+        }
+    }
+
     void Start()
     {
         //currentHealth = maxHealth;

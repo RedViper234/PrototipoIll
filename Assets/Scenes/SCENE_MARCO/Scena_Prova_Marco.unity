@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 151720192}
   - component: {fileID: 151720191}
   m_Layer: 5
-  m_Name: Perc
+  m_Name: IllPerc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1653,6 +1653,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8168ab9b06f874886497877fe67306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MalattiaProgressBar: {fileID: 809563713}
+  levelMalattia: {fileID: 1267509754}
+  GuarigioneProgressBar: {fileID: 1440658500}
+  levelGuarigione: {fileID: 1634807822}
+  CorruptionBar: {fileID: 791958405}
+  percTextCorruption: {fileID: 1182650457}
+  IllBar: {fileID: 764073596}
+  percTextIll: {fileID: 151720191}
+  HealthBar: {fileID: 1705989769}
+  currentHealthText: {fileID: 161920668}
+  maxHealthText: {fileID: 2014183901}
 --- !u!1 &1048599917
 GameObject:
   m_ObjectHideFlags: 0
@@ -2188,6 +2199,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1440658497}
   m_CullTransparentMesh: 1
+--- !u!1 &1578833060 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3576759141607315508, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
+  m_PrefabInstance: {fileID: 3576759141305476527}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1578833065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578833060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5955718e38b3d6a4890301c19250ff09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+  currentHealth: 10
+  damageResistance: 0
+  damageImmunity: 0
+  immunityFrameDuration: 0
+--- !u!50 &1578833066
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578833060}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 7
 --- !u!1 &1634807820
 GameObject:
   m_ObjectHideFlags: 0
@@ -2735,6 +2789,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2364346080047798333, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3576759141607315505, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
+      propertyPath: CorruptionDamage
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3576759141607315506, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -2783,6 +2845,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Obstacle
       objectReference: {fileID: 0}
+    - target: {fileID: 3576759141607315508, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
 --- !u!1001 &5664604750423408351
@@ -2792,50 +2858,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: IllBar
-      value: 
-      objectReference: {fileID: 764073596}
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: percTextIll
-      value: 
-      objectReference: {fileID: 151720191}
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: CorruptionBar
-      value: 
-      objectReference: {fileID: 791958405}
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: levelMalattia
-      value: 
-      objectReference: {fileID: 1267509754}
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: levelGuarigione
-      value: 
-      objectReference: {fileID: 1634807822}
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: percTextCorruption
-      value: 
-      objectReference: {fileID: 1182650457}
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: MalattiaProgressBar
-      value: 
-      objectReference: {fileID: 809563713}
-    - target: {fileID: 2125458318, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: GuarigioneProgressBar
-      value: 
-      objectReference: {fileID: 1440658500}
-    - target: {fileID: 1404821118485055086, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: HealthBar
-      value: 
-      objectReference: {fileID: 1705989769}
-    - target: {fileID: 1404821118485055086, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: maxHealthText
-      value: 
-      objectReference: {fileID: 2014183901}
-    - target: {fileID: 1404821118485055086, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
-      propertyPath: currentHealthText
-      value: 
-      objectReference: {fileID: 161920668}
     - target: {fileID: 5664604751966636654, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
       propertyPath: m_RootOrder
       value: 1

@@ -7,6 +7,13 @@ using UnityEngine.UI;
 
 public class MalattiaHandler : MonoBehaviour
 {
+    [Header("Guadagno di malattia")]
+    public float malattiaGainPerSecond = 0.5f;
+    [Range(0,1)]
+    public float malattiaResistance = 0;
+    public bool malattiaImmunity = false;
+
+    [Header("Progress bar")]
     public int MalattiaLevel = 0;
     public int MalattiaPoints = 0;
     public List<ProgressBarValueDictionaryEntry> MalattiaProgression = new();
@@ -15,11 +22,9 @@ public class MalattiaHandler : MonoBehaviour
     public int GuarigionePoints = 0;
     public List<ProgressBarValueDictionaryEntry> GuarigioneProgression = new();
 
+    [Header("Barra di malattie e corruzione")]
     public int maxPercMalattia = 100;
     public float currentMalattia = 0;
-    [Range(0,1)]
-    public float malattiaResistance = 0;
-    public bool malattiaImmunity = false;
 
     public float currentCorruzione = 0;
 
@@ -39,7 +44,7 @@ public class MalattiaHandler : MonoBehaviour
         modifyGuarigionePoints(0);
         gainMalattia(0);
         modifyCorruption(0);
-        TakeIllOverTime(1,tipiDiDanno.time);
+        TakeIllOverTime(malattiaGainPerSecond, tipiDiDanno.time);
     }
 
     public void updateIllBar()

@@ -15,18 +15,23 @@ public class PlayerController : MonoBehaviour
 
     [Header("Melee Attack")]
     public UnityEngine.GameObject meleeAttackPrefab;
+    public float meleeDamage = 1f;
     public float meleeDamageModifier = 1f;
     public float meleeKnockbackForce = 10f;
     public float meleeKnockbackDuration = 0.5f;
     public float meleeHitTime = 0.2f;
     public float meleeHitDelay = 0.1f;
     public float meleeRecoveryTime = 0.5f;
+    public float stunTime = 0.1f;
+    [Range(0,1)]
+    public float critChance = 0.05f;
     private float lastAttackTime = 0f;
     private bool waintingForAttackPerformed = false;
     private float attackRange = 1f;
 
     [Header("Ranged Attack")]
     public UnityEngine.GameObject rangedProjectilePrefab;
+    public float rangedDamage = 1f;
     public float rangedDamageModifier = 1f;
     public float projectileSpeed = 10f;
     //public float projectileSize = 1f;
@@ -48,6 +53,10 @@ public class PlayerController : MonoBehaviour
     public float dashRememberTime = 0.2f;
     private Coroutine dashRememberCor;
 
+    [Header("Altre opzioni")]
+    [Range(0,1)]
+    public float merchantSales = 0;
+
     private Vector2 movementInput;
     private Vector2 aimInput;
     private bool meleeAttacking;
@@ -64,7 +73,13 @@ public class PlayerController : MonoBehaviour
     //public statResistence Costituzione = new statResistence();
 
     public PlayerInput actions;
-    private InputAction move;
+    [Header("Player stats")]
+    public statStrenght Strenght = new statStrenght();
+    public statSpeed Speed = new statSpeed();
+    public statAim Aim = new statAim();
+    public statConstitution Constitution = new statConstitution();
+    public statResolve Resolve = new statResolve();
+
     private void Awake()
     {
         if (rb == null)
@@ -72,7 +87,9 @@ public class PlayerController : MonoBehaviour
         if (actions == null)
             actions = new PlayerInput();
         actions.Enable();
+        setLevelsToStat();
     }
+
 
     private void OnEnable()
     {
@@ -118,6 +135,11 @@ public class PlayerController : MonoBehaviour
     }
     private void Start()
     {
+        Strenght.setStat();
+        Speed.setStat();
+        Constitution.setStat();
+        Aim.setStat();
+        Resolve.setStat();
     }
 
     private void FixedUpdate()
@@ -331,6 +353,67 @@ public class PlayerController : MonoBehaviour
             rangedAttacking = false;
         }
     }
+    private void setLevelsToStat()
+    {
+        Strenght.pc = this;
+        foreach (var item in Strenght.damageProgression)
+        {
+            item.level = Strenght.damageProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Strenght.stunTimeProgression)
+        {
+            item.level = Strenght.stunTimeProgression.IndexOf(item) + 1;
+        }
+
+        Speed.pc = this;
+        foreach (var item in Speed.speedProgression)
+        {
+            item.level = Speed.speedProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Speed.dashRecoverProgression)
+        {
+            item.level = Speed.dashRecoverProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Speed.attackRateProgression)
+        {
+            item.level = Speed.attackRateProgression.IndexOf(item) + 1;
+        }
+
+        Aim.pc = this;
+        foreach (var item in Aim.fireRateProgression)
+        {
+            item.level = Aim.fireRateProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Aim.fireDamageProgression)
+        {
+            item.level = Aim.fireDamageProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Aim.projectileSpeedProgression)
+        {
+            item.level = Aim.projectileSpeedProgression.IndexOf(item) + 1;
+        }
+
+        Constitution.pc = this;
+        foreach (var item in Constitution.healthProgression)
+        {
+            item.level = Constitution.healthProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Constitution.illGainRateProgression)
+        {
+            item.level = Constitution.illGainRateProgression.IndexOf(item) + 1;
+        }
+
+        Resolve.pc = this;
+        foreach (var item in Resolve.merchantSalesProgression)
+        {
+            item.level = Resolve.merchantSalesProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Resolve.critChanceProgression)
+        {
+            item.level = Resolve.critChanceProgression.IndexOf(item) + 1;
+        }
+    }
+
 }
 
 [System.Serializable]
@@ -344,103 +427,103 @@ public class stat
     public Sprite image;
 }
 
-//[System.Serializable]
-//public class statCombat : stat
-//{
-//    //The Combat statistic influences your damage and the speed of your shots.
-//    public List<StatValueDictionaryEntry> damageProgression;
-//    public List<StatValueDictionaryEntry> shootProgression;
+[System.Serializable]
+public class StatValueDictionaryEntry
+{
+    [HideInInspector]
+    public int level;
+    public float value;
+}
 
-//    public void setStat()
-//    {
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<CombatStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Combat.livello.ToString();
+[System.Serializable]
+public class statStrenght : stat
+{
+    //The Combat statistic influences your damage and the speed of your shots.
+    public List<StatValueDictionaryEntry> damageProgression;
+    public List<StatValueDictionaryEntry> stunTimeProgression;
+    [HideInInspector]
+    public PlayerController pc;
 
-//        //float valueDamage = BattleManager.Instance.player.Combat.damageProgression.Find(f => f.level == BattleManager.Instance.player.Combat.livello).value;
-//        //BattleManager.Instance.player.Damage = (int)valueDamage;
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<DamageStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueDamage.ToString();
+    public void setStat()
+    {
+        pc.meleeDamage =  pc.Strenght.damageProgression.Find(f => f.level == pc.Strenght.livello).value;
+        pc.stunTime = pc.Strenght.stunTimeProgression.Find(f => f.level == pc.Strenght.livello).value;
+    }
+}
 
-//        //float valueShootForce = BattleManager.Instance.player.Combat.shootProgression.Find(f => f.level == BattleManager.Instance.player.Combat.livello).value;
-//        //BattleManager.Instance.player.shootForce = valueShootForce;
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<ShootForceStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueShootForce.ToString();
+[System.Serializable]
+public class statSpeed : stat
+{
+    public List<StatValueDictionaryEntry> speedProgression;
+    public List<StatValueDictionaryEntry> attackRateProgression;
+    public List<StatValueDictionaryEntry> dashRecoverProgression;
+    [HideInInspector]
+    public PlayerController pc;
 
-//    }
-//}
+    public void setStat()
+    {
+        pc.baseSpeed = pc.Speed.speedProgression.Find(f => f.level == pc.Speed.livello).value;
+        pc.dashRecoveryTime = pc.Speed.dashRecoverProgression.Find(f => f.level == pc.Speed.livello).value;
+        pc.meleeRecoveryTime = pc.Speed.attackRateProgression.Find(f => f.level == pc.Speed.livello).value;
+    }
+}
 
-//[System.Serializable]
-//public class statSpeed : stat
-//{
-//    public List<StatValueDictionaryEntry> speedProgression;
-//    public List<StatValueDictionaryEntry> fireRateProgression;
-//    public List<StatValueDictionaryEntry> jumpForceProgression;
-
-//    public void setStat()
-//    {
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<SpeedStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Speed.livello.ToString();
-
-//        //float valueSpeed = BattleManager.Instance.player.Speed.speedProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
-//        //BattleManager.Instance.player.maxSpeed = valueSpeed;
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<MovementSpeedStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueSpeed.ToString();
-
-
-//        //float valueFireRate = BattleManager.Instance.player.Speed.fireRateProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
-//        //BattleManager.Instance.player.fireRate = valueFireRate;
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<FireRateStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueFireRate.ToString() + " s";
-
-
-//        //float valueJump = BattleManager.Instance.player.Speed.jumpForceProgression.Find(f => f.level == BattleManager.Instance.player.Speed.livello).value;
-//        //BattleManager.Instance.player.jumpForce = valueJump;
-//    }
-//}
-
-//[System.Serializable]
-//public class statResistence : stat
-//{
-//    public List<StatValueDictionaryEntry> maxLifeProgression;
-//    public List<StatValueDictionaryEntry> immunityTimeProgression;
-
-//    public void setStat()
-//    {
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<ResistanceStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = BattleManager.Instance.player.Resistance.livello.ToString();
-
-//        //float valueMaxLife = BattleManager.Instance.player.Resistance.maxLifeProgression.Find(f => f.level == BattleManager.Instance.player.Resistance.livello).value;
-//        //float difference = 0;
-//        //difference = valueMaxLife - GameManager.Instance.playerLifeMax;
-//        //BattleManager.Instance.player.GetComponent<Damageable>().MaxLife = (int)valueMaxLife;
-//        //if (livello == 1)
-//        //{
-//        //    BattleManager.Instance.player.GetComponent<Damageable>().life = BattleManager.Instance.player.GetComponent<Damageable>().MaxLife;
-//        //}
-//        //else
-//        //{
-//        //    BattleManager.Instance.player.GetComponent<Damageable>().life += (int)difference;
-//        //}
-//        //if (BattleManager.Instance.player.GetComponent<Damageable>().life > BattleManager.Instance.player.GetComponent<Damageable>().MaxLife)
-//        //{
-//        //    BattleManager.Instance.player.GetComponent<Damageable>().life = BattleManager.Instance.player.GetComponent<Damageable>().MaxLife;
-//        //}
-
-//        //GameManager.Instance.playerLifeMax = (int)valueMaxLife;
-//        //if (livello == 1)
-//        //{
-//        //    GameManager.Instance.playerLife = GameManager.Instance.playerLifeMax;
-//        //}
-//        //else
-//        //{
-//        //    GameManager.Instance.playerLife += (int)difference;
-//        //}
-//        //if (GameManager.Instance.playerLife > GameManager.Instance.playerLifeMax)
-//        //{
-//        //    GameManager.Instance.playerLife = GameManager.Instance.playerLifeMax;
-//        //}
-
-//        //UIManager.Instance.setPlayerMaxLifeUI();
-//        //UIManager.Instance.setPlayerActualLifeUI();
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<HealthStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueMaxLife.ToString();
+[System.Serializable]
+public class statAim : stat
+{
+    public List<StatValueDictionaryEntry> fireRateProgression;
+    public List<StatValueDictionaryEntry> fireDamageProgression;
+    public List<StatValueDictionaryEntry> projectileSpeedProgression;
+    [HideInInspector]
+    public PlayerController pc;
 
 
-//        //float valueImmunityTime = BattleManager.Instance.player.Resistance.immunityTimeProgression.Find(f => f.level == BattleManager.Instance.player.Resistance.livello).value;
-//        //BattleManager.Instance.player.GetComponent<Damageable>().playerImmunityTime = valueImmunityTime;
-//        //UIManager.Instance.PlayerStats.GetComponentInChildren<ImmunityStat>(true).GetComponentInChildren<ValueText>(true).GetComponent<TextMeshProUGUI>().text = valueImmunityTime.ToString() + " s"; ;
+    public void setStat()
+    {
+        pc.rangedDamage = pc.Aim.fireDamageProgression.Find(f => f.level == pc.Aim.livello).value;
+        pc.rangedAttackCooldown = pc.Aim.fireRateProgression.Find(f => f.level == pc.Aim.livello).value;
+        pc.projectileSpeed = pc.Aim.projectileSpeedProgression.Find(f => f.level == pc.Aim.livello).value;
+    }
+}
 
-//    }
-//}
+[System.Serializable]
+public class statConstitution : stat
+{
+    public List<StatValueDictionaryEntry> healthProgression;
+    public List<StatValueDictionaryEntry> illGainRateProgression;
+    [HideInInspector]
+    public PlayerController pc;
+
+
+    public void setStat()
+    {
+        if (pc.GetComponent<Damageable>())
+            pc.GetComponent<Damageable>().SetMaxHealthBar(pc.Constitution.healthProgression.Find(f => f.level == pc.Constitution.livello).value, true);
+        else
+            Debug.LogError("Non c'è il damageable");
+
+        if (pc.GetComponent<MalattiaHandler>())
+        {
+            pc.GetComponent<MalattiaHandler>().malattiaGainPerSecond = pc.Constitution.illGainRateProgression.Find(f => f.level == pc.Constitution.livello).value;
+        }
+        else
+            Debug.LogError("Non c'è il malattiaHandler");
+    }
+}
+
+[System.Serializable]
+public class statResolve : stat
+{
+    public List<StatValueDictionaryEntry> merchantSalesProgression;
+    public List<StatValueDictionaryEntry> critChanceProgression;
+    [HideInInspector]
+    public PlayerController pc;
+
+
+    public void setStat()
+    {
+        pc.merchantSales = pc.Resolve.merchantSalesProgression.Find(f => f.level == pc.Resolve.livello).value;
+        pc.critChance = pc.Resolve.critChanceProgression.Find(f => f.level == pc.Resolve.livello).value;
+
+    }
+}
