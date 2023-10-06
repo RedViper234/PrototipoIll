@@ -32,7 +32,7 @@ using UnityEngine;
             }
             else
             {
-                Debug.LogWarning("Contengono la chiave");
+                //Debug.LogWarning("Contengono la chiave");
             }
 
             foreach (ISubscriber subscriber in _allSubscribers[messageType.GetType()])

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,11 +15,6 @@ public class Damageable : MonoBehaviour
     private List<coroutineDiCura> healOverTimeCoroutine = new();
     private List<coroutineDiDanno> damageOverTimeCoroutine = new();
 
-    [Header("OnlyPlayerSetup")]
-    public MeshMaskUI HealthBar;
-    public TextMeshProUGUI currentHealthText;
-    public TextMeshProUGUI maxHealthText;
-
     void Start()
     {
         //currentHealth = maxHealth;
@@ -29,7 +25,9 @@ public class Damageable : MonoBehaviour
     {
         // Attendi un frame
         yield return null;
+
         SetMaxHealthBar(0, true);
+        
     }
 
     // Update is called once per frame
@@ -55,8 +53,18 @@ public class Damageable : MonoBehaviour
             currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
             immunityTimer = immunityFrameDuration;
 
+            if (currentHealth <= 0 && !GetComponent<PlayerController>())
+            {
+                Destroy(gameObject);
+            }
+            else if (currentHealth <= 0 && GetComponent<PlayerController>())
+            {
+                PlayerDeath();
+            }
             // Update health bar/UI here
+
             SetCurrentHealthBar();
+            
             return true;
         }
         else
@@ -65,15 +73,16 @@ public class Damageable : MonoBehaviour
         }
     }
 
+    private void PlayerDeath()
+    {
+        Debug.Log("sei morto");
+    }
+
     public void SetCurrentHealthBar()
     {
-        if (HealthBar != null)
+        if (GetComponent<PlayerController>())
         {
-            HealthBar.setPercentage((currentHealth * 100) / maxHealth);
-        }
-        if (currentHealthText != null)
-        {
-            currentHealthText.text = ((int)currentHealth).ToString();
+            Publisher.Publish(new UpdateHealthBar(((int)currentHealth).ToString(), maxHealth.ToString(), (currentHealth * 100) / maxHealth));
         }
     }
 
@@ -91,10 +100,6 @@ public class Damageable : MonoBehaviour
             {
                 currentHealth = maxHealth;
             }
-        }
-        if (maxHealthText != null)
-        {
-            maxHealthText.text = (maxHealth).ToString();
         }
         SetCurrentHealthBar();
     }

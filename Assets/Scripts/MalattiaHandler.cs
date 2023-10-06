@@ -10,23 +10,19 @@ public class MalattiaHandler : MonoBehaviour
     public int MalattiaLevel = 0;
     public int MalattiaPoints = 0;
     public List<ProgressBarValueDictionaryEntry> MalattiaProgression = new();
-    public MeshMaskUI MalattiaProgressBar;
-    public TextMeshProUGUI levelMalattia;
+
     public int GuarigioneLevel = 0;
     public int GuarigionePoints = 0;
     public List<ProgressBarValueDictionaryEntry> GuarigioneProgression = new();
-    public MeshMaskUI GuarigioneProgressBar;
-    public TextMeshProUGUI levelGuarigione;
+
     public int maxPercMalattia = 100;
     public float currentMalattia = 0;
     [Range(0,1)]
     public float malattiaResistance = 0;
     public bool malattiaImmunity = false;
-    public MeshMaskUI IllBar;
-    public TextMeshProUGUI percTextIll;
+
     public float currentCorruzione = 0;
-    public MeshMaskUI CorruptionBar;
-    public TextMeshProUGUI percTextCorruption;
+
     private List<coroutineDiCuraMalattia> healOverTimeCoroutine = new();
     private List<coroutineDiDannoMalattia> IllOverTimeCoroutine = new();
     void Start()
@@ -48,25 +44,12 @@ public class MalattiaHandler : MonoBehaviour
 
     public void updateIllBar()
     {
-        if (IllBar != null)
-        {
-            IllBar.setPercentage(currentMalattia);
-        }
-        if (percTextIll != null)
-        {
-            percTextIll.text = ((int)currentMalattia).ToString() + "%";
-        }
+        Publisher.Publish(new UpdateUiBar(((int)currentMalattia).ToString(), currentMalattia, UpdateUiBar.barType.MalattiaBar));
     }
+
     public void updateCorruptionBar()
     {
-        if (CorruptionBar != null)
-        {
-            CorruptionBar.setPercentage(currentCorruzione);
-        }
-        else
-        {
-            percTextCorruption.text = ((int)currentCorruzione).ToString() + "%";
-        }
+        Publisher.Publish(new UpdateUiBar(((int)currentCorruzione).ToString(), currentCorruzione, UpdateUiBar.barType.CorruzioneBar));
     }
 
     public void gainMalattia(float percValue)
@@ -95,15 +78,13 @@ public class MalattiaHandler : MonoBehaviour
             if (GuarigionePoints < GuarigioneProgression[i].expRequired)
             {
                 GuarigioneLevel = GuarigioneProgression[i - 1].level;
-                levelGuarigione.text = GuarigioneLevel.ToString();
+                Publisher.Publish(new UpdateUiBar(GuarigioneLevel.ToString(), ((GuarigionePoints - GuarigioneProgression[i - 1].expRequired) * 100) / (GuarigioneProgression[i].expRequired - GuarigioneProgression[i - 1].expRequired), UpdateUiBar.barType.GuarigioneProgressBar));
                 //Debug.Log(((GuarigionePoints - GuarigioneProgression[i - 1].expRequired)*100) / (GuarigioneProgression[i].expRequired - GuarigioneProgression[i - 1].expRequired));//(( / 100f) * ();
-                GuarigioneProgressBar.setPercentage(((GuarigionePoints - GuarigioneProgression[i - 1].expRequired) * 100) / (GuarigioneProgression[i].expRequired - GuarigioneProgression[i - 1].expRequired));
                 return;
             }
         }
         GuarigioneLevel = GuarigioneProgression[GuarigioneProgression.Count - 1].level;
-        levelGuarigione.text = "Max";
-        GuarigioneProgressBar.setPercentage(100);
+        Publisher.Publish(new UpdateUiBar("Max", 100, UpdateUiBar.barType.GuarigioneProgressBar));
     }
 
     private void modifyMalattiaPoints(int expPoints)
@@ -114,14 +95,15 @@ public class MalattiaHandler : MonoBehaviour
             if (MalattiaPoints < MalattiaProgression[i].expRequired)
             {
                 MalattiaLevel = MalattiaProgression[i - 1].level;
-                levelMalattia.text = MalattiaLevel.ToString();
-                MalattiaProgressBar.setPercentage(((MalattiaPoints - MalattiaProgression[i - 1].expRequired) * 100) / (MalattiaProgression[i].expRequired - MalattiaProgression[i - 1].expRequired));
+                Publisher.Publish(new UpdateUiBar(MalattiaLevel.ToString(), ((MalattiaPoints - MalattiaProgression[i - 1].expRequired) * 100) / (MalattiaProgression[i].expRequired - MalattiaProgression[i - 1].expRequired), UpdateUiBar.barType.MalattiaProgressBar));
+
+                //levelMalattia.text = MalattiaLevel.ToString();
                 return;
             }
         }
         MalattiaLevel = MalattiaProgression[MalattiaProgression.Count - 1].level;
-        levelMalattia.text = "Max";
-        MalattiaProgressBar.setPercentage(100);
+        Publisher.Publish(new UpdateUiBar("Max", 100, UpdateUiBar.barType.MalattiaProgressBar));
+
     }
 
     public void StopTakeIll(tipiDiDanno tipo)
@@ -167,9 +149,10 @@ public class MalattiaHandler : MonoBehaviour
 
     }
 
-    public void Healing(float heal)
+    public void HealingIll(float heal)
     {
         currentMalattia = (currentMalattia - (int)heal < 0 ? 0 : currentMalattia - (int)heal);
+        updateIllBar();
     }
 
     public void StopHealing(tipiDiCure tipo)
@@ -215,9 +198,6 @@ public class MalattiaHandler : MonoBehaviour
 
         // Assicurati di reimpostare healOverTimeCoroutine a null quando la coroutine è terminata.
     }
-
-
-
 
     public enum tipiDiCure
     {

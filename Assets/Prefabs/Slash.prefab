@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2641876816517793040}
   - component: {fileID: 2860159962724673348}
   - component: {fileID: 8654730462774007574}
+  - component: {fileID: 2202824291833473731}
   m_Layer: 0
   m_Name: Slash
   m_TagString: Untagged
@@ -25,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6087447557202039915}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.92, y: -1, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
@@ -95,7 +96,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -117,13 +118,29 @@ PolygonCollider2D:
       - {x: 0.10547352, y: 0.45665178}
       - {x: -0.09167885, y: 0.4276381}
       - {x: -0.1121873, y: 0.3925926}
-      - {x: 0.07116687, y: 0.39986116}
-      - {x: 0.24185711, y: 0.3321694}
-      - {x: 0.3334911, y: 0.2465392}
-      - {x: 0.39161968, y: 0.08009468}
-      - {x: 0.38939345, y: -0.005237858}
-      - {x: 0.36804923, y: -0.08593345}
-      - {x: 0.25355765, y: -0.25230214}
+      - {x: 0.043901592, y: 0.22997737}
+      - {x: 0.06683451, y: 0.048417047}
+      - {x: 0.0808465, y: -0.20003769}
       - {x: -0.023219645, y: -0.35211682}
       - {x: 0.12253171, y: -0.369942}
       - {x: 0.328777, y: -0.28771478}
+--- !u!114 &2202824291833473731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6087447557202039915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cc9b221d33e9cd4fb9972966e8c7534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disactivated: 0
+  damage: 5
+  Illdamage: 10
+  CorruptionDamage: 0
+  destroyOnTouch: 0
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 128

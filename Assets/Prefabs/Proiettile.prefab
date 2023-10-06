@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9000602818131002892}
   - component: {fileID: 3029995408258532432}
   - component: {fileID: 2724585256192905301}
+  - component: {fileID: 2080637553658015573}
   m_Layer: 0
   m_Name: Proiettile
   m_TagString: Untagged
@@ -106,7 +107,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &2724585256192905301
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -123,3 +124,23 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &2080637553658015573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2749492156157453024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cc9b221d33e9cd4fb9972966e8c7534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disactivated: 0
+  damage: 5
+  Illdamage: 10
+  CorruptionDamage: 0
+  destroyOnTouch: 1
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 128
