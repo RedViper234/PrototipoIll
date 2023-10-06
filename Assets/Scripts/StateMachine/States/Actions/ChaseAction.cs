@@ -19,6 +19,11 @@ public class ChaseAction : Action
         }
     }
 
+    public override void ActionDrawGizmos(StateMachineController controller)
+    {
+        return;
+    }
+
     public override void ActOnEntryState(StateMachineController controller)
     {
         return;

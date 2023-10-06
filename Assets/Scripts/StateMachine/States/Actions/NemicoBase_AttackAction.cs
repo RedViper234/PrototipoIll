@@ -6,9 +6,15 @@ public class NemicoBase_AttackAction : Action
 {
     [SerializeField] private float attackRadius;
     [SerializeField] private LayerMask attackMask;
+    
+    private Coroutine coroutine;
     public override void ActOnEntryState(StateMachineController controller)
     {
-        controller.StartCoroutine(IniziaAttacco(controller));
+        Debug.Log("ENTRATO IN STATO ATTACC0");
+        if (controller.currentEnemy.isNotAttacking)
+        {
+            controller.StartCoroutine(IniziaAttacco(controller));
+        }
     }
     public override void Act(StateMachineController controller)
     {
@@ -19,22 +25,28 @@ public class NemicoBase_AttackAction : Action
     {
         while (true)
         {
-            yield return new WaitForSeconds(1);
-            Debug.Log("Sto Attaccando");
+            controller.currentEnemy.isNotAttacking = false;
             RaycastHit2D playerHit = Physics2D.CircleCast(controller.gameObject.transform.position, attackRadius, Vector2.zero, 0, attackMask);
             if(playerHit.collider != null)
             {
+                yield return new WaitForSeconds(3f);
+                Debug.Log("Sto Attaccando");
                 Damageable damageable = playerHit.collider?.GetComponent<Damageable>();
                 damageable.TakeDamage(10);
             }
+            controller.currentEnemy.isNotAttacking = true;
         }
 
     }
 
     public override void ActOnExitState(StateMachineController controller)
     {
-        return;
+        controller.currentEnemy.isNotAttacking = true;
+        controller.StopCoroutine(IniziaAttacco(controller));
     }
 
-   
+    public override void ActionDrawGizmos(StateMachineController controller)
+    {
+        return;
+    }
 }

@@ -1,0 +1,19 @@
+using UnityEngine;
+
+    #ROOTNAMESPACEBEGIN#
+
+/// <summary>
+/// 
+/// </summary>
+[CreateAssetMenu(fileName = "Nemici/Decisioni/#SCRIPTNAME#", menuName = "Nemici/Decisioni/#SCRIPTNAME#")]
+public class #SCRIPTNAME# : Decision
+{
+
+    public override void Decide(StateMachineController controller)
+    {
+        return false;
+    }
+
+}
+
+#ROOTNAMESPACEEND#

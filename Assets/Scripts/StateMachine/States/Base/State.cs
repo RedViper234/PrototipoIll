@@ -47,8 +47,14 @@ public class State : ScriptableObject
         {
             var decision = transitions[i].decision;
             decision.DrawMyGizmos(controller);
+            
+        }
+        for (int i = 0; i < actions.Count; i++)
+        {
+            actions[i].ActionDrawGizmos(controller);
         }
     }
+   
     private void DoActions(StateMachineController controller)
     {
         for (int i = 0; i < actions.Count; i++)
@@ -73,7 +79,7 @@ public class State : ScriptableObject
             }
         }
     }
-    
+       
 }
 [System.Serializable]
 public class Transition

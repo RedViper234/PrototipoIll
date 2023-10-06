@@ -20,7 +20,10 @@ public class StateMachineController : MonoBehaviour
         currentEnemy = GetComponent<EnemyController>();
         enemyStats = currentEnemy.EnemyStats;
     }
-
+    private void Start()
+    {
+        currentState.OnEntryActions(this);
+    }
     public void SetUpAI()
     {
         currentAgent.enabled = aiAttiva;

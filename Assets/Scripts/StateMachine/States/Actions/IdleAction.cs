@@ -6,11 +6,11 @@ public class IdleAction : Action, ISubscriber
 {
     private void OnEnable()
     {
-        Publisher.Subscribe(this, new MessaggioDiProva());
+        Publisher.Subscribe(this, new MessaggioDiProva(""));
     }
     public override void Act(StateMachineController controller)
     {
-        Publisher.Publish(new MessaggioDiProva());
+        Publisher.Publish(new MessaggioDiProva(""));
     }
 
     public override void ActOnExitState(StateMachineController controller)
@@ -22,11 +22,17 @@ public class IdleAction : Action, ISubscriber
     {
         if(message is MessaggioDiProva)
         {
-            Debug.LogWarning("SEI GAY E USI IL PUB SUB");
+            MessaggioDiProva messaggioDiProva = (MessaggioDiProva)message;
+            Debug.LogWarning(messaggioDiProva.prova);
         }
     }
 
     public override void ActOnEntryState(StateMachineController controller)
+    {
+        return;
+    }
+
+    public override void ActionDrawGizmos(StateMachineController controller)
     {
         return;
     }

@@ -1,0 +1,27 @@
+using UnityEngine;
+
+    #ROOTNAMESPACEBEGIN#
+
+/// <summary>
+/// 
+/// </summary>
+[CreateAssetMenu(fileName = "Nemici/Actions/#SCRIPTNAME#", menuName = "Nemici/Actions/#SCRIPTNAME#")]
+public class #SCRIPTNAME# : Action
+{
+
+    public override void Act(StateMachineController controller)
+    {
+        return;
+    }
+        public override void ActOnEntryState(StateMachineController controller)
+    {
+        return;
+    }
+
+    public override void ActOnExitState(StateMachineController controller)
+    {
+        return;
+    }
+}
+
+#ROOTNAMESPACEEND#
