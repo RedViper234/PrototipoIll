@@ -40,7 +40,7 @@ public class AttackEnemyRangedAction : Action
 
     public IEnumerator ShootDelay(StateMachineController controller)
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(shootingDelay);
         controller.StartCoroutine(ShootRoutine(controller));
     }
     private IEnumerator ShootRoutine(StateMachineController controller)
@@ -54,9 +54,9 @@ public class AttackEnemyRangedAction : Action
     }
     private void Shoot(StateMachineController controller)
     {
-        // Crea un proiettile e lo fa partire dalla posizione del fuoco
-        GameObject bullet = Instantiate(bulletPrefab, controller.currentEnemy.transform.position, controller.currentEnemy.transform.rotation);
+
         Vector2 directionToPlayer = (controller.currentEnemy.target.position - controller.currentEnemy.transform.position).normalized;
+        GameObject bullet = Instantiate(bulletPrefab, controller.currentEnemy.transform.position, controller.currentEnemy.transform.rotation);
         Rigidbody2D bulletRigidbody = bullet.GetComponent<Rigidbody2D>();
         bulletRigidbody.velocity = directionToPlayer * bulletSpeed;
         Destroy(bullet, 10f);

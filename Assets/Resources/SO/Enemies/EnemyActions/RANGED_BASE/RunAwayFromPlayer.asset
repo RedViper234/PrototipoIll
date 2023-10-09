@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gizmosActive: 1
   fleeDistance: 20
+  distanzaDaPercorrereFuoriArea: 2
+  approachDistance: 40

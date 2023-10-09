@@ -9,6 +9,7 @@ public class RunAwayFromObject : Action
 {
     public float fleeDistance = 5f;
     public float distanzaDaPercorrereFuoriArea = 2;
+    public float approachDistance = 10f;
     private Transform playerTransform;
     public override void Act(StateMachineController controller)
     {
@@ -25,6 +26,11 @@ public class RunAwayFromObject : Action
             Vector3 fleePosition = controller.transform.position + directionFromPlayer.normalized * distanzaDaPercorrereFuoriArea;
             controller.currentEnemy.currentAgent.SetDestination(fleePosition);
         }
+        else if (currentDistance > approachDistance)
+        {
+            Vector3 approachPosition = playerTransform.position + directionFromPlayer.normalized * approachDistance;
+            controller.currentEnemy.currentAgent.SetDestination(approachPosition);
+        }
     }
 
     public override void ActionDrawGizmos(StateMachineController controller)
@@ -37,6 +43,9 @@ public class RunAwayFromObject : Action
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(controller.transform.position, playerTransform.position);
         Gizmos.DrawWireSphere(playerTransform.position, fleeDistance);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(playerTransform.position, approachDistance);
+
     }
 
     public override void ActOnEntryState(StateMachineController controller)
