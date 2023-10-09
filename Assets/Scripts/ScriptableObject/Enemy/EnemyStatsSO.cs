@@ -22,19 +22,6 @@ public class EnemyStatsSO : ScriptableObject
     [Header("Attacchi nemico")]
     public List<EnemyAttackSO> listaDiAttacchiNemico;
 
-    [Space(20)]
-    [Header("Eventi base nemico")]
-    public UnityEvent OnAttack;
-    public UnityEvent OnPlayerDamaged;
-    public UnityEvent OnEnemyDamaged;
-
-
-    public virtual void ApplicaDannoAlGiocatore()
-    {
-        OnPlayerDamaged?.Invoke();
-    }
-
-
 
 
 }

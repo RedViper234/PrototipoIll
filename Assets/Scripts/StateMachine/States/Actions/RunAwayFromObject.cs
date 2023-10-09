@@ -8,6 +8,7 @@ using UnityEngine;
 public class RunAwayFromObject : Action
 {
     public float fleeDistance = 5f;
+    public float distanzaDaPercorrereFuoriArea = 2;
     private Transform playerTransform;
     public override void Act(StateMachineController controller)
     {
@@ -21,7 +22,7 @@ public class RunAwayFromObject : Action
 
         if (currentDistance < fleeDistance)
         {
-            Vector3 fleePosition = controller.transform.position + directionFromPlayer.normalized * fleeDistance;
+            Vector3 fleePosition = controller.transform.position + directionFromPlayer.normalized * distanzaDaPercorrereFuoriArea;
             controller.currentEnemy.currentAgent.SetDestination(fleePosition);
         }
     }
