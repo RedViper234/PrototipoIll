@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8181444255571995865}
   - component: {fileID: 9146762240366839577}
   - component: {fileID: 4598032167786746084}
+  - component: {fileID: 1378699142}
   m_Layer: 7
   m_Name: Nemico_Zombi
   m_TagString: Untagged
@@ -90,7 +91,6 @@ MonoBehaviour:
   currentHealth: 1
   damageResistance: 0
   damageImmunity: 0
-  immunityFrameDuration: 0
 --- !u!61 &4387930199647561571
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -172,6 +172,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &1378699142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4387930199647561568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cc9b221d33e9cd4fb9972966e8c7534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disactivated: 0
+  damage: 0
+  Illdamage: 3
+  CorruptionDamage: 0
+  destroyOnTouch: 0
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &4387930199898275413
 GameObject:
   m_ObjectHideFlags: 0

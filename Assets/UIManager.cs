@@ -18,22 +18,23 @@ public class UIManager : MonoBehaviour, ISubscriber
     [Header("Malattia")]
     public MeshMaskUI IllBar;
     public TextMeshProUGUI percTextIll;
-    [Header("HealthBar")]
-    public MeshMaskUI HealthBar;
-    public TextMeshProUGUI currentHealthText;
-    public TextMeshProUGUI maxHealthText;
+    public TextMeshProUGUI multiplierText;
+    //[Header("HealthBar")]
+    //public MeshMaskUI HealthBar;
+    //public TextMeshProUGUI currentHealthText;
+    //public TextMeshProUGUI maxHealthText;
 
     // Start is called before the first frame update
     void Awake()
     {
         Publisher.Subscribe(this, new UpdateUiBar());
-        Publisher.Subscribe(this, new UpdateHealthBar());
+        //Publisher.Subscribe(this, new UpdateHealthBar());
     }
 
     private void OnDisable()
     {
         Publisher.Unsubscribe(this, new UpdateUiBar());
-        Publisher.Unsubscribe(this, new UpdateHealthBar());
+        //Publisher.Unsubscribe(this, new UpdateHealthBar());
     }
 
     // Update is called once per frame
@@ -48,41 +49,41 @@ public class UIManager : MonoBehaviour, ISubscriber
         {
             updateUiBar(message);
         }
-        else if (message is UpdateHealthBar)
-        {
-            updateHealthBar(message);
-        }
+        //else if (message is UpdateHealthBar)
+        //{
+        //    updateHealthBar(message);
+        //}
     }
 
-    private void updateHealthBar(IMessage message)
-    {
-        UpdateHealthBar mess = (UpdateHealthBar)message;
-        if (HealthBar != null)
-        {
-            HealthBar.setPercentage(mess.percentageBar);
-        }
-        else
-        {
-            Debug.LogError("UI non collegata");
-        }
-        if (maxHealthText != null)
-        {
-            maxHealthText.text = mess.maxHealth;
-        }
-        else
-        {
-            Debug.LogError("UI non collegata");
-        }
-        if (currentHealthText != null)
-        {
-            currentHealthText.text = mess.currentHealth;
-        }
-        else
-        {
-            Debug.LogError("UI non collegata");
-        }
+    //private void updateHealthBar(IMessage message)
+    //{
+    //    UpdateHealthBar mess = (UpdateHealthBar)message;
+    //    if (HealthBar != null)
+    //    {
+    //        HealthBar.setPercentage(mess.percentageBar);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("UI non collegata");
+    //    }
+    //    if (maxHealthText != null)
+    //    {
+    //        maxHealthText.text = mess.maxHealth;
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("UI non collegata");
+    //    }
+    //    if (currentHealthText != null)
+    //    {
+    //        currentHealthText.text = mess.currentHealth;
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("UI non collegata");
+    //    }
 
-    }
+    //}
 
     private void updateUiBar(IMessage message)
     {
@@ -160,6 +161,13 @@ public class UIManager : MonoBehaviour, ISubscriber
                 else
                 {
                     Debug.LogError("UI non collegata");
+                }
+                break;
+
+            case UpdateUiBar.barType.MalattiaMultiplier:
+                if (multiplierText != null)
+                {
+                    multiplierText.text = "x " + mess.textBar;
                 }
                 break;
             default:

@@ -10,8 +10,6 @@ public class Damageable : MonoBehaviour
     public float currentHealth = 100;
     public float damageResistance = 0;
     public bool damageImmunity = false;
-    public float immunityFrameDuration = 0f;
-    private float immunityTimer = 0;
     private List<coroutineDiCura> healOverTimeCoroutine = new();
     private List<coroutineDiDanno> damageOverTimeCoroutine = new();
 
@@ -35,32 +33,31 @@ public class Damageable : MonoBehaviour
         // Attendi un frame
         yield return null;
 
-        SetMaxHealthBar(0, true);
-        
+        SetMaxHealthBar(0, true);        
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandleImmunity();
+        //HandleImmunity();
     }
 
-    private void HandleImmunity()
-    {
-        if (immunityTimer > 0f)
-        {
-            // Handle immunity logic, e.g., making the player flash
-            immunityTimer -= Time.deltaTime;
-        }
-    }
+    //private void HandleImmunity()
+    //{
+    //    if (immunityTimer > 0f)
+    //    {
+    //        // Handle immunity logic, e.g., making the player flash
+    //        immunityTimer -= Time.deltaTime;
+    //    }
+    //}
 
     public bool TakeDamage(float damage)
     {
-        if (immunityTimer <= 0f && !damageImmunity)
+        if (/*immunityTimer <= 0f && */!damageImmunity)
         {
             float effectiveDamage = damage * (1f - damageResistance);
             currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
-            immunityTimer = immunityFrameDuration;
+            //immunityTimer = immunityFrameDuration;
 
             if (currentHealth <= 0 && !GetComponent<PlayerController>())
             {

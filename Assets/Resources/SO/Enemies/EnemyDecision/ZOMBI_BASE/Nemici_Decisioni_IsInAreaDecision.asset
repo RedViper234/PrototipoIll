@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gizmosActive: 1
   gizmosColor: {r: 0.09401086, g: 0.9811321, b: 0, a: 1}
-  areaRadious: 10
+  areaRadious: 15
   searchMask:
     serializedVersion: 2
     m_Bits: 64

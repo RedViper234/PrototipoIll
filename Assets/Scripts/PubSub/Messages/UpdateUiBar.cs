@@ -13,6 +13,7 @@ public struct UpdateUiBar : IMessage
         GuarigioneProgressBar,
         MalattiaBar,
         CorruzioneBar,
+        MalattiaMultiplier,
     }
 
     public UpdateUiBar(string textBar, float percentageBar, barType typeBar)

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vitaMassima: 100
   currentHealth: 0
-  enemySpeed: 4
+  enemySpeed: 2
   enemyAcceleration: 10
   resistenzaKnockback: 0
   resistenzaAlDannoSottrattiva: 0

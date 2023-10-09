@@ -25,9 +25,14 @@ public class PlayerController : MonoBehaviour
     public float stunTime = 0.1f;
     [Range(0,1)]
     public float critChance = 0.05f;
+    [Range(0, 1)]
+    public float atkSlow = 0.5f;
     private float lastAttackTime = 0f;
-    private bool waintingForAttackPerformed = false;
+    private bool waitingForAttackPerformed = false;
     private float attackRange = 1f;
+    private Vector2 atkDirection;
+    private Coroutine atkRememberCor;
+
 
     [Header("Ranged Attack")]
     public UnityEngine.GameObject rangedProjectilePrefab;
@@ -152,13 +157,13 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-        Vector2 input = movementInput.normalized;
+        Vector2 input = (waitingForAttackPerformed ? atkDirection.normalized : movementInput.normalized);
         if (!isDashing)
         {
             if (input.magnitude > 0.1f)
             {
                 Vector2 velocity = rb.velocity;
-                velocity = Vector2.Lerp(velocity, input * baseSpeed * speedModifier, acceleration * Time.fixedDeltaTime);
+                velocity = Vector2.Lerp(velocity, input * baseSpeed * speedModifier * (waitingForAttackPerformed ? 1 - atkSlow : 1), acceleration * Time.fixedDeltaTime);
                 rb.velocity = velocity;
 
             }
@@ -173,20 +178,35 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMeleeAttack()
     {
-        if (meleeMode && meleeAttacking && Time.timeSinceLevelLoad - lastAttackTime >= meleeRecoveryTime && !waintingForAttackPerformed)
+        if (meleeMode && meleeAttacking && Time.timeSinceLevelLoad - lastAttackTime >= meleeRecoveryTime && !waitingForAttackPerformed)
         {
-            // Perform melee attack logic
-            waintingForAttackPerformed = true;
-            Invoke("attackMelee", meleeHitDelay);
+            if (!isDashing)
+            {
+                // Perform melee attack logic
+                waitingForAttackPerformed = true;
+                atkDirection = direction;
+                Invoke("attackMelee", meleeHitDelay);
+            }
+            else
+            {
+                atkRememberCor = StartCoroutine(rememberAtk());
+            }
         }
+    }
+
+    IEnumerator rememberAtk()
+    {
+        yield return new WaitUntil(()=> !isDashing);
+        HandleMeleeAttack();
+        atkRememberCor = null;
     }
 
     private void attackMelee()
     {
         lastAttackTime = Time.timeSinceLevelLoad;
-        UnityEngine.GameObject attack = Instantiate(meleeAttackPrefab, new Vector3(GetComponent<Transform>().position.x + attackRange * direction.x, GetComponent<Transform>().position.y + attackRange * direction.y, 1), Quaternion.identity);
+        UnityEngine.GameObject attack = Instantiate(meleeAttackPrefab, new Vector3(GetComponent<Transform>().position.x + attackRange * atkDirection.x, GetComponent<Transform>().position.y + attackRange * atkDirection.y, 1), Quaternion.identity);
         // Calcola l'angolo di rotazione in base a direction
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(atkDirection.y, atkDirection.x) * Mathf.Rad2Deg;
 
         // Crea una rotazione basata sull'angolo calcolato
         Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
@@ -194,9 +214,16 @@ public class PlayerController : MonoBehaviour
         // Applica la rotazione a attack
         attack.transform.rotation = targetRotation;
         meleeAttacking = false;
-        waintingForAttackPerformed = false;
-        Destroy(attack, meleeHitTime);
+        StartCoroutine(destroyattack(attack));
     }
+
+    public IEnumerator destroyattack(GameObject attack)
+    {
+        yield return new WaitForSeconds(meleeHitTime);
+        waitingForAttackPerformed = false;
+        Destroy(attack);
+    }
+
     private void HandleRangedAttack()
     {
         if (!meleeMode && rangedAttacking && Time.timeSinceLevelLoad - lastShotTime >= rangedAttackCooldown)
@@ -222,7 +249,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleDash()
     {
-        if (isDashing)
+        if (isDashing && !waitingForAttackPerformed)
         {
             Vector2 velocity = rb.velocity;
             velocity = Vector2.Lerp(velocity, direction * dashForce, dashTime * Time.fixedDeltaTime);
@@ -233,7 +260,7 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         movementInput = context.ReadValue<Vector2>();
-        if (movementInput.magnitude > 0 && !isDashing)
+        if (movementInput.magnitude > 0 /*&& !isDashing*/)
         {
             direction = movementInput;
         }
@@ -241,7 +268,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        if (canDash && !isDashing && ((lastDash + dashRecoveryTime < Time.timeSinceLevelLoad) || consecutiveDash < maxConsecutiveDash))
+        if (canDash && !isDashing && !waitingForAttackPerformed && ((lastDash + dashRecoveryTime < Time.timeSinceLevelLoad) || consecutiveDash < maxConsecutiveDash))
         {
             if (lastDash + dashRecoveryTime < Time.timeSinceLevelLoad)
             {
@@ -259,6 +286,14 @@ public class PlayerController : MonoBehaviour
             }
             dashRememberCor = StartCoroutine(rememberDash());
         }
+        else if (canDash && waitingForAttackPerformed)
+        {
+            if (dashRememberCor != null)
+            {
+                StopCoroutine(dashRememberCor);
+            }
+            dashRememberCor = StartCoroutine(rememberDash());
+        }
     }
 
     IEnumerator rememberDash()
@@ -266,7 +301,7 @@ public class PlayerController : MonoBehaviour
         float currentTime = 0;
         while (currentTime < dashRememberTime)
         {
-            if (canDash && !isDashing && ((lastDash + dashRecoveryTime < Time.timeSinceLevelLoad) || consecutiveDash < maxConsecutiveDash))
+            if (canDash && !isDashing && !waitingForAttackPerformed && ((lastDash + dashRecoveryTime < Time.timeSinceLevelLoad) || consecutiveDash < maxConsecutiveDash))
             {
                 InputAction.CallbackContext cont = new();
                 OnDash(cont);
@@ -298,7 +333,7 @@ public class PlayerController : MonoBehaviour
         meleeMode = !meleeMode;
         meleeAttacking = false;
         rangedAttacking = false;
-        waintingForAttackPerformed = false;
+        waitingForAttackPerformed = false;
     }
 
 
@@ -336,7 +371,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnMeleeAttack(InputAction.CallbackContext context)
     {
-        if (!waintingForAttackPerformed)
+        if (!waitingForAttackPerformed)
         {
             meleeAttacking = true;
         }
@@ -394,13 +429,17 @@ public class PlayerController : MonoBehaviour
         }
 
         Constitution.pc = this;
-        foreach (var item in Constitution.healthProgression)
+        foreach (var item in Constitution.illResistanceProgression)
         {
-            item.level = Constitution.healthProgression.IndexOf(item) + 1;
+            item.level = Constitution.illResistanceProgression.IndexOf(item) + 1;
         }
         foreach (var item in Constitution.illGainRateProgression)
         {
             item.level = Constitution.illGainRateProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Constitution.corruptionResistanceProgression)
+        {
+            item.level = Constitution.corruptionResistanceProgression.IndexOf(item) + 1;
         }
 
         Resolve.pc = this;
@@ -489,22 +528,26 @@ public class statAim : stat
 [System.Serializable]
 public class statConstitution : stat
 {
-    public List<StatValueDictionaryEntry> healthProgression;
+    //public List<StatValueDictionaryEntry> healthProgression;
     public List<StatValueDictionaryEntry> illGainRateProgression;
+    public List<StatValueDictionaryEntry> illResistanceProgression;
+    public List<StatValueDictionaryEntry> corruptionResistanceProgression;
     [HideInInspector]
     public PlayerController pc;
 
 
     public void setStat()
     {
-        if (pc.GetComponent<Damageable>())
-            pc.GetComponent<Damageable>().SetMaxHealthBar(pc.Constitution.healthProgression.Find(f => f.level == pc.Constitution.livello).value, true);
-        else
-            Debug.LogError("Non c'è il damageable");
+        //if (pc.GetComponent<Damageable>())
+        //    pc.GetComponent<Damageable>().SetMaxHealthBar(pc.Constitution.healthProgression.Find(f => f.level == pc.Constitution.livello).value, true);
+        //else
+        //    Debug.LogError("Non c'è il damageable");
 
         if (pc.GetComponent<MalattiaHandler>())
         {
             pc.GetComponent<MalattiaHandler>().malattiaGainPerSecond = pc.Constitution.illGainRateProgression.Find(f => f.level == pc.Constitution.livello).value;
+            pc.GetComponent<MalattiaHandler>().malattiaResistance = pc.Constitution.illResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
+            pc.GetComponent<MalattiaHandler>().corruptionResistance = pc.Constitution.corruptionResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
         }
         else
             Debug.LogError("Non c'è il malattiaHandler");
