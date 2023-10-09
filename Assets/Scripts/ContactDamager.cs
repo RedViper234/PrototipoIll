@@ -15,16 +15,19 @@ public class ContactDamager : MonoBehaviour
     {
         if ((targetLayer.value & (1 << collision.gameObject.layer)) != 0 && !disactivated)
         {
-            if ((damage > 0 || Illdamage > 0 || CorruptionDamage > 0) && collision.GetComponent<Damageable>())
+            if (damage > 0 || Illdamage > 0 || CorruptionDamage > 0)
             {
-                bool damaged = collision.GetComponent<Damageable>().TakeDamage(damage);
-                if (Illdamage > 0 && damaged && collision.GetComponent<MalattiaHandler>())
+                if (damage > 0 && collision.GetComponent<Damageable>())
                 {
-                    collision.GetComponent<MalattiaHandler>().gainMalattia(Illdamage);
+                    collision.GetComponent<Damageable>().TakeDamage(damage);
                 }
-                if (CorruptionDamage > 0 && damaged && collision.GetComponent<MalattiaHandler>())
+                if (Illdamage > 0 && collision.GetComponent<MalattiaHandler>())
                 {
-                    collision.GetComponent<MalattiaHandler>().modifyCorruption(CorruptionDamage);
+                    collision.GetComponent<MalattiaHandler>().gainMalattia(Illdamage, false);
+                }
+                if (CorruptionDamage > 0 && collision.GetComponent<MalattiaHandler>())
+                {
+                    collision.GetComponent<MalattiaHandler>().gainCorruption(CorruptionDamage, false);
                 }
             }
             if (destroyOnTouch)
@@ -38,22 +41,25 @@ public class ContactDamager : MonoBehaviour
     {
         if ((targetLayer.value & (1 << collision.gameObject.layer)) != 0 && !disactivated)
         {
-            if ((damage > 0 || Illdamage > 0 || CorruptionDamage > 0) && collision.gameObject.GetComponent<Damageable>())
+            if (damage > 0 || Illdamage > 0 || CorruptionDamage > 0)
             {
-                bool damaged = collision.gameObject.GetComponent<Damageable>().TakeDamage(damage);
-                if (Illdamage > 0 && damaged && collision.gameObject.GetComponent<MalattiaHandler>())
+                if (damage > 0 && collision.gameObject.GetComponent<Damageable>())
                 {
-                    collision.gameObject.GetComponent<MalattiaHandler>().gainMalattia(Illdamage);
+                    collision.gameObject.GetComponent<Damageable>().TakeDamage(damage);
                 }
-                if (CorruptionDamage > 0 && damaged && collision.gameObject.GetComponent<MalattiaHandler>())
+                if (Illdamage > 0 && collision.gameObject.GetComponent<MalattiaHandler>())
                 {
-                    collision.gameObject.GetComponent<MalattiaHandler>().modifyCorruption(CorruptionDamage);
+                    collision.gameObject.GetComponent<MalattiaHandler>().gainMalattia(Illdamage, false);
                 }
-            }
-            if (destroyOnTouch)
-            {
-                Destroy(gameObject);
+                if (CorruptionDamage > 0 && collision.gameObject.GetComponent<MalattiaHandler>())
+                {
+                    collision.gameObject.GetComponent<MalattiaHandler>().gainCorruption(CorruptionDamage, false);
+                }
             }
         }
+        if (destroyOnTouch)
+        {
+            Destroy(gameObject);
+        }        
     }
 }

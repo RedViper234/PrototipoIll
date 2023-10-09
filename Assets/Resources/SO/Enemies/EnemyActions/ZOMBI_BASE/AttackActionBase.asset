@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a071b15390f3504597250dd7c5804d7, type: 3}
   m_Name: AttackActionBase
   m_EditorClassIdentifier: 
-  attackRadius: 1.5
+  gizmosActive: 1
+  attackRadius: 0
   attackMask:
     serializedVersion: 2
     m_Bits: 64
