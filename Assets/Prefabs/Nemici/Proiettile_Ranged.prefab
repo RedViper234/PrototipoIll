@@ -143,4 +143,4 @@ MonoBehaviour:
   destroyOnTouch: 1
   targetLayer:
     serializedVersion: 2
-    m_Bits: 631
+    m_Bits: 630
