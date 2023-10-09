@@ -1,0 +1,1179 @@
+fileFormatVersion: 2
+guid: d82aec5dd233d204eb150793e176c485
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 8
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: atlasZombie_1_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 85
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e5703db7633b3b4e8eafa7dac4f0f85
+      internalID: -591307083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_1
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 86
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e16bdc1e1b05ff4b86d4656a0213645
+      internalID: 721124606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_2
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 86
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63c9a20afcc2c2b4eb936b9a28b211bf
+      internalID: 1180824997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_3
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 86
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55a9429299d64cb4a9bfa3308815f1e4
+      internalID: 1368688642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_4
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 86
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 383cb9a861bbb4b4d88348f74a331f35
+      internalID: 1701803540
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_5
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 85
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ce7c4dd402d49c4c9708161e95e52be
+      internalID: 2126363787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_6
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 85
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 990bb83d086c90748845e12ca1bbb9a5
+      internalID: 1421097711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_7
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 85
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7debd80e7a181984cab35d1b86ea8756
+      internalID: 1417323352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_8
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 69
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e457292407cc6c4fbc4a7c8c5b23c2c
+      internalID: -1864666151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_9
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 69
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c355640f1a8af5498f2634358be6f2c
+      internalID: -1992478910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_10
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 69
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e979170ddf1c86d40acbd2730fb6aa83
+      internalID: -1333983389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_11
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 69
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea7af7a729161bb4f8fa3542f77e9a7d
+      internalID: -2039118528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_12
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 69
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86e320422389e7c468046d5df08678a2
+      internalID: 897863467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_13
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 70
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 368ec8b73b9d0d44298bb463e385bedc
+      internalID: 248544128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_14
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 69
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50c721270f1b00e4a92c4212f2a6ae7d
+      internalID: -264957804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_15
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 69
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64b36cb367702c24f9e460dc4a08ba9c
+      internalID: 1051595903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_16
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 53
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 863a71f24d80b984cab609000cebdad6
+      internalID: 1702980480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_17
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 53
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b496e2f8d6c9164ca6f40bb67cb01ac
+      internalID: 629634454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_18
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 53
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7495672bc535ed542ba952966906e085
+      internalID: 1905912451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_19
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 53
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33ec63318467c284ba74d3153d027d3f
+      internalID: 1555540299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_20
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 53
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e3f7b09506e81843b5868aa1834cf1d
+      internalID: 1505516176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_21
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 54
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7fbb5502d5accc43a3497ca3c500980
+      internalID: -775497631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_22
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 53
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b0b4ca65ff01f441a65f323a2a3535a
+      internalID: -2000512128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_23
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 53
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e032c36aa5696a47951a3d1429558b7
+      internalID: 1831388131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_24
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 37
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84548cbba212a9b4cb56d98c4b015bae
+      internalID: 397406554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_25
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 38
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9046847fd2a766419a82610322a338f
+      internalID: -1270518710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_26
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 38
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02ae30a5c9a2dd144920b271f1304b04
+      internalID: -1955682137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_27
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 38
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c1542fa36e3d024caf8ebde4052088c
+      internalID: -770443937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_28
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 38
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 358778604a1f88347af0c0191d1bf240
+      internalID: 52111937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_29
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 37
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa1f8ddb7abc22b459f52cc42ba0bce3
+      internalID: -304801290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_30
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 37
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2de0d2b28edecd4487f4b7fd6321a67
+      internalID: 2040968663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_31
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 37
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba48fe4efc7325447bd6b3fce45facd0
+      internalID: 858212389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_32
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 17
+        width: 5
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b7ab62eb5873384694dd5aad90d98b5
+      internalID: 1572236128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_33
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 18
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 17c3609420c82e04bb9e939c026b764c
+      internalID: 1483062088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_34
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 19
+        width: 5
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 945ee16f4dee14747b4a9644d59c6a13
+      internalID: -921309489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_35
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 18
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 269994b1fcc43c141b4c6198bdba763b
+      internalID: 366436187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_36
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 17
+        width: 5
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8111b9368d6e28e479e2035b89c214ff
+      internalID: 1083465875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_37
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 18
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b7536a22ae085b499d88f6b2f6de8eb
+      internalID: -394620038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_38
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 19
+        width: 5
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4285777f3c4189548a76f3e7664a0ade
+      internalID: -704536127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_39
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 18
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e1f71d845a96e9449b78760575a6eb1
+      internalID: -1270480464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_40
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 1
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1ced58fb8294a6439cf80a4d9ef4fb5
+      internalID: 1846949110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_41
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 2
+        width: 5
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7c06c7b081c7fb46a3447e1f74850dc
+      internalID: 844768535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_42
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 0
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 799e986df607f3f4eb77fde27d3c9217
+      internalID: -1935975531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_43
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 0
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30bf24d3bfd199d48a429afe8ff2588c
+      internalID: -223897140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_44
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 1
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c9c9661200375e47ae45c9ca5d6b869
+      internalID: 280151694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_45
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 2
+        width: 5
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4f7771f011a38a4294ca7504f5b14bc
+      internalID: 2100066745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_46
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 0
+        width: 5
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4eec23619990a3542bf5d50ef2cb0f58
+      internalID: -1448538768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: atlasZombie_1_47
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 0
+        width: 5
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06e2984ae51a1cb45b97a9973af34bf3
+      internalID: -2023586092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      atlasZombie_1_37: -394620038
+      atlasZombie_1_26: -1955682137
+      atlasZombie_1_29: -304801290
+      atlasZombie_1_31: 858212389
+      atlasZombie_1_35: 366436187
+      atlasZombie_1_33: 1483062088
+      atlasZombie_1_14: -264957804
+      atlasZombie_1_15: 1051595903
+      atlasZombie_1_0: -591307083
+      atlasZombie_1_27: -770443937
+      atlasZombie_1_9: -1992478910
+      atlasZombie_1_18: 1905912451
+      atlasZombie_1_8: -1864666151
+      atlasZombie_1_10: -1333983389
+      atlasZombie_1_28: 52111937
+      atlasZombie_1_17: 629634454
+      atlasZombie_1_34: -921309489
+      atlasZombie_1_42: -1935975531
+      atlasZombie_1_2: 1180824997
+      atlasZombie_1_11: -2039118528
+      atlasZombie_1_32: 1572236128
+      atlasZombie_1_36: 1083465875
+      atlasZombie_1_45: 2100066745
+      atlasZombie_1_6: 1421097711
+      atlasZombie_1_43: -223897140
+      atlasZombie_1_7: 1417323352
+      atlasZombie_1_13: 248544128
+      atlasZombie_1_1: 721124606
+      atlasZombie_1_3: 1368688642
+      atlasZombie_1_20: 1505516176
+      atlasZombie_1_21: -775497631
+      atlasZombie_1_38: -704536127
+      atlasZombie_1_46: -1448538768
+      atlasZombie_1_25: -1270518710
+      atlasZombie_1_40: 1846949110
+      atlasZombie_1_16: 1702980480
+      atlasZombie_1_22: -2000512128
+      atlasZombie_1_30: 2040968663
+      atlasZombie_1_12: 897863467
+      atlasZombie_1_5: 2126363787
+      atlasZombie_1_41: 844768535
+      atlasZombie_1_39: -1270480464
+      atlasZombie_1_23: 1831388131
+      atlasZombie_1_19: 1555540299
+      atlasZombie_1_44: 280151694
+      atlasZombie_1_47: -2023586092
+      atlasZombie_1_4: 1701803540
+      atlasZombie_1_24: 397406554
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

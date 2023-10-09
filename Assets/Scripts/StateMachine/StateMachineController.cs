@@ -8,46 +8,33 @@ public class StateMachineController : MonoBehaviour
     public bool aiAttiva = true;
     public State currentState;
     public State remainInState;
-    public Transform target;
-    
-    [HideInInspector]public NavMeshAgent currentAgent;
-    [HideInInspector] public EnemyController currentEnemy;
-    [HideInInspector] public EnemyStatsSO enemyStats;
-    
+
+
+    [HideInInspector]public EnemyController currentEnemy;
+
     private void Awake()
     {
-        currentAgent = GetComponent<NavMeshAgent>();
         currentEnemy = GetComponent<EnemyController>();
-        enemyStats = currentEnemy.EnemyStats;
     }
     private void Start()
     {
-        currentState.OnEntryActions(this);
-    }
-    public void SetUpAI()
-    {
-        currentAgent.enabled = aiAttiva;
+        currentState?.OnEntryActions(this);
     }
     public void Update()
     {
         if (aiAttiva)
         {
-            currentAgent.isStopped = !aiAttiva;
-            currentState.UpdateState(this);
-        }
-        else
-        {
-            currentAgent.isStopped = !aiAttiva;
+            currentState?.UpdateState(this);
         }
     }
-    private void OnDrawGizmos() => currentState.DrawMyGizmos(this);
+    private void OnDrawGizmos() => currentState?.DrawMyGizmos(this);
     public void TransitionToState(State nextState)
     {
         if(nextState != remainInState)
         {
-            currentState.OnExitActions(this);
+            currentState?.OnExitActions(this);
             currentState = nextState;
-            currentState.OnEntryActions(this);
+            currentState?.OnEntryActions(this);
         }
     }
 

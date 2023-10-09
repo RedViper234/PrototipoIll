@@ -9,12 +9,12 @@ public class ChaseAction : Action
     {
         if(controller != null)
         {
-            controller.currentAgent.updateRotation = false;
-            controller.currentAgent.updateUpAxis= false;
-            controller.currentAgent.isStopped = false;
-            controller.currentAgent.speed = controller.enemyStats.enemySpeed;
-            controller.currentAgent.acceleration= controller.enemyStats.enemyAcceleration;
-            controller.currentAgent.SetDestination(controller.target.position);
+            controller.currentEnemy.currentAgent.updateRotation = false;
+            controller.currentEnemy.currentAgent.updateUpAxis= false;
+            controller.currentEnemy.currentAgent.isStopped = false;
+            controller.currentEnemy.currentAgent.speed = controller.currentEnemy.enemyStats.enemySpeed;
+            controller.currentEnemy.currentAgent.acceleration= controller.currentEnemy.enemyStats.enemyAcceleration;
+            controller.currentEnemy.currentAgent.SetDestination(controller.currentEnemy.target.position);
 
         }
     }
@@ -31,8 +31,9 @@ public class ChaseAction : Action
 
     public override void ActOnExitState(StateMachineController controller)
     {
-        controller.currentAgent.isStopped = true;
+        controller.currentEnemy.currentAgent.isStopped = true;
         Debug.Log("CHIAMA EXIT STATE");
-        controller.currentAgent.SetDestination( controller.gameObject.transform.position);
+        controller.currentEnemy.currentAgent.SetDestination( controller.gameObject.transform.position);
+        controller.currentEnemy.currentAgent.SetDestination( controller.gameObject.transform.position);
     }
 }

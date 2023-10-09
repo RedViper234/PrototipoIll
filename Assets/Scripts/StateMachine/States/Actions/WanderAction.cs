@@ -8,18 +8,23 @@ using NavMeshPlus.Extensions;
 [CreateAssetMenu(fileName = "Nemici/Actions/WanderAction", menuName = "Nemici/Actions/WanderAction")]
 public class WanderAction : Action
 {
-    private float circleRadius = 5f; // Raggio del cerchio
-    private float minDestinationChangeTime = 2f;
-    private float maxDestinationChangeTime = 5f;
+    private float circleRadius = 5f;
+    private float lastCallTime = 0f;
+    public float intervalMin = 1f; 
+    public float intervalMax = 3f;
 
     private Vector2 randomDestination;
-    private float timeToChangeDestination;
     public override void Act(StateMachineController controller)
     {
-        if (controller.currentAgent.remainingDistance < 0.5f && !controller.currentAgent.pathPending)
+        float currentTime = Time.time;
+        if (currentTime - lastCallTime >= intervalMin && !controller.currentEnemy.currentAgent.pathPending && controller.currentEnemy.currentAgent.remainingDistance <= 0.1f)
         {
-            SetRandomDestination(controller);
-
+            float randomInterval = Random.Range(intervalMin, intervalMax);
+            if (currentTime - lastCallTime >= randomInterval)
+            {
+                SetRandomDestination(controller);
+                lastCallTime = currentTime;
+            }
         }
     }
 
@@ -31,10 +36,9 @@ public class WanderAction : Action
 
     public override void ActOnEntryState(StateMachineController controller)
     {
-        controller.currentAgent.updateRotation= false;
-        controller.currentAgent.updateUpAxis = false;
-        Debug.Log(controller.currentAgent.updateRotation);
-        timeToChangeDestination = Random.Range(minDestinationChangeTime, maxDestinationChangeTime);
+        lastCallTime = Time.time;
+        controller.currentEnemy.currentAgent.updateRotation= false;
+        controller.currentEnemy.currentAgent.updateUpAxis = false;
         SetRandomDestination(controller);
     }
 
@@ -45,34 +49,25 @@ public class WanderAction : Action
     void SetRandomDestination(StateMachineController controller)
     {
         float distanzaTraUnPunto = 0;
-        while(true)
+        while (true)
         {
             float randomAngle = Random.Range(0f, 360f);
             float x = (circleRadius * 2) * Mathf.Cos(randomAngle * Mathf.Deg2Rad);
             float y = (circleRadius * 2) * Mathf.Sin(randomAngle * Mathf.Deg2Rad);
             randomDestination = new Vector2(controller.transform.position.x + -x, controller.transform.position.y + -y);
             distanzaTraUnPunto = Vector2.Distance(randomDestination, controller.transform.position);
-            if(distanzaTraUnPunto > 5f)
+            if (distanzaTraUnPunto > 5f)
             {
                 break;
             }
         }
-        controller.currentAgent.SetDestination(randomDestination);
-        Vector3 nextDestination = controller.currentAgent.nextPosition;
+
+        controller.currentEnemy.currentAgent.SetDestination(randomDestination);
         NavMeshHit hit;
-        NavMesh.SamplePosition(nextDestination,out hit, 0.1f, NavMesh.AllAreas);
-        
-        if (hit.hit)
+        bool isDestinationValid = NavMesh.SamplePosition(randomDestination, out hit, 1f, controller.currentEnemy.currentAgent.areaMask);
+        if (!isDestinationValid)
         {
-            Debug.Log(hit.hit);
-            Debug.Log("Il prossimo punto è su una navmesh valida.");
-        }
-        else
-        {
-            Debug.Log(hit.hit);
-            Debug.Log("Il prossimo punto non è su una navmesh valida.");
             SetRandomDestination(controller);
         }
-        
     }
 }

@@ -45,13 +45,22 @@ public class State : ScriptableObject
     {
         for (int i = 0; i < transitions.Count; i++)
         {
-            var decision = transitions[i].decision;
-            decision.DrawMyGizmos(controller);
+            if (transitions[i] != null )
+            {
+                var decision = transitions[i].decision;
+                if(decision.gizmosActive == false) { continue; }
+                decision.DrawMyGizmos(controller);
+
+            }
             
         }
         for (int i = 0; i < actions.Count; i++)
         {
-            actions[i].ActionDrawGizmos(controller);
+            if (actions[i] != null)
+            {
+                if (actions[i].gizmosActive == false) { continue; }
+                actions[i].ActionDrawGizmos(controller);
+            }
         }
     }
    

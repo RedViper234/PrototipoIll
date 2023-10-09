@@ -27,7 +27,6 @@ using UnityEngine;
             
             if (!_allSubscribers.ContainsKey(messageType.GetType()))
             {
-                Debug.Log("Messagio di tipo: "+messageType);
                 return;
             }
             else

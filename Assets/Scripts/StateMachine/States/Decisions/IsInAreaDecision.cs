@@ -20,7 +20,7 @@ public class IsInAreaDecision : Decision
             {
                 if(hit.collider.gameObject.GetComponent<PlayerController>() != null) 
                 {
-                    controller.target = hit.collider.transform;
+                    controller.currentEnemy.target = hit.collider.transform;
                     return true;
                 }
 

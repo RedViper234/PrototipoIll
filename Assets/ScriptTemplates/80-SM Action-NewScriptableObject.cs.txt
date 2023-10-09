@@ -13,7 +13,13 @@ public class #SCRIPTNAME# : Action
     {
         return;
     }
-        public override void ActOnEntryState(StateMachineController controller)
+
+    public override void ActionDrawGizmos(StateMachineController controller)
+    {
+        return;
+    }
+
+    public override void ActOnEntryState(StateMachineController controller)
     {
         return;
     }

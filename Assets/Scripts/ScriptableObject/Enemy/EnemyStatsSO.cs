@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class EnemyStatsSO : ScriptableObject
 {
     [Header("Stat Base Nemico")]
-    public float vitaMassima;
+    public int vitaMassima;
     public float currentHealth;
     [Space] 
     public float enemySpeed;

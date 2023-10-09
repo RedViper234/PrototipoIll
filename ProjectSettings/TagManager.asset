@@ -14,8 +14,8 @@ TagManager:
   - Entities/Player
   - Entities/Mob
   - Entities/Obstacle
-  - 
-  - 
+  - Bullets/Player
+  - Bullets/Enemy
   - 
   - 
   - 
@@ -49,4 +49,7 @@ TagManager:
     locked: 0
   - name: Entities/Nemici/MobTest
     uniqueID: 1885312813
+    locked: 0
+  - name: UI
+    uniqueID: 4213260689
     locked: 0

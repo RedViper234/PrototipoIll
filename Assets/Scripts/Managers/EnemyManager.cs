@@ -3,33 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : Manager
 {
-    private static EnemyManager m_instance;
 
     public List<GameObject> m_activeEnemyList;
-    public static EnemyManager Instance
-    {
-        get
-        {
-            if(m_instance == null)
-            {
-                m_instance = FindAnyObjectByType<EnemyManager>();
-                if(m_instance == null) 
-                {
-                    m_instance = new UnityEngine.GameObject("EnemyManager").AddComponent<EnemyManager>();
-                }
-                
-            }
-            return m_instance;
-        }
 
-    }
     private void Awake()
     {
         GetAllEnemyInScene();
     }
-    private void OnDisable() => m_activeEnemyList.Clear();
+    private void OnDisable() => m_activeEnemyList = null;
     private void GetAllEnemyInScene()
     {
         EnemyController[] allEnemiesInScene = FindObjectsByType<EnemyController>(FindObjectsInactive.Include,FindObjectsSortMode.None);
@@ -40,4 +23,9 @@ public class EnemyManager : MonoBehaviour
 
     }
 
+    public void RemoveEnemyFromScene(EnemyController controller)
+    {
+        if(controller != null)
+            m_activeEnemyList.Remove(controller.gameObject);
+    }
 }
