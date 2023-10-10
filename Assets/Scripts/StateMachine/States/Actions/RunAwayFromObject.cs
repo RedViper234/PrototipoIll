@@ -26,7 +26,7 @@ public class RunAwayFromObject : Action
             Vector3 fleePosition = controller.transform.position + directionFromPlayer.normalized * distanzaDaPercorrereFuoriArea;
             controller.currentEnemy.currentAgent.SetDestination(fleePosition);
         }
-        else if (currentDistance > approachDistance)
+        else if (currentDistance >= approachDistance)
         {
             Vector3 approachPosition = playerTransform.position + directionFromPlayer.normalized * approachDistance;
             controller.currentEnemy.currentAgent.SetDestination(approachPosition);
