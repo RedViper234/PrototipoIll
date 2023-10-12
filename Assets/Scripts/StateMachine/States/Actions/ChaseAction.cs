@@ -51,7 +51,7 @@ public class ChaseAction : Action
             m_isChangingDirection = true;
             float randomForCheckDestination = Random.Range(0, 100);
             yield return new WaitForSeconds(m_frequenzaCambioTraiettoria);
-            if (randomForCheckDestination > m_percentualeSuccessoCambioTraiettoria) { yield return coroutine.MoveNext(); }
+            if (randomForCheckDestination > m_percentualeSuccessoCambioTraiettoria) { Debug.Log("Non Passato"); yield return coroutine.MoveNext(); }
             controller.currentEnemy.currentAgent.SetDestination(Vector2.one * 10);
             yield return new WaitForSeconds(m_attesaPrimaDiRiprendereIlPath);
             controller.currentEnemy.currentAgent.SetDestination(controller.currentEnemy.target.position);

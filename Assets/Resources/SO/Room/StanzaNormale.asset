@@ -12,6 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1162aa3d480702143a9f99cf9b91cadc, type: 3}
   m_Name: StanzaNormale
   m_EditorClassIdentifier: 
-  m_difficoltaStanza: 0
-  m_tipiDiStanza: 1
-  setDiMostriDellaStanza: {fileID: 0}
+  difficoltaStanza: 1
+  tipiDiStanza: 28
+  tipoStanzaCombattimento: 0
+  tipoStanzaBoss: 0
+  tipoStanzaEvento: 1
+  tipoStanzaStoria: 2
+  setDiMostriDellaStanza: {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
+  requisitiStanza:
+  - {fileID: 11400000, guid: 6b100777b61a69545ba83e6bf389e29c, type: 2}
+  prioritaStanza: 0
+  isFirstRoom: 0
+  raritaEValoreStanza:
+    tipoRaritaStanza: 0
+    percentualeRarita: 0

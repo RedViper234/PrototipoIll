@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -7,6 +8,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Rooms/MonsterSet", menuName = "Rooms/MonsterSet")]
 public class MonsterSet : ScriptableObject
 {
-
+    public List<GameObject> listaDiNemiciDaSpawnareInStanza;
 
 }

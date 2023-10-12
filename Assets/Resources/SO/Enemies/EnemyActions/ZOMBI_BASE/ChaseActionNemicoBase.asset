@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: ChaseActionNemicoBase
   m_EditorClassIdentifier: 
   gizmosActive: 1
-  m_frequenzaCambioTraiettoria: 8.24
+  m_frequenzaCambioTraiettoria: 1.62
+  m_attesaPrimaDiRiprendereIlPath: 0.3
   m_percentualeSuccessoCambioTraiettoria: 38
