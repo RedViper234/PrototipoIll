@@ -9,7 +9,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Rooms/RoomData", menuName = "Rooms/RoomData")]
 public class RoomData : ScriptableObject
 {
-    [SerializeField] public DifficoltaStanza difficoltaStanza; 
+    public GameObject prefabStanza;
+
     [SerializeField] public TipiDiStanza tipiDiStanza;
     [Space(20)]
     // PROPRIETA PER STANZA COMBATTIMENTO
@@ -31,18 +32,6 @@ public class RoomData : ScriptableObject
     [Range(-100,100)]public int prioritaStanza = 0;
     public bool isFirstRoom = false;
     public RaritaEValoreStanza raritaEValoreStanza;
-}
-public enum RaritaStanza
-{
-    Comune,
-    Rara,
-    Epica,
-    Leggendaria
-}
-[System.Serializable]
-public struct RaritaEValoreStanza
-{
-    public RaritaStanza tipoRaritaStanza;
-    [Range(0,100)]
-    public float percentualeRarita;
+    public List<StructPerListaFlags> flagsOnEnter;
+    public List<StructPerListaFlags> flagsOnComplete;
 }

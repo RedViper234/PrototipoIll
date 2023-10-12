@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1162aa3d480702143a9f99cf9b91cadc, type: 3}
   m_Name: StanzaNormale
   m_EditorClassIdentifier: 
-  difficoltaStanza: 1
+  prefabStanza: {fileID: 0}
   tipiDiStanza: 28
   tipoStanzaCombattimento: 0
   tipoStanzaBoss: 0
@@ -26,3 +26,5 @@ MonoBehaviour:
   raritaEValoreStanza:
     tipoRaritaStanza: 0
     percentualeRarita: 0
+  flagsOnEnter: []
+  flagsOnComplete: []
