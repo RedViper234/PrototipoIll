@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Nemici/Actions/MeleeAttacckAction", menuName = "Nemici/Actions/MeleeAttacckAction")]
@@ -6,6 +7,7 @@ public class MeleeAttacckAction : Action
 {
     [SerializeField] private float attackRadius;
     [SerializeField] private LayerMask attackMask;
+    [SerializeField] private List<DamageInstance> damageInstance;
     
     private Coroutine coroutine;
     public override void ActOnEntryState(StateMachineController controller)
@@ -31,8 +33,8 @@ public class MeleeAttacckAction : Action
             if(playerHit.collider != null)
             {
                 Debug.Log("Sto Attaccando");
-                Damageable damageable = playerHit.collider?.GetComponent<Damageable>();
-                damageable.TakeDamage(10);
+                PlayerController player = playerHit.collider?.GetComponent<PlayerController>();
+                player.PlayerTakeDamage(DamageInstance.removeZeroDamageInstance(damageInstance));
                 
             }
             controller.currentEnemy.isNotAttacking = true;

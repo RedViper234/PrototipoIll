@@ -8,10 +8,13 @@ public class Damageable : MonoBehaviour
 {
     public int maxHealth = 100;
     public float currentHealth = 100;
+    public float ustioniAccumulate = 0;
     public float damageResistance = 0;
+    public float ustioniResistance = 0;
     public bool damageImmunity = false;
     private List<coroutineDiCura> healOverTimeCoroutine = new();
     private List<coroutineDiDanno> damageOverTimeCoroutine = new();
+    private PlayerController player = null;
 
     private void Awake()
     {
@@ -19,6 +22,7 @@ public class Damageable : MonoBehaviour
         {
             maxHealth = 0;
             currentHealth = 0;
+            player = GetComponent<PlayerController>();
         }
     }
 
@@ -36,52 +40,45 @@ public class Damageable : MonoBehaviour
         SetMaxHealthBar(0, true);        
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(float damage, bool ignoreImmunity, bool inflictUstioni)
     {
-        //HandleImmunity();
-    }
-
-    //private void HandleImmunity()
-    //{
-    //    if (immunityTimer > 0f)
-    //    {
-    //        // Handle immunity logic, e.g., making the player flash
-    //        immunityTimer -= Time.deltaTime;
-    //    }
-    //}
-
-    public bool TakeDamage(float damage)
-    {
-        if (/*immunityTimer <= 0f && */!damageImmunity)
+        if (player != null)
         {
-            float effectiveDamage = damage * (1f - damageResistance);
-            currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
-            //immunityTimer = immunityFrameDuration;
-
-            if (currentHealth <= 0 && !GetComponent<PlayerController>())
+            if (!player.isActuallyImmune() || ignoreImmunity)
             {
-                Destroy(gameObject);
-            }
-            else if (currentHealth <= 0 && GetComponent<PlayerController>())
-            {
-                PlayerDeath();
-            }
-            // Update health bar/UI here
+                if (!inflictUstioni)
+                {
+                    float effectiveDamage = damage * (1f - ustioniResistance);
+                    currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
+                }
+                else
+                {
+                    float effectiveDamage = damage * (1f - damageResistance);
+                    ustioniAccumulate += Mathf.Min(currentHealth, effectiveDamage);
+                }
 
-            SetCurrentHealthBar();
-            
-            return true;
+                if (currentHealth <= 0 && !GetComponent<PlayerController>())
+                {
+                    Destroy(gameObject);
+                }
+                else if (currentHealth <= 0 && GetComponent<PlayerController>())
+                {
+                    player.PlayerDeath();
+                }
+                // Update health bar/UI here
+
+                SetCurrentHealthBar();
+            }
         }
         else
         {
-            return false;
+            if (!damageImmunity || ignoreImmunity)
+            {
+                float effectiveDamage = damage * (1f - damageResistance);
+                currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
+                Destroy(gameObject);
+            }
         }
-    }
-
-    private void PlayerDeath()
-    {
-        Debug.Log("sei morto");
     }
 
     public void SetCurrentHealthBar()
@@ -110,7 +107,7 @@ public class Damageable : MonoBehaviour
         SetCurrentHealthBar();
     }
 
-    public void StopTakeDamage(tipiDiDanno tipo)
+    public void StopTakeDamage(DamageType.DamageTypes tipo)
     {
         foreach (var cor in damageOverTimeCoroutine)
         {
@@ -122,39 +119,72 @@ public class Damageable : MonoBehaviour
         damageOverTimeCoroutine.RemoveAll(f => f.tipo == tipo);
     }
 
-    public void TakeDamageOverTime(float damagePerSecond, tipiDiDanno tipo)
+    public void TakeDamageOverTime(float damagePerSecond, DamageType.DamageTypes tipo, float duration, bool inflictUstioni)
     {
-
         // Se una coroutine di guarigione è già in esecuzione, la interrompiamo.
         //StopCoroutine(healOverTimeCoroutine);
         StopTakeDamage(tipo);
         coroutineDiDanno nuovoDanno = new();
-        nuovoDanno.damageOverTimeCoroutine = StartCoroutine(TakeDamageOverTimeCoroutine(damagePerSecond));
+        nuovoDanno.damageOverTimeCoroutine = StartCoroutine(TakeDamageOverTimeCoroutine(damagePerSecond, duration, tipo, inflictUstioni));
         nuovoDanno.damagePerSecond = damagePerSecond;
         nuovoDanno.tipo = tipo;
         damageOverTimeCoroutine.Add(nuovoDanno);
     }
 
-    private IEnumerator TakeDamageOverTimeCoroutine(float damagePerSecond)
+    private IEnumerator TakeDamageOverTimeCoroutine(float damagePerSecond, float duration, DamageType.DamageTypes tipo, bool inflictUstioni)
     {
         float damageAmount = 0.1f * damagePerSecond;
-
-        while (true)
+        if (duration > 0)
         {
-            if (currentHealth > 0)
+            while (duration > 0)
             {
-                currentHealth = Mathf.Max(currentHealth - damageAmount, 0);
-
-                // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
-                SetCurrentHealthBar();
+                if (currentHealth > 0)
+                {
+                    //currentHealth = Mathf.Max(currentHealth - damageAmount, 0);
+                    TakeDamage(damageAmount, true, inflictUstioni);
+                    // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
+                    //SetCurrentHealthBar();
+                }
+                yield return new WaitForSeconds(0.1f);
+                duration -= 0.1f;
             }
-            yield return new WaitForSeconds(0.1f);
+            StopTakeDamage(tipo);
         }
+        else
+        {
+            while (true)
+            {
+                if (currentHealth > 0)
+                {
+                    //currentHealth = Mathf.Max(currentHealth - damageAmount, 0);
+                    TakeDamage(damageAmount, true, inflictUstioni);
+                    // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
+                    //SetCurrentHealthBar();
+                }
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
     }
 
-    public void Healing(float heal)
+    public void Healing(float heal, bool ustioni)
     {
-        currentHealth = (currentHealth + (int)heal > maxHealth ? maxHealth : currentHealth + (int)heal);
+        if (ustioni)
+        {
+            ustioniAccumulate = (ustioniAccumulate - (int)heal > 0 ? ustioniAccumulate - (int)heal : 0);
+            SetCurrentHealthBar();
+        }
+        else
+        {
+            currentHealth = (currentHealth + (int)heal > maxHealth - ustioniAccumulate ? maxHealth - ustioniAccumulate : currentHealth + (int)heal);
+            SetCurrentHealthBar();
+        }
+
+    }
+
+    public void FullHealing()
+    {
+        currentHealth = maxHealth - ustioniAccumulate;
         SetCurrentHealthBar();
     }
 
@@ -170,44 +200,58 @@ public class Damageable : MonoBehaviour
         healOverTimeCoroutine.RemoveAll(f => f.tipo == tipo);
     }
 
-    public void HealOverTime(float healPerSecond, tipiDiCure tipo)
+    public void HealOverTime(float healPerSecond, float duration, tipiDiCure tipo, bool ustioni)
     {
 
         // Se una coroutine di guarigione è già in esecuzione, la interrompiamo.
         //StopCoroutine(healOverTimeCoroutine);
         StopHealing(tipo);
         coroutineDiCura nuovaCura = new();
-        nuovaCura.healOverTimeCoroutine = StartCoroutine(HealOverTimeCoroutine(healPerSecond));
+        nuovaCura.healOverTimeCoroutine = StartCoroutine(HealOverTimeCoroutine(healPerSecond, duration, tipo, ustioni));
         nuovaCura.healPerSecond = healPerSecond;
         nuovaCura.tipo = tipo;
         healOverTimeCoroutine.Add(nuovaCura);
     }
 
-    private IEnumerator HealOverTimeCoroutine(float healPerSecond)
+    private IEnumerator HealOverTimeCoroutine(float healPerSecond, float duration, tipiDiCure tipo, bool ustioni)
     {
         float healAmount = 0.1f * healPerSecond;
 
-        while (true)
+        if (duration > 0)
         {
-            if (currentHealth < maxHealth)
+            while (duration > 0)
             {
-                currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
-
-                // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
-                SetCurrentHealthBar();
+                if (currentHealth < maxHealth)
+                {
+                    //currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
+                    Healing(healAmount, ustioni);
+                    // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
+                    //SetCurrentHealthBar();
+                }
+                yield return new WaitForSeconds(0.1f);
+                duration -= 0.1f;
             }
-            yield return new WaitForSeconds(0.1f);
+            StopHealing(tipo);
+        }
+        else
+        {
+            while (true)
+            {
+                if (currentHealth < maxHealth)
+                {
+                    //currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
+                    Healing(healAmount, ustioni);
+                    // Aggiorna la barra della salute o qualsiasi altra UI qui, se necessario.
+                    //SetCurrentHealthBar();
+                }
+                yield return new WaitForSeconds(0.1f);
+            }
         }
     }
 
     public enum tipiDiCure
     {
         miasma,
-    }
-
-    public enum tipiDiDanno
-    {
-        sanguinamento,
     }
 }
 
@@ -220,6 +264,6 @@ public class coroutineDiCura
 public class coroutineDiDanno
 {
     public Coroutine damageOverTimeCoroutine;
-    public Damageable.tipiDiDanno tipo;
+    public DamageType.DamageTypes tipo;
     public float damagePerSecond;
 }

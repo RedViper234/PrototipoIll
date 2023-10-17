@@ -12,7 +12,7 @@ public class MeshMaskUI : MaskableGraphic
     public float percentage;
     public bool vertical = true;
     public bool inverseDirection = false;
-    protected override void Start()
+    protected override void Awake()
     {
         imageWidth = imageToMask.GetComponent<RectTransform>().rect.width;
         imageHeight = imageToMask.GetComponent<RectTransform>().rect.height;
