@@ -59,7 +59,6 @@ public class EnemyController : MonoBehaviour
     private void CheckForAnimator()
     {
         Vector3 rbVelocity = currentAgent.velocity.normalized;
-        //Debug.Log(rbVelocity);
         animatorNemico.SetFloat("Dir_x", rbVelocity.x);
         animatorNemico.SetFloat("Dir_y", rbVelocity.y);
     }

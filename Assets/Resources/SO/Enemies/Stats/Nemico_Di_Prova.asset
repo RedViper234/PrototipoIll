@@ -14,19 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vitaMassima: 100
   currentHealth: 0
-  enemySpeed: 2
+  enemySpeed: 3
   enemyAcceleration: 10
   resistenzaKnockback: 0
   resistenzaAlDannoSottrattiva: 0
   resistenzaAlDannoPercentuale: 0
   listaDiAttacchiNemico:
   - {fileID: 11400000, guid: 46af921f6dd6a884784dbb9b4ac156c1, type: 2}
-  OnAttack:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPlayerDamaged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEnemyDamaged:
-    m_PersistentCalls:
-      m_Calls: []

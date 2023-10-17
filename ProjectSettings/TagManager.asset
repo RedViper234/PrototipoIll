@@ -44,6 +44,9 @@ TagManager:
   - name: Terreno
     uniqueID: 1507223483
     locked: 0
+  - name: Terreno_Foreground
+    uniqueID: 2681227441
+    locked: 0
   - name: Entities/Player
     uniqueID: 1830533227
     locked: 0

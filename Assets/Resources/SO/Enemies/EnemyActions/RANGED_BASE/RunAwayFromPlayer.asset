@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: RunAwayFromPlayer
   m_EditorClassIdentifier: 
   gizmosActive: 1
-  fleeDistance: 20
+  fleeDistance: 10
   distanzaDaPercorrereFuoriArea: 2
-  approachDistance: 40
+  approachDistance: 30

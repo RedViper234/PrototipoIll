@@ -1,4 +1,4 @@
-using NavMeshPlus.Extensions;
+﻿using NavMeshPlus.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;

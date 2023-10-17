@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -8,24 +9,29 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Rooms/RoomData", menuName = "Rooms/RoomData")]
 public class RoomData : ScriptableObject
 {
-    [SerializeField] private DifficoltaStanza m_difficoltaStanza; 
-    [SerializeField] private TipiDiStanza m_tipiDiStanza;
+    public GameObject prefabStanza;
+
+    [SerializeField] public TipiDiStanza tipiDiStanza;
+    [Space(20)]
+    // PROPRIETA PER STANZA COMBATTIMENTO
+    [SerializeField] public SottoCategoriaStanzaCombattimento tipoStanzaCombattimento;
+
+    // PROPRIETA PER STANZA BOSS
+    [SerializeField] public SottoCategoriaStanzaBoss tipoStanzaBoss;
+
+    // PROPRIETA PER STANZA EVENTO
+    [SerializeField] public SottoCategoriaStanzaEvento tipoStanzaEvento;
+
+    // PROPRIETA PER STANZA STORIA
+    [SerializeField] public SottoCategoriaStanzaStoria tipoStanzaStoria;
+    
+
     [Space(30)]
     public MonsterSet setDiMostriDellaStanza;
-}
-public enum DifficoltaStanza
-{
-    Facile,
-    Media,
-    Difficile
-}
-[Flags]
-public enum TipiDiStanza
-{
-    None = 0,
-    Combattimento,
-    Boss,
-    Evento,
-    Storia
-
+    public List<RequisitiStanza> requisitiStanza;
+    [Range(-100,100)]public int prioritaStanza = 0;
+    public bool isFirstRoom = false;
+    public RaritaEValoreStanza raritaEValoreStanza;
+    public List<StructPerListaFlags> flagsOnEnter;
+    public List<StructPerListaFlags> flagsOnComplete;
 }

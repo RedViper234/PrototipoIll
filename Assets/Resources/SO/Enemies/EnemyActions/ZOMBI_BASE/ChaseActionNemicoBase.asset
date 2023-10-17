@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bb9c85d8b366f74aac2564b9f6af0d2, type: 3}
   m_Name: ChaseActionNemicoBase
   m_EditorClassIdentifier: 
+  gizmosActive: 1
+  m_frequenzaCambioTraiettoria: 1.62
+  m_attesaPrimaDiRiprendereIlPath: 0.3
+  m_percentualeSuccessoCambioTraiettoria: 38
