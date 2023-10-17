@@ -15,5 +15,8 @@ public class TestPower : AbstractPowers
     [field: SerializeField] public override PowerState powerState { get; set; }
     [field: SerializeField] public override Evolution evolution { get; set; }
 
-
+    public override void TriggerOnEvent()
+    {
+        
+    }
 }

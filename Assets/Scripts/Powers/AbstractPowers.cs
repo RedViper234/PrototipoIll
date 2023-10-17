@@ -63,6 +63,7 @@ public abstract class AbstractPowers : MonoBehaviour
     public abstract TriggerType triggerType { get; set; }
     public abstract PowerState powerState { get; set; }
     public abstract Evolution evolution { get; set; }
+    public abstract void TriggerOnEvent();
 
     void Start()
     {
@@ -105,22 +106,22 @@ public abstract class AbstractPowers : MonoBehaviour
                 // Code for OnTrigger case
                 break;
             case TriggerType.OnBeginOfRoom:
-                // Code for OnBeginOfRoom case
+                EventManager.HandleBeginRoom += TriggerOnEvent;
                 break;
             case TriggerType.OnEndOfRoom:
-                // Code for OnEndOfRoom case
+                EventManager.HandleEndRoom += TriggerOnEvent;
                 break;
             case TriggerType.OnBeginOfFight:
-                // Code for OnBeginOfFight case
+                EventManager.HandleBeginOfFight += TriggerOnEvent;
                 break;
             case TriggerType.OnEndOfFight:
-                // Code for OnEndOfFight case
+                EventManager.HandleEndOfFight += TriggerOnEvent;
                 break;
             case TriggerType.DuringExploration:
                 // Code for DuringExploration case
                 break;
             case TriggerType.OnDeath:
-                // Code for OnDeath case
+                EventManager.HandleDeath += TriggerOnEvent;
                 break;
             case TriggerType.OnEveryNRoom:
                 // Code for OnEveryNRoom case
@@ -129,8 +130,10 @@ public abstract class AbstractPowers : MonoBehaviour
                 // Code for OnEveryNTime case
                 break;
             default:
-                // Code for default case
+                Debug.LogError("Trigger type not found or not implemented: " + triggerType);
                 break;
         } 
     }
+
+    
 }
