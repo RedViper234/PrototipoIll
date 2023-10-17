@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
     [Header("Altre opzioni")]
     [Range(0,1)]
     public float merchantSales = 0;
+    private float immunityTimer = 0;
+    public float immunityFrameDuration = 0;
 
     private Vector2 movementInput;
     private Vector2 aimInput;
@@ -83,7 +85,7 @@ public class PlayerController : MonoBehaviour
     public statSpeed Speed = new statSpeed();
     public statAim Aim = new statAim();
     public statConstitution Constitution = new statConstitution();
-    public statResolve Resolve = new statResolve();
+    public statLuck Luck = new statLuck();
 
     private void Awake()
     {
@@ -144,7 +146,7 @@ public class PlayerController : MonoBehaviour
         Speed.setStat();
         Constitution.setStat();
         Aim.setStat();
-        Resolve.setStat();
+        Luck.setStat();
     }
 
     private void FixedUpdate()
@@ -153,6 +155,122 @@ public class PlayerController : MonoBehaviour
         HandleMeleeAttack();
         HandleRangedAttack();
         HandleDash();
+        HandleImmunity();
+    }
+
+    public void PlayerTakeDamage(List<DamageInstance> dmg)
+    {
+        foreach (var item in dmg)
+        {
+            switch (item.type)
+            {
+                case DamageType.DamageTypes.Fisico:                   
+                    if (GetComponent<Damageable>())
+                    {
+                        if (item.damageOverTime)
+                        {
+                            if (item.ignoreImmunity || !isActuallyImmune())
+                                GetComponent<Damageable>().TakeDamageOverTime(item.value, item.type, item.durationDamageOverTime, false);
+                        }
+                        else
+                        {
+                            GetComponent<Damageable>().TakeDamage(item.value, item.ignoreImmunity, false);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Ustioni:
+                    if (GetComponent<Damageable>())
+                    {
+                        if (item.damageOverTime)
+                        {
+                            if (item.ignoreImmunity || !isActuallyImmune())
+                                GetComponent<Damageable>().TakeDamageOverTime(item.value, item.type, item.durationDamageOverTime, true);
+                        }
+                        else
+                        {
+                            GetComponent<Damageable>().TakeDamage(item.value, item.ignoreImmunity, true);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Malattia:
+                    if (GetComponent<MalattiaHandler>())
+                    {
+                        if (item.damageOverTime)
+                        {
+                            if (item.ignoreImmunity || !isActuallyImmune())
+                                GetComponent<MalattiaHandler>().TakeIllOverTime(item.value, item.type, item.durationDamageOverTime);
+                        }
+                        else
+                        {
+                            GetComponent<MalattiaHandler>().gainMalattia(item.value, item.ignoreImmunity);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il malattia handler");
+                    }
+                    break;
+                case DamageType.DamageTypes.Corruzione:
+                    if (GetComponent<MalattiaHandler>())
+                    {
+                        if (item.damageOverTime)
+                        {
+                            Debug.LogError("La corruzione non può essere guadagnata overTime, ricontrolla il danno, per ora verrà chimato come danno oneShot");
+                            GetComponent<MalattiaHandler>().gainMalattia(item.value, item.ignoreImmunity);
+                        }
+                        else
+                        {
+                            GetComponent<MalattiaHandler>().gainMalattia(item.value, item.ignoreImmunity);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il malattia handler");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        setImmunity();
+    }
+
+    public void PlayerDeath()
+    {
+        Debug.Log("sei morto");
+    }
+
+    private void HandleImmunity()
+    {
+        if (immunityTimer > 0f)
+        {
+            // Handle immunity logic, e.g., making the player flash
+            immunityTimer -= Time.deltaTime;
+        }
+    }
+
+    public bool isActuallyImmune()
+    {
+        return (immunityTimer > 0);
+    }
+
+    public void setImmunity()
+    {
+        immunityTimer = immunityFrameDuration;
+    }
+
+    public void setImmunity(float time)
+    {
+        immunityTimer = time;
     }
 
     private void HandleMovement()
@@ -395,10 +513,14 @@ public class PlayerController : MonoBehaviour
         {
             item.level = Strenght.damageProgression.IndexOf(item) + 1;
         }
-        foreach (var item in Strenght.stunTimeProgression)
+        foreach (var item in Strenght.knockBackProgression)
         {
-            item.level = Strenght.stunTimeProgression.IndexOf(item) + 1;
+            item.level = Strenght.knockBackProgression.IndexOf(item) + 1;
         }
+        //foreach (var item in Strenght.stunTimeProgression)
+        //{
+        //    item.level = Strenght.stunTimeProgression.IndexOf(item) + 1;
+        //}
 
         Speed.pc = this;
         foreach (var item in Speed.speedProgression)
@@ -429,6 +551,10 @@ public class PlayerController : MonoBehaviour
         }
 
         Constitution.pc = this;
+        foreach (var item in Constitution.healthProgression)
+        {
+            item.level = Constitution.healthProgression.IndexOf(item) + 1;
+        }
         foreach (var item in Constitution.illResistanceProgression)
         {
             item.level = Constitution.illResistanceProgression.IndexOf(item) + 1;
@@ -437,19 +563,19 @@ public class PlayerController : MonoBehaviour
         {
             item.level = Constitution.illGainRateProgression.IndexOf(item) + 1;
         }
-        foreach (var item in Constitution.corruptionResistanceProgression)
-        {
-            item.level = Constitution.corruptionResistanceProgression.IndexOf(item) + 1;
-        }
+        //foreach (var item in Constitution.corruptionResistanceProgression)
+        //{
+        //    item.level = Constitution.corruptionResistanceProgression.IndexOf(item) + 1;
+        //}
 
-        Resolve.pc = this;
-        foreach (var item in Resolve.merchantSalesProgression)
+        Luck.pc = this;
+        //foreach (var item in Resolve.merchantSalesProgression)
+        //{
+        //    item.level = Resolve.merchantSalesProgression.IndexOf(item) + 1;
+        //}
+        foreach (var item in Luck.critChanceProgression)
         {
-            item.level = Resolve.merchantSalesProgression.IndexOf(item) + 1;
-        }
-        foreach (var item in Resolve.critChanceProgression)
-        {
-            item.level = Resolve.critChanceProgression.IndexOf(item) + 1;
+            item.level = Luck.critChanceProgression.IndexOf(item) + 1;
         }
     }
 
@@ -479,14 +605,16 @@ public class statStrenght : stat
 {
     //The Combat statistic influences your damage and the speed of your shots.
     public List<StatValueDictionaryEntry> damageProgression;
-    public List<StatValueDictionaryEntry> stunTimeProgression;
+    public List<StatValueDictionaryEntry> knockBackProgression;
+    //public List<StatValueDictionaryEntry> stunTimeProgression;
     [HideInInspector]
     public PlayerController pc;
 
     public void setStat()
     {
+        pc.meleeKnockbackForce = pc.Strenght.knockBackProgression.Find(f => f.level == pc.Strenght.livello).value;
         pc.meleeDamage =  pc.Strenght.damageProgression.Find(f => f.level == pc.Strenght.livello).value;
-        pc.stunTime = pc.Strenght.stunTimeProgression.Find(f => f.level == pc.Strenght.livello).value;
+        //pc.stunTime = pc.Strenght.stunTimeProgression.Find(f => f.level == pc.Strenght.livello).value;
     }
 }
 
@@ -528,26 +656,26 @@ public class statAim : stat
 [System.Serializable]
 public class statConstitution : stat
 {
-    //public List<StatValueDictionaryEntry> healthProgression;
+    public List<StatValueDictionaryEntry> healthProgression;
     public List<StatValueDictionaryEntry> illGainRateProgression;
     public List<StatValueDictionaryEntry> illResistanceProgression;
-    public List<StatValueDictionaryEntry> corruptionResistanceProgression;
+    //public List<StatValueDictionaryEntry> corruptionResistanceProgression;
     [HideInInspector]
     public PlayerController pc;
 
 
     public void setStat()
     {
-        //if (pc.GetComponent<Damageable>())
-        //    pc.GetComponent<Damageable>().SetMaxHealthBar(pc.Constitution.healthProgression.Find(f => f.level == pc.Constitution.livello).value, true);
-        //else
-        //    Debug.LogError("Non c'è il damageable");
+        if (pc.GetComponent<Damageable>())
+            pc.GetComponent<Damageable>().SetMaxHealthBar(pc.Constitution.healthProgression.Find(f => f.level == pc.Constitution.livello).value, true);
+        else
+            Debug.LogError("Non c'è il damageable");
 
         if (pc.GetComponent<MalattiaHandler>())
         {
             pc.GetComponent<MalattiaHandler>().malattiaGainPerSecond = pc.Constitution.illGainRateProgression.Find(f => f.level == pc.Constitution.livello).value;
             pc.GetComponent<MalattiaHandler>().malattiaResistance = pc.Constitution.illResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
-            pc.GetComponent<MalattiaHandler>().corruptionResistance = pc.Constitution.corruptionResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
+            //pc.GetComponent<MalattiaHandler>().corruptionResistance = pc.Constitution.corruptionResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
         }
         else
             Debug.LogError("Non c'è il malattiaHandler");
@@ -555,9 +683,8 @@ public class statConstitution : stat
 }
 
 [System.Serializable]
-public class statResolve : stat
+public class statLuck : stat
 {
-    public List<StatValueDictionaryEntry> merchantSalesProgression;
     public List<StatValueDictionaryEntry> critChanceProgression;
     [HideInInspector]
     public PlayerController pc;
@@ -565,8 +692,8 @@ public class statResolve : stat
 
     public void setStat()
     {
-        pc.merchantSales = pc.Resolve.merchantSalesProgression.Find(f => f.level == pc.Resolve.livello).value;
-        pc.critChance = pc.Resolve.critChanceProgression.Find(f => f.level == pc.Resolve.livello).value;
-
+        //pc.merchantSales = pc.Resolve.merchantSalesProgression.Find(f => f.level == pc.Resolve.livello).value;
+        pc.critChance = pc.Luck.critChanceProgression.Find(f => f.level == pc.Luck.livello).value;
     }
 }
+

@@ -5,9 +5,7 @@ using UnityEngine;
 public class ContactDamager : MonoBehaviour
 {
     public bool disactivated = false;
-    public int damage = 10;
-    public int Illdamage = 10;
-    public int CorruptionDamage = 0;
+    public List<DamageInstance> damageInstance;
     public bool destroyOnTouch = false;
     public LayerMask targetLayer;
 
@@ -15,19 +13,23 @@ public class ContactDamager : MonoBehaviour
     {
         if ((targetLayer.value & (1 << collision.gameObject.layer)) != 0 && !disactivated)
         {
-            if (damage > 0 || Illdamage > 0 || CorruptionDamage > 0)
+
+            if (collision.GetComponent<PlayerController>())
             {
-                if (damage > 0 && collision.GetComponent<Damageable>())
+                collision.GetComponent<PlayerController>().PlayerTakeDamage(DamageInstance.removeZeroDamageInstance(damageInstance));
+            }
+            else
+            {
+                foreach (var dmg in DamageInstance.removeZeroDamageInstance(damageInstance))
                 {
-                    collision.GetComponent<Damageable>().TakeDamage(damage);
-                }
-                if (Illdamage > 0 && collision.GetComponent<MalattiaHandler>())
-                {
-                    collision.GetComponent<MalattiaHandler>().gainMalattia(Illdamage, false);
-                }
-                if (CorruptionDamage > 0 && collision.GetComponent<MalattiaHandler>())
-                {
-                    collision.GetComponent<MalattiaHandler>().gainCorruption(CorruptionDamage, false);
+                    if (collision.GetComponent<Damageable>() && !dmg.damageOverTime && dmg.value > 0)
+                    {
+                        collision.GetComponent<Damageable>().TakeDamage(dmg.value, dmg.ignoreImmunity, dmg.type==DamageType.DamageTypes.Ustioni);
+                    }
+                    else if (collision.GetComponent<Damageable>() && dmg.damageOverTime && dmg.value > 0)
+                    {
+                        collision.GetComponent<Damageable>().TakeDamageOverTime(dmg.value, dmg.type, dmg.durationDamageOverTime, dmg.type == DamageType.DamageTypes.Ustioni);
+                    }
                 }
             }
             if (destroyOnTouch)
@@ -41,20 +43,28 @@ public class ContactDamager : MonoBehaviour
     {
         if ((targetLayer.value & (1 << collision.gameObject.layer)) != 0 && !disactivated)
         {
-            if (damage > 0 || Illdamage > 0 || CorruptionDamage > 0)
+            List<DamageInstance> instanceOfDamageCopy = damageInstance.FindAll(f => f.value > 0);
+            if (collision.gameObject.GetComponent<PlayerController>())
             {
-                if (damage > 0 && collision.gameObject.GetComponent<Damageable>())
+                collision.gameObject.GetComponent<PlayerController>().PlayerTakeDamage(DamageInstance.removeZeroDamageInstance(damageInstance));
+            }
+            else
+            {
+                foreach (var dmg in DamageInstance.removeZeroDamageInstance(damageInstance))
                 {
-                    collision.gameObject.GetComponent<Damageable>().TakeDamage(damage);
+                    if (collision.gameObject.GetComponent<Damageable>() && !dmg.damageOverTime && dmg.value > 0)
+                    {
+                        collision.gameObject.GetComponent<Damageable>().TakeDamage(dmg.value, dmg.ignoreImmunity, dmg.type == DamageType.DamageTypes.Ustioni);
+                    }
+                    else if (collision.gameObject.GetComponent<Damageable>() && dmg.damageOverTime && dmg.value > 0)
+                    {
+                        collision.gameObject.GetComponent<Damageable>().TakeDamageOverTime(dmg.value, dmg.type, dmg.durationDamageOverTime, dmg.type == DamageType.DamageTypes.Ustioni);
+                    }
                 }
-                if (Illdamage > 0 && collision.gameObject.GetComponent<MalattiaHandler>())
-                {
-                    collision.gameObject.GetComponent<MalattiaHandler>().gainMalattia(Illdamage, false);
-                }
-                if (CorruptionDamage > 0 && collision.gameObject.GetComponent<MalattiaHandler>())
-                {
-                    collision.gameObject.GetComponent<MalattiaHandler>().gainCorruption(CorruptionDamage, false);
-                }
+            }
+            if (destroyOnTouch)
+            {
+                Destroy(gameObject);
             }
         }
         if (destroyOnTouch)
