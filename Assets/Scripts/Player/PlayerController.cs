@@ -15,9 +15,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Melee Attack")]
     public UnityEngine.GameObject meleeAttackPrefab;
-    public float meleeDamage = 1f;
+    //public float meleeDamage = 1f;
     public float meleeDamageModifier = 1f;
-    public float meleeKnockbackForce = 10f;
+    public float meleeKnockbackModifier = 10f;
     public float meleeKnockbackDuration = 0.5f;
     public float meleeHitTime = 0.2f;
     public float meleeHitDelay = 0.1f;
@@ -595,7 +595,7 @@ public class stat
 [System.Serializable]
 public class StatValueDictionaryEntry
 {
-    [HideInInspector]
+    [MyReadOnly]
     public int level;
     public float value;
 }
@@ -612,8 +612,8 @@ public class statStrenght : stat
 
     public void setStat()
     {
-        pc.meleeKnockbackForce = pc.Strenght.knockBackProgression.Find(f => f.level == pc.Strenght.livello).value;
-        pc.meleeDamage =  pc.Strenght.damageProgression.Find(f => f.level == pc.Strenght.livello).value;
+        pc.meleeKnockbackModifier = pc.Strenght.knockBackProgression.Find(f => f.level == pc.Strenght.livello).value;
+        pc.meleeDamageModifier =  pc.Strenght.damageProgression.Find(f => f.level == pc.Strenght.livello).value;
         //pc.stunTime = pc.Strenght.stunTimeProgression.Find(f => f.level == pc.Strenght.livello).value;
     }
 }
