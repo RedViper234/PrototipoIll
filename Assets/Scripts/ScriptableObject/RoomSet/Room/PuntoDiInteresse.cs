@@ -18,6 +18,8 @@ public class PuntoDiInteresse : ScriptableObject
     public int secTimeBattleProbability = -1;
     public List<ConnectedPoints> points;  
     public List<StructPerListaFlags> flagOnEnter;
+    public bool flagOnEnterOnlyFirstTime;
+    public bool blockSpecialRoom;
 }
 [System.Serializable]
 public struct ConnectedPoints

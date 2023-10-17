@@ -44,3 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76e09211ca6ad5d4f9f0c69cac0caaf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_managersList: []
+  enemyManager: {fileID: 0}
+  roomManager: {fileID: 0}

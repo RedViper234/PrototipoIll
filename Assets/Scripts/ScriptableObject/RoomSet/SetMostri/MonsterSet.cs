@@ -8,6 +8,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Rooms/MonsterSet", menuName = "Rooms/MonsterSet")]
 public class MonsterSet : ScriptableObject
 {
-    public List<GameObject> listaDiNemiciDaSpawnareInStanza;
+    public List<SetMostri> listaDiNemiciDaSpawnareInStanza;
 
+    [System.Serializable]
+    public struct SetMostri
+    {
+        public List<GameObject> mostri;
+    }
 }

@@ -13,5 +13,15 @@ MonoBehaviour:
   m_Name: SetMostriBase
   m_EditorClassIdentifier: 
   listaDiNemiciDaSpawnareInStanza:
-  - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
-  - {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+  - mostri:
+    - {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+    - {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+    - {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+    - {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+    - {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+  - mostri:
+    - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
+    - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
+    - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
+    - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
+    - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}

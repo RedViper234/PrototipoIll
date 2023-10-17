@@ -1,6 +1,8 @@
+using NavMeshPlus.Components;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 public class AppManager : MonoBehaviour
@@ -17,21 +19,24 @@ public class AppManager : MonoBehaviour
                 if (m_instance == null)
                 {
                     m_instance = new UnityEngine.GameObject("AppManager").AddComponent<AppManager>();
+                    
                 }
 
             }
+            DontDestroyOnLoad(m_instance.gameObject);
             return m_instance;
         }
 
     }
 
     [HideInInspector] public EnemyManager enemyManager;
+    [HideInInspector] public RoomManager roomManager;
     private void OnEnable()
     {
         m_instance= this;
         SpawnaManagersSeNonCiSono();
         enemyManager = GetComponentInChildren<EnemyManager>();
-      
+        roomManager = GetComponentInChildren<RoomManager>();
     }
 
     public void SpawnaManagersSeNonCiSono()
@@ -57,6 +62,7 @@ public class AppManager : MonoBehaviour
         m_managersList = null;
         transform.DetachChildren();
     }
+
 }
 
 public abstract class Manager:MonoBehaviour

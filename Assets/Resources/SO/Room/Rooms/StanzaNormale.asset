@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1162aa3d480702143a9f99cf9b91cadc, type: 3}
   m_Name: StanzaNormale
   m_EditorClassIdentifier: 
-  prefabStanza: {fileID: 0}
-  tipiDiStanza: 28
+  prefabStanza: {fileID: 8412162658129126049, guid: 3486d48a62de72445840314d442ab61b, type: 3}
+  tipiDiStanza: 2
   tipoStanzaCombattimento: 0
   tipoStanzaBoss: 0
   tipoStanzaEvento: 1
@@ -22,9 +22,13 @@ MonoBehaviour:
   requisitiStanza:
   - {fileID: 11400000, guid: 6b100777b61a69545ba83e6bf389e29c, type: 2}
   prioritaStanza: 0
-  isFirstRoom: 0
+  isFirstRoom: 1
   raritaEValoreStanza:
     tipoRaritaStanza: 0
     percentualeRarita: 0
   flagsOnEnter: []
-  flagsOnComplete: []
+  flagsOnComplete:
+  - flagsDaSettare: []
+    flagsNecessarie:
+    - flagNecessarie:
+      - {fileID: 0}
