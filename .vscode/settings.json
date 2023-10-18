@@ -51,5 +51,11 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "PrototipoIll.sln"
+    "dotnet.defaultSolution": "PrototipoIll.sln",
+    "cSpell.words": [
+        "Cooldown",
+        "Hitbox",
+        "Knockback",
+        "Scriptable"
+    ]
 }

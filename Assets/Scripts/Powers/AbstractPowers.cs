@@ -6,18 +6,18 @@ using UnityEngine.Events;
 public enum PowerType 
 {
     None,
-    Welfare,
+    Healing,
     Illness
 }
 
 public enum PowerSubType 
 {
-    Purification,
-    Defense,
-    Survival,
-    Infection,
-    Destruction,
-    Mutation
+    Sacred, 
+    Fire, 
+    Research, 
+    Infection, 
+    Power, 
+    Transformation
 }
 
 public enum Rarity 
@@ -134,6 +134,4 @@ public abstract class AbstractPowers : MonoBehaviour
                 break;
         } 
     }
-
-    
 }
