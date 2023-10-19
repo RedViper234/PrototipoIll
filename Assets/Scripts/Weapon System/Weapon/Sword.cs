@@ -12,5 +12,5 @@ public class Sword : MonoBehaviour, IWeapon
     [field: SerializeField] public DamageType DamageType { get; set; }
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set; }
     [field: SerializeField] public float KnockbackForceWeapon { get; set; }
-    [field: SerializeField] public List<Attack> ComboList { get; set; }
+    [field: SerializeField] public List<AttackSO> ComboList { get; set; }
 }

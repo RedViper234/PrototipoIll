@@ -4,14 +4,18 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewWeaponkSO", menuName = "Weapon/NewWeapon")]
 
-[Serializable]
 public class WeaponSO : ScriptableObject
 {
+    [Header("Weapon Settings")]
     public float BaseDamageWeapon;
     public float ComboTimeProgression;
-    [Range(0, 1)] public float PlayerSpeedModifier;
     public AttackRange AttackRangeWeapon;
     public DamageType DamageType;
     [field: SerializeField] public List<StatusStruct> StatusEffects;
     public float KnockbackForceWeapon;
+
+    [Space(10)]
+
+    [Header("Player Settings")]
+    [Range(0, 1)] public float PlayerSpeedModifier;
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour, IAttack
 {
-    public AttackSO attackSO { get; set;}
-    public GameObject AttackPrefab { get; set;}
-    public float TimeToActivateHitbox { get; set;}
-    public float TimeDurationHitbox { get; set;}
-    public float TimeToEndHitbox { get; set;}
-    public float PlayerSpeedModifier { get; set;}
-    public PlayerDragStruct PlayerDrag { get; set;}
-    public float AttackCooldown { get; set;}
-    public float BaseDamageAttack { get; set;}
-    public AttackRange AttackRangeAttack { get; set;}
-    public DamageType DamageType { get; set;}
-    public List<StatusStruct> StatusEffects { get; set;}
-    public float KnockbackForceAttack { get; set;}
+    [field: SerializeField] public AttackSO attackSO { get; set;}
+    [field: SerializeField] public GameObject AttackPrefab { get; set;}
+    [field: SerializeField] public float TimeToActivateHitbox { get; set;}
+    [field: SerializeField] public float TimeDurationHitbox { get; set;}
+    [field: SerializeField] public float TimeToEndHitbox { get; set;}
+    [field: SerializeField] public float PlayerSpeedModifier { get; set;}
+    [field: SerializeField] public PlayerDragStruct PlayerDrag { get; set;}
+    [field: SerializeField] public float AttackCooldown { get; set;}
+    [field: SerializeField] public float BaseDamageAttack { get; set;}
+    [field: SerializeField] public AttackRange AttackRangeAttack { get; set;}
+    [field: SerializeField] public DamageType DamageType { get; set;}
+    [field: SerializeField] public List<StatusStruct> StatusEffects { get; set;}
+    [field: SerializeField] public float KnockbackForceAttack { get; set;}
 }

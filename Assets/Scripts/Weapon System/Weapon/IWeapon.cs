@@ -37,7 +37,7 @@ public struct StatusStruct
 
 public interface IWeapon
 {
-    [SerializeField] public WeaponSO WeaponSO { get; set;}
+    public WeaponSO WeaponSO { get; set;}
     public float BaseDamageWeapon { get; set;}
     public float ComboTimeProgression { get; set;}
     public float PlayerSpeedModifier { get; set;}
@@ -45,5 +45,5 @@ public interface IWeapon
     public DamageType DamageType { get; set;}
     public List<StatusStruct> StatusEffects { get; set;}
     public float KnockbackForceWeapon { get; set;}
-    public List<Attack> ComboList { get; set;}
+    public List<AttackSO> ComboList { get; set;}
 }
