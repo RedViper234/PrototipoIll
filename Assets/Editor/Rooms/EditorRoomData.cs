@@ -84,7 +84,7 @@ public class EditorRoomData : Editor
         EditorGUI.indentLevel--;
         if ((roomData.tipiDiStanza & TipiDiStanza.Combattimento) != 0 || (roomData.tipiDiStanza & TipiDiStanza.Boss) != 0)
         {
-            roomData.setDiMostriDellaStanza = (MonsterSet)EditorGUILayout.ObjectField("Set di Mostri", roomData.setDiMostriDellaStanza, typeof(MonsterSet), false);
+            roomData.setDiMostriDellaStanza = (EnemySet)EditorGUILayout.ObjectField("Set di Mostri", roomData.setDiMostriDellaStanza, typeof(EnemySet), false);
         }
         DrawUILine(Color.gray,1);
         EditorGUILayout.Space(5);

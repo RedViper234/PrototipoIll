@@ -12,11 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ef65c2ed3204c4b8a27383fcaf36b2, type: 3}
   m_Name: Rooms_Requisiti
   m_EditorClassIdentifier: 
-  tipoRequisito: 3
-  valoriMalattiaOGuarigione:
-    tipoRequisitoGuarigioneMalattia: 0
-    operatori: 0
-    valoreDaComparare: 0
+  tipoRequisito: 4
   valoreCorruzione:
     operatori: 0
     valoreDaComparare: 0
@@ -25,7 +21,7 @@ MonoBehaviour:
     operatori: 0
     valore: 0
   valoriPerPoteriSpecifici:
-    listaTipiPoteriPerRequisiti: 5
+    listaTipiPoteriPerRequisiti: 1
     hasPotere: 0
   valoriPerEntrataStanze:
     operatori: 0
@@ -36,6 +32,3 @@ MonoBehaviour:
   valoriStatistichePersonaggio:
     operatori: 0
     valoreStatistica: 0
-  valoriQuantitaMutazioni:
-    operatori: 0
-    valoreQuantitaMutazione: 0

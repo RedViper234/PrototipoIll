@@ -9,6 +9,8 @@ public class AppManager : MonoBehaviour
 {
     private static AppManager m_instance;
     public List<ManagerData> m_managersList;
+
+    
     public static AppManager Instance
     {
         get
@@ -31,6 +33,7 @@ public class AppManager : MonoBehaviour
 
     [HideInInspector] public EnemyManager enemyManager;
     [HideInInspector] public RoomManager roomManager;
+    [HideInInspector] public PlayerController playerControllerInstance;
     private void OnEnable()
     {
         m_instance= this;
@@ -69,6 +72,7 @@ public abstract class Manager:MonoBehaviour
 {
 
 }
+
 [System.Serializable]
 public struct ManagerData 
 {

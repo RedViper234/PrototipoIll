@@ -45,15 +45,18 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemyStateMachineController.aiAttiva)
+        if(currentAgent.enabled && currentAgent.isOnNavMesh)
         {
-            currentAgent.isStopped = !enemyStateMachineController.aiAttiva;
+            if (enemyStateMachineController.aiAttiva)
+            {
+                currentAgent.isStopped = !enemyStateMachineController.aiAttiva;
+            }
+            else
+            {
+                currentAgent.isStopped = !enemyStateMachineController.aiAttiva;
+            }
+            CheckForAnimator();
         }
-        else
-        {
-            currentAgent.isStopped = !enemyStateMachineController.aiAttiva;
-        }
-        CheckForAnimator();
     }
 
     private void CheckForAnimator()

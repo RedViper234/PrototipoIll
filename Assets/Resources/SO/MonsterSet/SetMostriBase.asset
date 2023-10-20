@@ -12,6 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d28c5960c75d8724eaa56f04cff6ed99, type: 3}
   m_Name: SetMostriBase
   m_EditorClassIdentifier: 
+  tipoSwitchOndata: 1
+  pesoSet: 0
+  tipoRequisito: 2
+  valoreCorruzione:
+    operatori: 0
+    valoreDaComparare: 0
+  valoriPerPoteri:
+    listaTipiPoteriPerRequisiti: 0
+    operatori: 0
+    valore: 0
+  valoriPerPoteriSpecifici:
+    listaTipiPoteriPerRequisiti: 8
+    hasPotere: 0
+  valoriPerEntrataStanze:
+    operatori: 0
+    valore: 0
+  valoriDistanzaPercorsa:
+    operatori: 0
+    valore: 0
+  valoriStatistichePersonaggio:
+    operatori: 0
+    valoreStatistica: 0
   listaDiNemiciDaSpawnareInStanza:
   - mostri:
     - {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
@@ -25,3 +47,6 @@ MonoBehaviour:
     - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
     - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
     - {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
+  flagOnSelect: []
+  flagOnComplete: []
+  CanRepeat: 1

@@ -18,7 +18,7 @@ public class AreaSO : ScriptableObject
     public float secondTimeBattleProbablity = -1;
     public List<StructPerListaFlags> onCompleteFlags;
     public bool onlyOneSpecialRoom = false;
-    public List<MonsterSet> enemySet;
+    public List<EnemySet> enemySet;
 }
 public struct SpecialRoom
 {

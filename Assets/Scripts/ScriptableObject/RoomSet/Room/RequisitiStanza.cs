@@ -6,9 +6,6 @@ public class RequisitiStanza : ScriptableObject
 
     //VARIABILI PER CHECK GUARIGIONE/ MALATTIA
     public TipoRequisito tipoRequisito;
-    //VALORI MALATTIA E GUARIGIONE
-    public StructPerRequisitoMalattiaGuarigione valoriMalattiaOGuarigione;
-    // VALORI PERCENTUALE CORRUZIONE
     public StructPerPercentualeCorruzione valoreCorruzione;
     // VALORI PER POTERI
     public StructPerTipiPotereStanza valoriPerPoteri;
@@ -22,12 +19,10 @@ public class RequisitiStanza : ScriptableObject
     public StructPerValoreStatistica valoriStatistichePersonaggio;
     //VALORE PER QUANTITA MUTAZIONI
     
-    public StructPerQuantitaMutazioni valoriQuantitaMutazioni;
 
 }
 public enum TipoRequisito
 {
-    MalattiaOGuarigione,
     PercentualeCorruzione,
     NumeroPoteriOttenuti,
     PoterSpecifico,
@@ -36,11 +31,6 @@ public enum TipoRequisito
     ValoreDiStatistica,
     MutazioniAccumulate,
     Flag
-}
-public enum RequisitiGuarigioneMalattia
-{
-    Guarigione,
-    Malattia
 }
 public enum ListaTipiPoteriPerRequisiti
 {
