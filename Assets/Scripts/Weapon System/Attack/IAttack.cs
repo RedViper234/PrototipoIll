@@ -14,7 +14,7 @@ public interface IAttack
     public float AttackCooldown {get; set;}
     public float BaseDamageAttack {get; set;}
     public AttackRange AttackRangeAttack {get; set;}
-    public DamageTypex DamageType {get; set;}
+    public DamageType.DamageTypes DamageType {get; set;}
     [SerializeField] public List<StatusStruct> StatusEffects {get; set;}
     public float KnockbackForceAttack {get; set;}
 }

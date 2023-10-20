@@ -10,7 +10,7 @@ public class Weapon : MonoBehaviour, IWeapon
     [field: SerializeField] public float ComboTimeProgression { get; set; }
     [field: SerializeField] public float PlayerSpeedModifier { get; set; }
     [field: SerializeField] public AttackRange AttackRangeWeapon { get; set; }
-    [field: SerializeField] public DamageTypex DamageType { get; set; }
+    [field: SerializeField] public DamageType.DamageTypes DamageType { get; set; }
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set; }
     [field: SerializeField] public float KnockbackForceWeapon { get; set; }
     [field: SerializeField] public List<AttackSO> ComboList { get; set; }

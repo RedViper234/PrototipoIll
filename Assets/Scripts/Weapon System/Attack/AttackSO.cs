@@ -22,7 +22,7 @@ public class AttackSO : ScriptableObject
     public PlayerDragStruct PlayerDrag;
     public float BaseDamageAttack;
     public AttackRange AttackRangeAttack;
-    public DamageTypex DamageType;
+    public DamageType.DamageTypes DamageType;
     [SerializeField] public List<StatusStruct> StatusEffects;
     public float KnockbackForceAttack;
 }

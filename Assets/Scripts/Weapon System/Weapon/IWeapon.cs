@@ -44,7 +44,7 @@ public interface IWeapon
     public float ComboTimeProgression { get; set;}
     public float PlayerSpeedModifier { get; set;}
     public AttackRange AttackRangeWeapon { get; set;}
-    public DamageTypex DamageType { get; set;}
+    public DamageType.DamageTypes DamageType { get; set;}
     public List<StatusStruct> StatusEffects { get; set;}
     public float KnockbackForceWeapon { get; set;}
     public List<AttackSO> ComboList { get; set;}
