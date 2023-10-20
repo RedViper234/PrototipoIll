@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2526943844679209983}
-  - component: {fileID: 3381484879835436442}
+  - component: {fileID: 8833871040528005766}
   m_Layer: 0
   m_Name: WeaponObj
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3381484879835436442
+--- !u!114 &8833871040528005766
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,10 +41,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2526943844679209982}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a947bced9268444592edc68fbb47588, type: 3}
+  m_Script: {fileID: 11500000, guid: a07c46b43b3d4a64490e4efea029f45c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <WeaponSO>k__BackingField: {fileID: 11400000, guid: 3744ce9bcb2bb6048ab847e5707f9aa5, type: 2}
+  <WeaponSO>k__BackingField: {fileID: 0}
   <BaseDamageWeapon>k__BackingField: 0
   <ComboTimeProgression>k__BackingField: 0
   <PlayerSpeedModifier>k__BackingField: 0
@@ -52,7 +52,4 @@ MonoBehaviour:
   <DamageType>k__BackingField: 0
   <StatusEffects>k__BackingField: []
   <KnockbackForceWeapon>k__BackingField: 0
-  <ComboList>k__BackingField:
-  - {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
-  - {fileID: 11400000, guid: 930e98d7cc928b54db96213dd5758e30, type: 2}
-  - {fileID: 11400000, guid: 93434577af153c442951794f8d658cf9, type: 2}
+  <ComboList>k__BackingField: []

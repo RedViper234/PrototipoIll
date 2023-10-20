@@ -20,6 +20,6 @@ public class WeaponInputTest : MonoBehaviour
 
     private void Attack(InputAction.CallbackContext obj)
     {
-        Debug.Log("Attack");
+        weaponPrefab.GetComponent<Weapon>().ExecuteCombo();
     }
 }
