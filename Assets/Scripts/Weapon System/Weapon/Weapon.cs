@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,13 +12,16 @@ public class Weapon : MonoBehaviour, IWeapon
     [field: SerializeField] public float ComboTimeProgression { get; set; }
     [field: SerializeField] public float PlayerSpeedModifier { get; set; }
     [field: SerializeField] public AttackRange AttackRangeWeapon { get; set; }
-    [field: SerializeField] public DamageType.DamageTypes DamageType { get; set; }
+    [field: SerializeField] public List<DamageType.DamageTypes> DamageType { get; set; }
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set; }
     [field: SerializeField] public float KnockbackForceWeapon { get; set; }
     [field: SerializeField] public List<AttackSO> ComboList { get; set; }
+    public float RangeAttackMaxDistance;
+    public Vector2 HurtboxSize;
 
     [Header("Debug")]
     [SerializeField, MyReadOnly] private float t_cooldown;
+    [SerializeField, MyReadOnly] private int comboIndex = 0;
 
     private Coroutine comboCoroutine;
 
@@ -53,23 +57,14 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public void ExecuteCombo()
     {
-        //Debug.Log("ExecuteCombo");
-        //TODO 
-        /*
-        ****Iniziare con il primo attacco della combo****
-        ****Start Cooldown tra attacchi****
-        ****
-        */
-
         comboCoroutine = StartCoroutine(AttackCoroutine());
-        
     }
 
     private void GenerateAttackObject(AttackSO actualAttack)
     {
         GameObject inst_attack;
 
-        inst_attack = Instantiate(actualAttack.AttackPrefab, transform.parent.position, Quaternion.identity, transform.parent);
+        inst_attack = Instantiate(actualAttack.AttackPrefab, transform.parent.position, Quaternion.identity, transform);
 
         inst_attack.GetComponent<Attack>().InitAttackValues(actualAttack);
     }
@@ -78,10 +73,27 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         if (t_cooldown <= 0)
         {
-            GenerateAttackObject(ComboList[0]);
+            if(comboIndex == ComboList.Count) 
+            {
+                LastComboAttack();
+                yield return null;
+            }
+
+            GenerateAttackObject(ComboList[comboIndex]);
+
+            // Debug.Log("Combo attacco " + ComboList[comboIndex].name + ComboList.Count);
+
+            comboIndex++;
+
             t_cooldown = ComboTimeProgression;
         }
 
         yield return null;
+    }
+
+    private void LastComboAttack()
+    {
+        comboIndex = 0;
+        comboCoroutine = null;
     }
 }

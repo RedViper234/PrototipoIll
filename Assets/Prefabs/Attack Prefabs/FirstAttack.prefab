@@ -44,12 +44,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9cfcc0366a129a42b80e6e0610ea6f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <attackSO>k__BackingField: {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
-  <AttackPrefab>k__BackingField: {fileID: 0}
+  <attackSO>k__BackingField: {fileID: 0}
   <TimeToActivateHitbox>k__BackingField: 0
   <TimeDurationHitbox>k__BackingField: 0
   <TimeToEndHitbox>k__BackingField: 0
   <PlayerSpeedModifier>k__BackingField: 0
+  <PlayerDrag>k__BackingField:
+    force: 0
+    waiting: 0
+    duration: 0
+    direction: {x: 0, y: 0}
   <AttackCooldown>k__BackingField: 0
   <BaseDamageAttack>k__BackingField: 0
   <AttackRangeAttack>k__BackingField: 2
