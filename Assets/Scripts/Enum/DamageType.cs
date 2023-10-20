@@ -6,6 +6,7 @@ public class DamageType : MonoBehaviour
 {
     public enum DamageTypes
     {
+        Non_specificato,
         Fisico,
         Ustioni,
         Malattia,

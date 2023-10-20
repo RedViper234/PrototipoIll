@@ -76,7 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1830533227
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -107,7 +107,6 @@ MonoBehaviour:
   baseSpeed: 10
   speedModifier: 1
   meleeAttackPrefab: {fileID: 6087447557202039915, guid: d60783e6955d3ee4b8bf08f3e3d1618d, type: 3}
-  meleeDamage: 1
   meleeDamageModifier: 1
   meleeKnockbackForce: 10
   meleeKnockbackDuration: 0.5
@@ -131,6 +130,7 @@ MonoBehaviour:
   maxConsecutiveDash: 2
   dashRememberTime: 0.2
   merchantSales: 0
+  immunityFrameDuration: 0
   Strenght:
     name: 
     livello: 1
@@ -147,17 +147,17 @@ MonoBehaviour:
       value: 35
     - level: 0
       value: 40
-    stunTimeProgression:
+    knockBackProgression:
     - level: 0
-      value: 0.1
+      value: 1
     - level: 0
-      value: 0.15
+      value: 1.25
     - level: 0
-      value: 0.2
+      value: 1.5
     - level: 0
-      value: 0.25
+      value: 1.75
     - level: 0
-      value: 0.3
+      value: 2
     pc: {fileID: 0}
   Speed:
     name: "Velocit\xE0"
@@ -242,6 +242,17 @@ MonoBehaviour:
     livello: 1
     description: 
     image: {fileID: 0}
+    healthProgression:
+    - level: 0
+      value: 100
+    - level: 0
+      value: 125
+    - level: 0
+      value: 150
+    - level: 0
+      value: 175
+    - level: 0
+      value: 200
     illGainRateProgression:
     - level: 0
       value: 0.5
@@ -264,45 +275,23 @@ MonoBehaviour:
       value: 0.3
     - level: 0
       value: 0.4
-    corruptionResistanceProgression:
-    - level: 0
-      value: 0
-    - level: 0
-      value: 0.1
-    - level: 0
-      value: 0.2
-    - level: 0
-      value: 0.3
-    - level: 0
-      value: 0.4
     pc: {fileID: 0}
-  Resolve:
-    name: 
+  Luck:
+    name: Luck
     livello: 1
     description: 
     image: {fileID: 0}
-    merchantSalesProgression:
+    critChanceProgression:
     - level: 0
-      value: 0
+      value: 1
+    - level: 0
+      value: 3
     - level: 0
       value: 5
     - level: 0
       value: 10
     - level: 0
       value: 15
-    - level: 0
-      value: 20
-    critChanceProgression:
-    - level: 0
-      value: 0
-    - level: 0
-      value: 0
-    - level: 0
-      value: 0
-    - level: 0
-      value: 0
-    - level: 0
-      value: 0
     pc: {fileID: 0}
 --- !u!50 &5664604751966636653
 Rigidbody2D:
@@ -339,7 +328,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 70
+  ustioniAccumulate: 0
   damageResistance: 0
+  ustioniResistance: 0
   damageImmunity: 0
 --- !u!114 &2125458318
 MonoBehaviour:
@@ -358,47 +349,8 @@ MonoBehaviour:
   malattiaImmunity: 0
   currentMalattia: 10
   stopTimeMalattiaGain: 0
-  malattiaMultiplier: 1
-  defaultMalattiaMultiplier: 1
-  MalattiaMultiplier: 1
-  multiplierCap: 5
-  currentmalattiaMultiplierIncrease: 0.5
-  multiplyDurationBeforeReduction: 2
-  multiplyReductionPerSec: 0.5
-  multiplyReductionTickPerSec: 10
   currentCorruzione: 5
   corruptionResistance: 0
-  immunityFrameDuration: 0.5
-  MalattiaLevel: 0
-  MalattiaPoints: 130
-  MalattiaProgression:
-  - level: 0
-    expRequired: 0
-  - level: 1
-    expRequired: 6
-  - level: 2
-    expRequired: 30
-  - level: 3
-    expRequired: 60
-  - level: 4
-    expRequired: 100
-  - level: 5
-    expRequired: 150
-  GuarigioneLevel: 0
-  GuarigionePoints: 99
-  GuarigioneProgression:
-  - level: 0
-    expRequired: 0
-  - level: 1
-    expRequired: 6
-  - level: 2
-    expRequired: 30
-  - level: 3
-    expRequired: 60
-  - level: 4
-    expRequired: 100
-  - level: 5
-    expRequired: 150
 --- !u!70 &7155375835084060804
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

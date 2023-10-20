@@ -1008,7 +1008,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &596970711
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1770,7 +1770,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 350, y: 24}
+  m_AnchoredPosition: {x: 350, y: 88}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &1039502201
@@ -1890,15 +1890,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8168ab9b06f874886497877fe67306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MalattiaProgressBar: {fileID: 809563713}
-  levelMalattia: {fileID: 1267509754}
-  GuarigioneProgressBar: {fileID: 1440658500}
-  levelGuarigione: {fileID: 1634807822}
   CorruptionBar: {fileID: 791958405}
   percTextCorruption: {fileID: 1182650457}
   IllBar: {fileID: 764073596}
   percTextIll: {fileID: 151720191}
   multiplierText: {fileID: 1797690899}
+  HealthBar: {fileID: 0}
+  currentHealthText: {fileID: 0}
+  maxHealthText: {fileID: 0}
 --- !u!1 &1048599917
 GameObject:
   m_ObjectHideFlags: 0
@@ -1914,7 +1913,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1048599918
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2144,7 +2143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1195314921
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2605,32 +2604,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1440658497}
   m_CullTransparentMesh: 1
---- !u!1 &1578833060 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3576759141607315508, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-  m_PrefabInstance: {fileID: 3576759141305476527}
-  m_PrefabAsset: {fileID: 0}
---- !u!50 &1578833066
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1578833060}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 7
 --- !u!1 &1634807820
 GameObject:
   m_ObjectHideFlags: 0
@@ -2901,7 +2874,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1797690899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3374,18 +3347,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2364346080047798333, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315505, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: Illdamage
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315505, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: CorruptionDamage
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 3576759141607315506, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -3430,33 +3391,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315507, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: m_Color.b
-      value: 0.20307134
-      objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315507, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: m_Color.g
-      value: 0.20016019
-      objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315507, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: m_Color.r
-      value: 0.24528301
-      objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315507, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: m_SortingLayer
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315507, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1885312813
-      objectReference: {fileID: 0}
     - target: {fileID: 3576759141607315508, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
       propertyPath: m_Name
       value: Obstacle
-      objectReference: {fileID: 0}
-    - target: {fileID: 3576759141607315508, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
-      propertyPath: m_Layer
-      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e22f1ab41e036724ea8076c698c4aecc, type: 3}
