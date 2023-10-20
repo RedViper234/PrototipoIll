@@ -8,6 +8,6 @@ using UnityEngine;
 public class FlagsSO : ScriptableObject
 {
     public string nomeFlag;
-    public bool valoreFlag;
+    public bool valoreBaseFlag;
 }
 

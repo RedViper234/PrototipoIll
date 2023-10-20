@@ -33,6 +33,7 @@ public class AppManager : MonoBehaviour
 
     [HideInInspector] public EnemyManager enemyManager;
     [HideInInspector] public RoomManager roomManager;
+    [HideInInspector] public FlagManager flagManager;
     [HideInInspector] public PlayerController playerControllerInstance;
     private void OnEnable()
     {
@@ -40,6 +41,7 @@ public class AppManager : MonoBehaviour
         SpawnaManagersSeNonCiSono();
         enemyManager = GetComponentInChildren<EnemyManager>();
         roomManager = GetComponentInChildren<RoomManager>();
+        flagManager = GetComponentInChildren<FlagManager>();
     }
 
     public void SpawnaManagersSeNonCiSono()
