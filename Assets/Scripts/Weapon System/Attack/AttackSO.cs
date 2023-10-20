@@ -18,11 +18,11 @@ public class AttackSO : ScriptableObject
     [Space(12)]
 
     [Header("Damage Settings")][Space(10)]
-    public float PlayerSpeedModifier;
+    [Range(0, 1)] public float PlayerSpeedModifier;
     public PlayerDragStruct PlayerDrag;
     public float BaseDamageAttack;
     public AttackRange AttackRangeAttack;
-    public DamageType DamageType;
+    public DamageTypex DamageType;
     [SerializeField] public List<StatusStruct> StatusEffects;
     public float KnockbackForceAttack;
 }

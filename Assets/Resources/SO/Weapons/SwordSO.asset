@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3414d77b0682885458543d4820cb7b30, type: 3}
   m_Name: SwordSO
   m_EditorClassIdentifier: 
-  BaseDamageWeapon: 0
-  ComboTimeProgression: 0.32
-  PlayerSpeedModifier: 0.48
+  BaseDamageWeapon: 40
+  ComboTimeProgression: 0.5
   AttackRangeWeapon: 2
-  DamageType: 0
+  DamageType: 1
   StatusEffects:
   - type: 0
     probability: 0
-  KnockbackForceWeapon: 0
+  KnockbackForceWeapon: 1
+  PlayerSpeedModifier: 0.1
