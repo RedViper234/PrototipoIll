@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour, IWeapon
@@ -15,11 +16,22 @@ public class Weapon : MonoBehaviour, IWeapon
     [field: SerializeField] public float KnockbackForceWeapon { get; set; }
     [field: SerializeField] public List<AttackSO> ComboList { get; set; }
 
+    [Header("Debug")]
+    [SerializeField, MyReadOnly] private float t_cooldown;
+
+    private Coroutine comboCoroutine;
+
     public void Awake()
     {
         InitWeaponValues();
 
         animator = GetComponent<Animator>();
+
+    }
+
+    void Update()
+    {
+        _ = t_cooldown > 0 ? t_cooldown -= Time.deltaTime : t_cooldown = 0;
     }
 
     public void InitWeaponValues()
@@ -48,5 +60,28 @@ public class Weapon : MonoBehaviour, IWeapon
         ****Start Cooldown tra attacchi****
         ****
         */
+
+        comboCoroutine = StartCoroutine(AttackCoroutine());
+        
+    }
+
+    private void GenerateAttackObject(AttackSO actualAttack)
+    {
+        GameObject inst_attack;
+
+        inst_attack = Instantiate(actualAttack.AttackPrefab, transform.parent.position, Quaternion.identity, transform.parent);
+
+        inst_attack.GetComponent<Attack>().InitAttackValues(actualAttack);
+    }
+
+    private IEnumerator AttackCoroutine()
+    {
+        if (t_cooldown <= 0)
+        {
+            GenerateAttackObject(ComboList[0]);
+            t_cooldown = ComboTimeProgression;
+        }
+
+        yield return null;
     }
 }
