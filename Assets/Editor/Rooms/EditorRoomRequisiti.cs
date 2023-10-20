@@ -6,10 +6,12 @@ public class EditorRoomRequisiti : Editor
 {
     private GUIStyle styleLabel;
     private SerializedProperty tipoRequisitoProp;
-    private SerializedProperty valoriMalattiaOGuarigioneProp;
     private SerializedProperty valoriCorruzioneProp;
     private SerializedProperty valoriPerPoteriProp;
     private SerializedProperty valoriPerPoteriSpecificiProp;
+    private SerializedProperty valoriDistanzaPercorsa;
+    private SerializedProperty valoriPerEntrataStanze;
+    private SerializedProperty valoriStatistichePersonaggio;
     // Add other SerializedProperty variables for your other fields
 
     private void OnEnable()
@@ -21,10 +23,12 @@ public class EditorRoomRequisiti : Editor
         styleLabel.normal.textColor = Color.white;
 
         tipoRequisitoProp = serializedObject.FindProperty("tipoRequisito");
-        valoriMalattiaOGuarigioneProp = serializedObject.FindProperty("valoriMalattiaOGuarigione");
+        valoriDistanzaPercorsa = serializedObject.FindProperty("valoriDistanzaPercorsa");
         valoriCorruzioneProp = serializedObject.FindProperty("valoreCorruzione");
         valoriPerPoteriProp = serializedObject.FindProperty("valoriPerPoteri");
         valoriPerPoteriSpecificiProp = serializedObject.FindProperty("valoriPerPoteriSpecifici");
+        valoriPerEntrataStanze = serializedObject.FindProperty("valoriPerEntrataStanze");
+        valoriStatistichePersonaggio = serializedObject.FindProperty("valoriStatistichePersonaggio");
         // Initialize other SerializedProperty variables here
     }
 
@@ -40,13 +44,6 @@ public class EditorRoomRequisiti : Editor
 
         switch ((TipoRequisito)tipoRequisitoProp.enumValueIndex)
         {
-            case TipoRequisito.MalattiaOGuarigione:
-                EditorGUILayout.Space(10);
-                EditorGUILayout.PropertyField(valoriMalattiaOGuarigioneProp.FindPropertyRelative("tipoRequisitoGuarigioneMalattia"), new GUIContent("Guarigione o Malattia"));
-                EditorGUILayout.PropertyField(valoriMalattiaOGuarigioneProp.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
-                EditorGUILayout.PropertyField(valoriMalattiaOGuarigioneProp.FindPropertyRelative("valoreDaComparare"), new GUIContent("Valore da Comparare"));
-                break;
-
             case TipoRequisito.PercentualeCorruzione:
                 EditorGUILayout.Space(10);
                 EditorGUILayout.PropertyField(valoriCorruzioneProp.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
@@ -65,7 +62,21 @@ public class EditorRoomRequisiti : Editor
                 EditorGUILayout.PropertyField(valoriPerPoteriSpecificiProp.FindPropertyRelative("listaTipiPoteriPerRequisiti"), new GUIContent("Potere Specifico"));
                 EditorGUILayout.PropertyField(valoriPerPoteriSpecificiProp.FindPropertyRelative("hasPotere"), new GUIContent("Ha il Potere"));
                 break;
-
+            case TipoRequisito.DistanzaPercorsa:
+                EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(valoriDistanzaPercorsa.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
+                EditorGUILayout.PropertyField(valoriDistanzaPercorsa.FindPropertyRelative("valore"), new GUIContent("Valore"));
+                break;
+            case TipoRequisito.NumeroStanzeAttraversate:
+                EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(valoriPerEntrataStanze.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
+                EditorGUILayout.PropertyField(valoriPerEntrataStanze.FindPropertyRelative("valore"), new GUIContent("Valore"));
+                break;   
+            case TipoRequisito.ValoreDiStatistica:
+                EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(valoriStatistichePersonaggio.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
+                EditorGUILayout.PropertyField(valoriStatistichePersonaggio.FindPropertyRelative("valoreStatistica"), new GUIContent("Valore"));
+                break;
             // Add other cases for your other fields
 
             default:

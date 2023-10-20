@@ -27,7 +27,7 @@ public class RoomData : ScriptableObject
     
 
     [Space(30)]
-    public MonsterSet setDiMostriDellaStanza;
+    public EnemySet setDiMostriDellaStanza;
     public List<RequisitiStanza> requisitiStanza;
     [Range(-100,100)]public int prioritaStanza = 0;
     public bool isFirstRoom = false;

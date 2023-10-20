@@ -16,14 +16,17 @@ public class WanderAction : Action
     private Vector2 randomDestination;
     public override void Act(StateMachineController controller)
     {
-        float currentTime = Time.time;
-        if (currentTime - lastCallTime >= intervalMin && !controller.currentEnemy.currentAgent.pathPending && controller.currentEnemy.currentAgent.remainingDistance <= 0.1f)
+        if (controller.currentEnemy.currentAgent.isOnNavMesh)
         {
-            float randomInterval = Random.Range(intervalMin, intervalMax);
-            if (currentTime - lastCallTime >= randomInterval)
+            float currentTime = Time.time;
+            if (currentTime - lastCallTime >= intervalMin && !controller.currentEnemy.currentAgent.pathPending && controller.currentEnemy.currentAgent.remainingDistance <= 0.1f)
             {
-                SetRandomDestination(controller);
-                lastCallTime = currentTime;
+                float randomInterval = Random.Range(intervalMin, intervalMax);
+                if (currentTime - lastCallTime >= randomInterval)
+                {
+                    SetRandomDestination(controller);
+                    lastCallTime = currentTime;
+                }
             }
         }
     }
@@ -48,26 +51,27 @@ public class WanderAction : Action
     }
     void SetRandomDestination(StateMachineController controller)
     {
-        float distanzaTraUnPunto = 0;
-        while (true)
+        int maxAttempts = 1000; // Limite massimo di tentativi per evitare loop infiniti
+        float distanceBetweenPoints = 0;
+
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
             float randomAngle = Random.Range(0f, 360f);
-            float x = (circleRadius * 2) * Mathf.Cos(randomAngle * Mathf.Deg2Rad);
-            float y = (circleRadius * 2) * Mathf.Sin(randomAngle * Mathf.Deg2Rad);
-            randomDestination = new Vector2(controller.transform.position.x + -x, controller.transform.position.y + -y);
-            distanzaTraUnPunto = Vector2.Distance(randomDestination, controller.transform.position);
-            if (distanzaTraUnPunto > 5f)
-            {
-                break;
-            }
-        }
+            float xOffset = (circleRadius * 2) * Mathf.Cos(randomAngle * Mathf.Deg2Rad);
+            float yOffset = (circleRadius * 2) * Mathf.Sin(randomAngle * Mathf.Deg2Rad);
+            randomDestination = new Vector2(controller.transform.position.x + -xOffset, controller.transform.position.y + -yOffset);
+            distanceBetweenPoints = Vector2.Distance(randomDestination, controller.transform.position);
 
-        controller.currentEnemy.currentAgent.SetDestination(randomDestination);
-        NavMeshHit hit;
-        bool isDestinationValid = NavMesh.SamplePosition(randomDestination, out hit, 1f, controller.currentEnemy.currentAgent.areaMask);
-        if (!isDestinationValid)
-        {
-            SetRandomDestination(controller);
+            if (distanceBetweenPoints > 5f)
+            {
+                NavMeshHit hit;
+                bool isDestinationValid = NavMesh.SamplePosition(randomDestination, out hit, 1f, controller.currentEnemy.currentAgent.areaMask);
+                if (isDestinationValid)
+                {
+                    controller.currentEnemy.currentAgent.SetDestination(randomDestination);
+                    return; // Uscita dalla funzione se viene trovata una destinazione valida
+                }
+            }
         }
     }
 }
