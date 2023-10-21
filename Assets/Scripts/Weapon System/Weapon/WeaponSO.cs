@@ -10,9 +10,11 @@ public class WeaponSO : ScriptableObject
     public float BaseDamageWeapon;
     public float ComboTimeProgression;
     public AttackRange AttackRangeWeapon;
-    public DamageType.DamageTypes DamageType;
+    public List<DamageType.DamageTypes> DamageType;
     [field: SerializeField] public List<StatusStruct> StatusEffects;
     public float KnockbackForceWeapon;
+    public float RangeAttackMaxDistance;
+    public Vector2 HurtboxSize;
 
     [Space(10)]
 

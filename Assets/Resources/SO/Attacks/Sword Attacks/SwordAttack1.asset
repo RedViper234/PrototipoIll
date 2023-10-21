@@ -12,12 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8335ce28c41c4d43ab7cf0611b1a397, type: 3}
   m_Name: SwordAttack1
   m_EditorClassIdentifier: 
-  AttackPrefab: {fileID: 0}
+  AttackPrefab: {fileID: 4072522862118810444, guid: e2141c435b35dc945a867921b455c1fa, type: 3}
   TimeToActivateHitbox: 0.1
   TimeDurationHitbox: 0.2
   TimeToEndHitbox: 0.1
   AttackCooldown: 0.2
   PlayerSpeedModifier: 0.1
+  PlayerDrag:
+    force: 0
+    waiting: 0
+    duration: 0
+    direction: {x: 0, y: 0}
   BaseDamageAttack: 0
   AttackRangeAttack: 2
   DamageType: 0

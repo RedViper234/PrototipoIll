@@ -5,7 +5,7 @@ using UnityEngine;
 public interface IAttack
 {
     public AttackSO attackSO {get; set;}
-    public GameObject AttackPrefab {get; set;}
+    // public GameObject AttackPrefab {get; set;}
     public float TimeToActivateHitbox {get; set;}
     public float TimeDurationHitbox {get; set;}
     public float TimeToEndHitbox {get; set;}
@@ -17,4 +17,5 @@ public interface IAttack
     public DamageType.DamageTypes DamageType {get; set;}
     [SerializeField] public List<StatusStruct> StatusEffects {get; set;}
     public float KnockbackForceAttack {get; set;}
+    void InitAttackValues(AttackSO attackSO);
 }
