@@ -71,7 +71,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
         //End of attack
         DoInTheEnd();
-        Destroy(this.gameObject);
+        // Destroy(this.gameObject);
         // Debug.Log("Fine");
     }
 
