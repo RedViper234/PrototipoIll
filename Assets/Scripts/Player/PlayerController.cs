@@ -226,6 +226,69 @@ public class PlayerController : MonoBehaviour
         setImmunity();
     }
 
+    public void PlayerTakeDamage(DamageInstance dmg)
+    {
+            if (isActuallyImmune() && !dmg.ignoreImmunityFrame)
+            {
+                return;
+            }
+            switch (dmg.type)
+            {
+                case DamageType.DamageTypes.Fisico:
+                    if (GetComponent<Damageable>())
+                    {
+                        GetComponent<Damageable>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Fuoco:
+                    if (GetComponent<Damageable>())
+                    {
+                        GetComponent<Damageable>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Ustioni:
+                    if (GetComponent<Damageable>())
+                    {
+                        GetComponent<Damageable>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Malattia:
+                    if (GetComponent<MalattiaHandler>())
+                    {
+                        GetComponent<MalattiaHandler>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il malattia handler");
+                    }
+                    break;
+                case DamageType.DamageTypes.Corruzione:
+                    if (GetComponent<MalattiaHandler>())
+                    {
+                        GetComponent<MalattiaHandler>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il malattia handler");
+                    }
+                    break;
+                default:
+                    break;
+            }        
+        setImmunity();
+    }
     public void PlayerDeath()
     {
         Debug.Log("sei morto");

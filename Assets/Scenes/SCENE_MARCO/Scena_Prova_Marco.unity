@@ -344,7 +344,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1233875971770859596, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
       propertyPath: m_managersList.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2772537072454165582, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
       propertyPath: m_Name
@@ -2836,7 +2836,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTrueFlags: []
   playerFalseFlags: []
-  flagList:
+  requisitoFlag:
     flagToSet: []
     requiredFlagList: []
 --- !u!4 &1666087180
