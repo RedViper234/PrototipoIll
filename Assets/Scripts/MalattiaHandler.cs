@@ -146,18 +146,29 @@ public class MalattiaHandler : MonoBehaviour
             if (!player.isActuallyImmune() || ignoreImmunity)
             {
                 float effectiveDamage = damage * CalcolaModificatoreDanno(tipo);
-
+                bool somethingChanged = false;
                 switch (tipo)
                 {
                     case DamageType.DamageTypes.Malattia:
-                        currentMalattia = Mathf.Min(currentMalattia + (int)effectiveDamage, 100);
+                        int tmp = (int)currentMalattia;
+                        currentMalattia = Mathf.Min(currentMalattia + effectiveDamage, 100);
+                        somethingChanged = ((int)currentMalattia != tmp ? true : false);
                         break;
                     case DamageType.DamageTypes.Corruzione:
-                        currentCorruzione = Mathf.Min(currentCorruzione + (int)effectiveDamage, 100);
+                        int tmpC = (int)currentCorruzione;
+                        int tmpM = (int)currentMalattia;
+                        currentCorruzione = Mathf.Min(currentCorruzione + effectiveDamage, 100);
                         currentMalattia = Math.Max(currentMalattia, currentCorruzione);
+                        somethingChanged = ((int)currentMalattia != tmpM ? true : false);
+                        somethingChanged = ((int)currentCorruzione != tmpC || somethingChanged ? true : false);
+                        break;
+                    case DamageType.DamageTypes.Time:
+                        int tmpT = (int)currentMalattia;
+                        currentMalattia = Mathf.Min(currentMalattia + effectiveDamage, 100);
+                        somethingChanged = ((int)currentMalattia != tmpT ? true : false);
                         break;
                     default:
-                        Debug.LogError("Tipo di danno non valido nel damageable(" + tipo + ")");
+                        Debug.LogError("Tipo di danno non valido nel Malattia handler(" + tipo + ")");
                         break;
                 }
 
@@ -166,7 +177,10 @@ public class MalattiaHandler : MonoBehaviour
                     player.PlayerDeath();
                 }
                 // Update health bar/UI here
-                updateIllBar();
+                if (somethingChanged)
+                {
+                    updateIllBar();
+                }
             }
         }
         else

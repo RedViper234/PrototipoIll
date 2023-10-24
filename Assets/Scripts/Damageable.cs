@@ -370,20 +370,30 @@ public class Damageable : MonoBehaviour
             if (!player.isActuallyImmune() || ignoreImmunity)
             {
                 float effectiveDamage = damage * CalcolaModificatoreDanno(tipo);
-
+                bool somethingChanged = false;
                 switch (tipo)
                 {
                     case DamageType.DamageTypes.Fisico:
-                        currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
+                        int tmp = (int)currentHealth;
+                        currentHealth = Mathf.Max(currentHealth - effectiveDamage, 0);
+                        somethingChanged = ((int)currentHealth != tmp ? true : false);
                         break;
                     case DamageType.DamageTypes.Ustioni:
-                        ustioniAccumulate += (int)effectiveDamage;
+                        int tmpU = (int)ustioniAccumulate;
+                        ustioniAccumulate += effectiveDamage;
                         ustioniAccumulate = Mathf.Min(maxHealth, ustioniAccumulate);
+                        somethingChanged = ((int)ustioniAccumulate != tmpU ? true : false);
+                        if (currentHealth > maxHealth - ustioniAccumulate)
+                        {
+                            currentHealth = maxHealth - ustioniAccumulate;
+                            somethingChanged = true;
+                        }
                         break;
                     case DamageType.DamageTypes.Fuoco:
-                        currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
-                        ustioniAccumulate += (int)effectiveDamage / 3;
-                        ustioniAccumulate = Mathf.Min(maxHealth, ustioniAccumulate);
+                        int tmp1 = (int)currentHealth;
+                        currentHealth = Mathf.Max(currentHealth - effectiveDamage, 0);
+                        somethingChanged = ((int)currentHealth != tmp1 ? true : false);
+                        ReceiveDamage(damage/3, true, DamageType.DamageTypes.Ustioni);
                         break;
                     default:
                         Debug.LogError("Tipo di danno non valido nel damageable("+tipo+")");
@@ -395,7 +405,10 @@ public class Damageable : MonoBehaviour
                     player.PlayerDeath();
                 }
                 // Update health bar/UI here
-                SetCurrentHealthBar();
+                if (somethingChanged)
+                {
+                    SetCurrentHealthBar();
+                }
             }
         }
         else

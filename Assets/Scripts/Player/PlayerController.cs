@@ -63,6 +63,8 @@ public class PlayerController : MonoBehaviour
     public float merchantSales = 0;
     private float immunityTimer = 0;
     public float immunityFrameDuration = 0;
+    public float majorDropChance = 0;
+    public float minorDropChance = 0;
 
     private Vector2 movementInput;
     private Vector2 aimInput;
@@ -622,6 +624,14 @@ public class PlayerController : MonoBehaviour
         {
             item.level = Luck.critChanceProgression.IndexOf(item) + 1;
         }
+        foreach (var item in Luck.majorDropProgression)
+        {
+            item.level = Luck.majorDropProgression.IndexOf(item) + 1;
+        }
+        foreach (var item in Luck.minorDropProgression)
+        {
+            item.level = Luck.minorDropProgression.IndexOf(item) + 1;
+        }
     }
 
 }
@@ -719,18 +729,12 @@ public class statConstitution : stat
         if (pc.GetComponent<MalattiaHandler>())
         {
             pc.GetComponent<MalattiaHandler>().malattiaGainPerSecond = pc.Constitution.illGainRateProgression.Find(f => f.level == pc.Constitution.livello).value;
-            if (pc.Constitution.livello > 1)
-            {
 
-            }
-            else
-            {
-                DamageModifier illResistance = new DamageModifier();
-                illResistance.tipo = DamageType.DamageTypes.Malattia;
-                illResistance.value = pc.Constitution.illResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
-                pc.GetComponent<MalattiaHandler>().AddResistance(illResistance, true);
-            }
-            
+            DamageModifier illResistance = new DamageModifier();
+            illResistance.tipo = DamageType.DamageTypes.Malattia;
+            illResistance.value = pc.Constitution.illResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
+            pc.GetComponent<MalattiaHandler>().AddResistance(illResistance, true);
+
             //pc.GetComponent<MalattiaHandler>().corruptionResistance = pc.Constitution.corruptionResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
         }
         else
@@ -742,6 +746,8 @@ public class statConstitution : stat
 public class statLuck : stat
 {
     public List<StatValueDictionaryEntry> critChanceProgression;
+    public List<StatValueDictionaryEntry> majorDropProgression;
+    public List<StatValueDictionaryEntry> minorDropProgression;
     [HideInInspector]
     public PlayerController pc;
 
@@ -750,6 +756,8 @@ public class statLuck : stat
     {
         //pc.merchantSales = pc.Resolve.merchantSalesProgression.Find(f => f.level == pc.Resolve.livello).value;
         pc.critChance = pc.Luck.critChanceProgression.Find(f => f.level == pc.Luck.livello).value;
+        pc.majorDropChance = pc.Luck.majorDropProgression.Find(f => f.level == pc.Luck.livello).value;
+        pc.minorDropChance = pc.Luck.minorDropProgression.Find(f => f.level == pc.Luck.livello).value;
     }
 }
 
