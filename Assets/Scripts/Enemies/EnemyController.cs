@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour
     private StateMachineController enemyStateMachineController;
     public bool isNotAttacking = true;
     public Transform target;
+    public bool enemyIsMutated;
 
     [HideInInspector] public NavMeshAgent currentAgent;
     [HideInInspector] public EnemyStatsSO enemyStats;
