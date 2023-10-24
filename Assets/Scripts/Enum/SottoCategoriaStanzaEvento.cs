@@ -1,8 +1,18 @@
-﻿public enum SottoCategoriaStanzaEvento
+﻿
+public enum SottoCategoriaStanzaEvento
 {
     Mercante,
-    Contenimento,
-    Purificazione,
+    Guaritori,
+    StanzaRiposo,
     Carovana,
-    Maledizione
+}
+public enum ETipoEventiMercante
+{
+    MercanteUmano,
+    MercanteInfetto
+}
+public enum ETipoEventiStanzaRiposo 
+{
+    TrattareLeUstioni,
+    TrattareLaMalattia
 }

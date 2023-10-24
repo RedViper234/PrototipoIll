@@ -21,17 +21,21 @@ public class RoomData : ScriptableObject
 
     // PROPRIETA PER STANZA EVENTO
     [SerializeField] public SottoCategoriaStanzaEvento tipoStanzaEvento;
+    [SerializeField] public ETipoEventiMercante sottoTipoStanzaMercante;
+    [SerializeField] public ETipoEventiStanzaRiposo sottoTipoStanzaRiposo;
+
+
 
     // PROPRIETA PER STANZA STORIA
     [SerializeField] public SottoCategoriaStanzaStoria tipoStanzaStoria;
-    
+   
 
     [Space(30)]
-    public EnemySet setDiMostriDellaStanza;
+    public List<EnemySet> setDiMostriDellaStanza;
     public List<RequisitiStanza> requisitiStanza;
     [Range(-100,100)]public int prioritaStanza = 0;
     public bool isFirstRoom = false;
     public RaritaEValoreStanza raritaEValoreStanza;
-    public List<StructPerListaFlags> flagsOnEnter;
-    public List<StructPerListaFlags> flagsOnComplete;
+    public RequisitoFlag flagsOnEnter;
+    public RequisitoFlag flagsOnComplete;
 }

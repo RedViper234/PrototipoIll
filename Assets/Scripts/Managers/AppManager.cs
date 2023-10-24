@@ -1,3 +1,4 @@
+using Cinemachine;
 using NavMeshPlus.Components;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,9 +9,11 @@ using UnityEngine.SceneManagement;
 public class AppManager : MonoBehaviour
 {
     private static AppManager m_instance;
+    public GameObject playePrefabReference;
+    public GameObject virtualMachineCameraPlayerPrefab;
     public List<ManagerData> m_managersList;
 
-    
+    private GameObject m_currentPlayerInstance;
     public static AppManager Instance
     {
         get
@@ -42,8 +45,28 @@ public class AppManager : MonoBehaviour
         enemyManager = GetComponentInChildren<EnemyManager>();
         roomManager = GetComponentInChildren<RoomManager>();
         flagManager = GetComponentInChildren<FlagManager>();
+        if (FindAnyObjectByType(typeof(CinemachineVirtualCamera)) != null)
+        {
+            virtualMachineCameraPlayerPrefab = FindAnyObjectByType<CinemachineVirtualCamera>().gameObject;
+        }
+        else
+        {
+            GameObject camera = Instantiate(virtualMachineCameraPlayerPrefab, new Vector3(0,0,0),Quaternion.identity);
+            virtualMachineCameraPlayerPrefab = camera;
+        }
     }
-
+    private void Awake()
+    {
+        //if(playePrefabReference != null && playerControllerInstance)
+        //{
+        //    playerControllerInstance = FindAnyObjectByType(typeof(PlayerController)) as PlayerController;
+        //    playePrefabReference = playerControllerInstance.gameObject;
+        //}
+        //else
+        //{
+        //    playerControllerInstance = playePrefabReference.GetComponent<PlayerController>();
+        //}
+    }
     public void SpawnaManagersSeNonCiSono()
     {
         if(m_managersList != null)
@@ -67,6 +90,18 @@ public class AppManager : MonoBehaviour
         m_managersList = null;
         transform.DetachChildren();
     }
+    public void SetPlayerObject(GameObject player)
+    {
+        m_currentPlayerInstance = player;
+    }
+    public void SetCameraPlayer()
+    {
+        CinemachineVirtualCamera vc = virtualMachineCameraPlayerPrefab.GetComponent<CinemachineVirtualCamera>();
+        if (vc != null)
+        {
+            vc.Follow = m_currentPlayerInstance.transform;
+        }
+    }
 
 }
 
@@ -79,5 +114,4 @@ public abstract class Manager:MonoBehaviour
 public struct ManagerData 
 {
     public GameObject manager;
-    public float Ciao;
 }

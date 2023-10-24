@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.UI;
+using System.Collections.Generic;
 
 /// <summary>
 /// Custom editor for <see cref="EditorRoomData"/> objects.
@@ -9,7 +10,7 @@ using UnityEditor.UI;
 public class EditorRoomData : Editor
 {
 
-    public SerializedProperty prefabStanza, requisitiStanza,priorita, isFirstRoom, raritaEValoreStanza, flagsOnEnter, flagsOnComplete;
+    public SerializedProperty prefabStanza, setDiMostriDellaStanza, requisitiStanza,priorita, isFirstRoom, raritaEValoreStanza, flagsOnEnter, flagsOnComplete;
     GUIStyle styleLabel;
     public GUIStyle greenBackgroundStyle;
     public GUIStyle redBackgroundStyle;
@@ -19,6 +20,7 @@ public class EditorRoomData : Editor
     /// </summary>
     private void OnEnable()
     {
+        setDiMostriDellaStanza = serializedObject.FindProperty("setDiMostriDellaStanza");
         prefabStanza = serializedObject.FindProperty("prefabStanza");
         requisitiStanza = serializedObject.FindProperty("requisitiStanza");
         priorita = serializedObject.FindProperty("prioritaStanza");
@@ -74,6 +76,21 @@ public class EditorRoomData : Editor
         if ((roomData.tipiDiStanza & TipiDiStanza.Evento) != 0)
         {
             roomData.tipoStanzaEvento = (SottoCategoriaStanzaEvento)EditorGUILayout.EnumPopup("Evento", roomData.tipoStanzaEvento);
+            switch (roomData.tipoStanzaEvento)
+            {
+                case SottoCategoriaStanzaEvento.Mercante:
+                    roomData.sottoTipoStanzaMercante = (ETipoEventiMercante)EditorGUILayout.EnumPopup("Tipo Di Mercante", roomData.sottoTipoStanzaMercante);
+                    break;
+                case SottoCategoriaStanzaEvento.Guaritori:
+                    break;
+                case SottoCategoriaStanzaEvento.StanzaRiposo:
+                    roomData.sottoTipoStanzaRiposo = (ETipoEventiStanzaRiposo)EditorGUILayout.EnumPopup("Tipo Di Riposo", roomData.sottoTipoStanzaRiposo);
+                    break;
+                case SottoCategoriaStanzaEvento.Carovana:
+                    break;
+                default:
+                    break;
+            }
         }
 
         if ((roomData.tipiDiStanza & TipiDiStanza.Storia) != 0)
@@ -84,7 +101,7 @@ public class EditorRoomData : Editor
         EditorGUI.indentLevel--;
         if ((roomData.tipiDiStanza & TipiDiStanza.Combattimento) != 0 || (roomData.tipiDiStanza & TipiDiStanza.Boss) != 0)
         {
-            roomData.setDiMostriDellaStanza = (EnemySet)EditorGUILayout.ObjectField("Set di Mostri", roomData.setDiMostriDellaStanza, typeof(EnemySet), false);
+            EditorGUILayout.PropertyField(setDiMostriDellaStanza,new GUIContent("Lista set mostri"));
         }
         DrawUILine(Color.gray,1);
         EditorGUILayout.Space(5);
