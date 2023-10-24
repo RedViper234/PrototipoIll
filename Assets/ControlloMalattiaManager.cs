@@ -22,7 +22,18 @@ public class MalattiaStat
 [System.Serializable]
 public class Mortality : MalattiaStat
 {
+    public Vector2 mortalityVariation;
+    public int applyMortalityToEnemySet(int totalEnemy, TipologiaEnemySet tipo)
+    {
+        if (tipo == TipologiaEnemySet.Umani || tipo == TipologiaEnemySet.Bestie)
+        {
+            return totalEnemy;
+        }
 
+        float range = mortalityVariation.y - mortalityVariation.x;
+        totalEnemy = Mathf.RoundToInt(mortalityVariation.y - ((range / 100) * actualValue));
+        return totalEnemy;
+    }
 }
 [System.Serializable]
 public class Infectivity : MalattiaStat
