@@ -14,7 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomPossibiliDaSpawnare:
   - {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
+  - {fileID: 11400000, guid: 4b43308165663cd4680af18fa230a008, type: 2}
   spawnAutomatico: 0
+  spawnRicompense: []
+  numeroRicompenseSpawn: 0
+  accettaRipetizioneRicompense: 0
+  respawn: 0
+  respawnLimit: 0
   descrizione: 
   movementCost: -1
   secTimeBattleProbability: -1
@@ -24,3 +30,5 @@ MonoBehaviour:
     breakable: 0
     monouso: 0
   flagOnEnter: []
+  flagOnEnterOnlyFirstTime: 0
+  blockSpecialRoom: 0

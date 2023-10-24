@@ -5,6 +5,7 @@ using UnityEditor;
 public class EnemySetEditor : Editor
 {
     private GUIStyle styleLabel;
+    private SerializedProperty tipologiaNemico;
     private SerializedProperty tipoSwitchOndataProp;
     private SerializedProperty pesoSetProp;
     private SerializedProperty tipoRequisitoProp;
@@ -14,7 +15,10 @@ public class EnemySetEditor : Editor
     private SerializedProperty valoriDistanzaPercorsaProp;
     private SerializedProperty valoriPerEntrataStanzeProp;
     private SerializedProperty valoriStatistichePersonaggioProp;
-    private SerializedProperty listaDiNemiciDaSpawnareInStanzaProp;
+    private SerializedProperty listaDiOndate;
+    private SerializedProperty valoreVitaRimasta;
+    private SerializedProperty valoreQuantitaMassima;
+    private SerializedProperty valoreQuantitaUstioni;
     private SerializedProperty flagOnSelectProp;
     private SerializedProperty flagOnCompleteProp;
     private SerializedProperty canRepeatProp;
@@ -27,6 +31,7 @@ public class EnemySetEditor : Editor
         styleLabel.margin = new RectOffset(0, 0, 0, 20);
         styleLabel.normal.textColor = Color.white;
 
+        tipologiaNemico = serializedObject.FindProperty("tipologiaNemico");
         tipoSwitchOndataProp = serializedObject.FindProperty("tipoSwitchOndata");
         pesoSetProp = serializedObject.FindProperty("pesoSet");
         tipoRequisitoProp = serializedObject.FindProperty("tipoRequisito");
@@ -36,10 +41,14 @@ public class EnemySetEditor : Editor
         valoriDistanzaPercorsaProp = serializedObject.FindProperty("valoriDistanzaPercorsa");
         valoriPerEntrataStanzeProp = serializedObject.FindProperty("valoriPerEntrataStanze");
         valoriStatistichePersonaggioProp = serializedObject.FindProperty("valoriStatistichePersonaggio");
-        listaDiNemiciDaSpawnareInStanzaProp = serializedObject.FindProperty("listaDiNemiciDaSpawnareInStanza");
-        flagOnSelectProp = serializedObject.FindProperty("flagOnSelect");
-        flagOnCompleteProp = serializedObject.FindProperty("flagOnComplete");
+        listaDiOndate = serializedObject.FindProperty("listaDiOndate");
+        flagOnSelectProp = serializedObject.FindProperty("flagsOnSelect");
+        flagOnCompleteProp = serializedObject.FindProperty("flagsOnComplete");
         canRepeatProp = serializedObject.FindProperty("CanRepeat");
+        valoreVitaRimasta = serializedObject.FindProperty("valoreVitaRimasta");
+        valoreQuantitaMassima = serializedObject.FindProperty("valoreQuantitaMassima");
+        valoreQuantitaUstioni = serializedObject.FindProperty("valoreQuantitaUstioni");
+
     }
 
     public override void OnInspectorGUI()
@@ -59,37 +68,57 @@ public class EnemySetEditor : Editor
         {
             case TipoRequisito.PercentualeCorruzione:
                 EditorGUILayout.PropertyField(valoreCorruzioneProp, new GUIContent("Valore Corruzione"));
+                EditorGUILayout.Space(20);
                 break;
 
             case TipoRequisito.NumeroPoteriOttenuti:
                 EditorGUILayout.PropertyField(valoriPerPoteriProp, new GUIContent("Valori per Poteri"));
+                EditorGUILayout.Space(20);
                 break;
 
             case TipoRequisito.PoterSpecifico:
                 EditorGUILayout.PropertyField(valoriPerPoteriSpecificiProp, new GUIContent("Valori per Poteri Specifici"));
+                EditorGUILayout.Space(20);
                 break;
 
             case TipoRequisito.DistanzaPercorsa:
                 EditorGUILayout.PropertyField(valoriDistanzaPercorsaProp, new GUIContent("Valori Distanza Percorsa"));
+                EditorGUILayout.Space(20);
                 break;
 
             case TipoRequisito.NumeroStanzeAttraversate:
                 EditorGUILayout.PropertyField(valoriPerEntrataStanzeProp, new GUIContent("Valori per Entrata Stanze"));
+                EditorGUILayout.Space(20);
                 break;
 
             case TipoRequisito.ValoreDiStatistica:
                 EditorGUILayout.PropertyField(valoriStatistichePersonaggioProp, new GUIContent("Valori Statistica Personaggio"));
+                EditorGUILayout.Space(20);
                 break;
-
+            case TipoRequisito.QuantitaVitaMassima:
+                EditorGUILayout.PropertyField(valoreQuantitaMassima, new GUIContent("Valori Quantità Vita Massima"));
+                EditorGUILayout.Space(20);
+                break;
+            case TipoRequisito.PercentualeVitaRimasta:
+                EditorGUILayout.PropertyField(valoreVitaRimasta, new GUIContent("Valori Vita Rimasta"));
+                EditorGUILayout.Space(20);
+                break;
+            case TipoRequisito.Ustioni:
+                EditorGUILayout.PropertyField(valoreQuantitaUstioni, new GUIContent("Valori Quantita Ustioni"));
+                EditorGUILayout.Space(20);
+                break;
             default:
                 break;
         }
 
-        EditorGUILayout.PropertyField(listaDiNemiciDaSpawnareInStanzaProp, new GUIContent("Lista di Nemici da Spawnare in Stanza"), true);
+        EditorGUILayout.PropertyField(tipologiaNemico, new GUIContent("Tipologia Mostri"));
+        EditorGUILayout.PropertyField(listaDiOndate, new GUIContent("Lista di ondate"), true);
         EditorGUILayout.PropertyField(flagOnSelectProp, new GUIContent("Flags On Select"), true);
         EditorGUILayout.PropertyField(flagOnCompleteProp, new GUIContent("Flags On Complete"), true);
         EditorGUILayout.PropertyField(canRepeatProp, new GUIContent("Can Repeat"));
 
         serializedObject.ApplyModifiedProperties();
+
+        //base.OnInspectorGUI();
     }
 }

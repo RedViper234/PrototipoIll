@@ -17,10 +17,32 @@ MonoBehaviour:
   descrizioneArea: 
   sottoAree: []
   movementCost: -1
+  breakPointsMin: 0
+  breakPointsMax: 0
   secondTimeBattleProbablity: -1
   onCompleteFlags:
   - flagsDaSettare:
     - {fileID: 0}
     flagsNecessarie: []
+  stanzeSpeciali:
+  - stanza: {fileID: 0}
+    "priorit\xE0StanzaSpeciale": 0
+    riproduzioneMultipla: 0
   onlyOneSpecialRoom: 0
-  enemySet: []
+  enemySet:
+  - {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
+  roomDistributions:
+  - tipoStanzaArea: 0
+    tipoStanzaCombattimentoArea: 0
+    tipoStanzaBossArea: 0
+    tipoStanzaEvento: 0
+    sottoTipoStanzaMercante: 0
+    sottoTipoStanzaRiposo: 0
+    tipoStanzaStoriaArea: 0
+    min: 0
+    max: 0
+    minRespawn: -1
+    maxRespawn: -1
+    tipoRicompensa: []
+    numeroRicompense: 0
+    accettaRipetizioniRicompense: 0

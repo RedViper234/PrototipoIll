@@ -33,7 +33,7 @@ public class EnemyController : MonoBehaviour
     }
     private void Start()
     {
-        target = FindFirstObjectByType<PlayerController>().transform;
+        target = FindFirstObjectByType<PlayerController>()?.transform;
         currentAgent.acceleration = enemyStats.enemyAcceleration;
         currentAgent.speed = enemyStats.enemySpeed;
         damageable.maxHealth = enemyStats.vitaMassima;

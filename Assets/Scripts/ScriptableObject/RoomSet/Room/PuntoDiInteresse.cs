@@ -10,6 +10,12 @@ public class PuntoDiInteresse : ScriptableObject
 {
     public List<RoomData> roomPossibiliDaSpawnare;
     public bool spawnAutomatico;
+    public List<SpawnRicompensa> spawnRicompense;
+    public int numeroRicompenseSpawn;
+    [Tooltip(" bool che indica che lo stesso elemento della lista ricompense può essere selezionato più di una volta.")]
+    public bool accettaRipetizioneRicompense;
+    public ERespawn respawn;
+    public int respawnLimit;
     [TextArea]
     public string descrizione;
     [Range(-1, 100)]
@@ -22,9 +28,39 @@ public class PuntoDiInteresse : ScriptableObject
     public bool blockSpecialRoom;
 }
 [System.Serializable]
-public struct ConnectedPoints
+public class ConnectedPoints
 {
     public List<PuntoDiInteresse> points;
     public bool breakable;
     public bool monouso;
+}
+[System.Serializable]
+public class SpawnRicompensa
+{
+    public TipoRicompensa tipoRicompensa;
+    public int dropMinimo;
+    public int dropMassimo;
+}
+public enum TipoRicompensa
+{
+    NessunaRicompensa,
+    Potere,
+    StatFragment,
+    EvoluzionePotere,
+    PotereMaggioreCasuale,
+    PotereEpico,
+    Drop,
+    DropMaggioreCasuale,
+    DropMinoreCasuale
+
+}
+public enum ERespawn
+{
+    No,
+    SoloStanzaEsaurimento,
+    SoloStanzaRipetibile,
+    SiaStanzaCheRicompensaEsaurimento,
+    SiaStanzaCheRicompensaRipetibile
+
+   
 }

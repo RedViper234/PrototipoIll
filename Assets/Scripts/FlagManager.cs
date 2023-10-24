@@ -35,7 +35,7 @@ public class FlagManager : Manager
         }
     }
 
-    public bool checkFlag(FlagStructure flagToCheck)
+    public bool CheckFlag(FlagStructure flagToCheck)
     {
         if (flagToCheck.actualValue)
         {
@@ -47,7 +47,7 @@ public class FlagManager : Manager
         }
     }
 
-    public bool checkFlag(List<FlagStructure> flagsToCheck)
+    public bool CheckFlag(List<FlagStructure> flagsToCheck)
     {
         bool tmpResult = true;
         foreach (var flagToCheck in flagsToCheck)
@@ -69,7 +69,7 @@ public class FlagManager : Manager
         return tmpResult;
     }
 
-    public void setFlag(FlagStructure flagToSet)
+    public void SetFlag(FlagStructure flagToSet)
     {
         if (flagToSet.actualValue)
         {
@@ -111,7 +111,7 @@ public class FlagManager : Manager
         }
     }
 
-    public void setFlag(List<FlagStructure> flagsToSet)
+    public void SetFlag(List<FlagStructure> flagsToSet)
     {
         foreach (var flagToSet in flagsToSet)
         {

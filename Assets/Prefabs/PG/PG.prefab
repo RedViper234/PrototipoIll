@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1830533227
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   speedModifier: 1
   meleeAttackPrefab: {fileID: 6087447557202039915, guid: d60783e6955d3ee4b8bf08f3e3d1618d, type: 3}
   meleeDamageModifier: 1
-  meleeKnockbackForce: 10
+  meleeKnockbackModifier: 10
   meleeKnockbackDuration: 0.5
   meleeHitTime: 0.2
   meleeHitDelay: 0.1
@@ -312,7 +312,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &1404821118485055086
 MonoBehaviour:
@@ -326,8 +326,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5955718e38b3d6a4890301c19250ff09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 70
+  maxHealth: 100000
+  currentHealth: 100000
   ustioniAccumulate: 0
   damageResistance: 0
   ustioniResistance: 0

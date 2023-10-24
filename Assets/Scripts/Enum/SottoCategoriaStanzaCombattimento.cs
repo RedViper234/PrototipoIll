@@ -1,6 +1,7 @@
 ﻿public enum SottoCategoriaStanzaCombattimento
 {
     Standard,
-    Miniboss,
-    Sfida,
+    Infetti,
+    Umani,
+    Bestie,
 }

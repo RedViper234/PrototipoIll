@@ -58,6 +58,7 @@ MonoBehaviour:
   OnAreaChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_stanzeAttraversate: 0
 --- !u!156049354 &2214823338189001626
 Grid:
   m_ObjectHideFlags: 0

@@ -46,7 +46,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
     {
         if(other.GetComponent<Damageable>())
         {
-            other.GetComponent<Damageable>().TakeDamage(BaseDamageAttack == 0 ? GetComponentInParent<IWeapon>().BaseDamageWeapon: BaseDamageAttack , false, false);
+            //other.GetComponent<Damageable>().TakeDamage(BaseDamageAttack == 0 ? GetComponentInParent<IWeapon>().BaseDamageWeapon: BaseDamageAttack , false, false);
             //TODO Add knockback
         }
     }
