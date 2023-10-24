@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour, ISubscriber
     public TextMeshProUGUI maxHealthText;
 
     // Start is called before the first frame update
-    void Awake()
+    void OnEnable()
     {
         Publisher.Subscribe(this, new UpdateUiBar());
         Publisher.Subscribe(this, new UpdateHealthBar());
