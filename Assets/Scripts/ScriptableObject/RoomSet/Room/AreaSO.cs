@@ -24,6 +24,7 @@ public class AreaSO : ScriptableObject
     public bool onlyOneSpecialRoom = false;
     public List<EnemySet> enemySet;
     public List<RoomDistribution> roomDistributions;
+    public List<AreaSpawnStandardProbability> standardCombatProbability;
 
 
     private void OnValidate()
@@ -86,4 +87,10 @@ public class PercentualRoomDistribution
     public int peso = 0;
     public int maxAppereance;
     public RoomData defaultRoom;
+}
+
+public class AreaSpawnStandardProbability
+{
+    public TipologiaEnemySet tipo;
+    public float percentualValue;
 }

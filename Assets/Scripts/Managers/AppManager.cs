@@ -38,6 +38,8 @@ public class AppManager : MonoBehaviour
     [HideInInspector] public RoomManager roomManager;
     [HideInInspector] public FlagManager flagManager;
     [HideInInspector] public PlayerController playerControllerInstance;
+    [HideInInspector] public ControlloMalattiaManager controlloMalattiaManager;
+    [HideInInspector] public InventoryManager inventoryManager;
     private void OnEnable()
     {
         m_instance= this;
@@ -45,6 +47,8 @@ public class AppManager : MonoBehaviour
         enemyManager = GetComponentInChildren<EnemyManager>();
         roomManager = GetComponentInChildren<RoomManager>();
         flagManager = GetComponentInChildren<FlagManager>();
+        controlloMalattiaManager = GetComponentInChildren<ControlloMalattiaManager>();
+        inventoryManager = GetComponentInChildren<InventoryManager>();
         if (FindAnyObjectByType(typeof(CinemachineVirtualCamera)) != null)
         {
             virtualMachineCameraPlayerPrefab = FindAnyObjectByType<CinemachineVirtualCamera>().gameObject;

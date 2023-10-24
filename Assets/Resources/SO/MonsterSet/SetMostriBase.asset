@@ -15,15 +15,15 @@ MonoBehaviour:
   tipologiaNemico: 0
   tipoSwitchOndata: 0
   pesoSet: 6
-  tipoRequisito: 1
+  tipoRequisito: 3
   valoreVitaRimasta:
-    operatori: 0
+    operatori: 2
     percentuale: 0
   valoreQuantitaMassima:
     operatori: 0
     quantita: 0
   valoreQuantitaUstioni:
-    operatori: 0
+    operatori: 4
     quantitaUstioni: 0
   valoreCorruzione:
     operatori: 0
@@ -50,19 +50,23 @@ MonoBehaviour:
     maxEnemyOndata: 15
     mostri:
     - nemicoDaIstanziare: {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
-      percentualeSpawnMostri: 50
+      percentualeSpawnMostri: 20
       canMutate: 0
-      playerDistance: 1
+      playerDistance: 0
+    - nemicoDaIstanziare: {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+      percentualeSpawnMostri: 80
+      canMutate: 0
+      playerDistance: 0
     staticMostri:
     - nemicoDaIstanziare: {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
       quantitaDiMostriDaIstanziare: 2
       canMutate: 0
-      playerDistance: 2
+      playerDistance: 0
   - minEnemyOndata: 1
     maxEnemyOndata: 13
     mostri:
     - nemicoDaIstanziare: {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
-      percentualeSpawnMostri: 75
+      percentualeSpawnMostri: 36
       canMutate: 1
       playerDistance: 0
     staticMostri:
@@ -74,7 +78,7 @@ MonoBehaviour:
     maxEnemyOndata: 20
     mostri:
     - nemicoDaIstanziare: {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
-      percentualeSpawnMostri: 52
+      percentualeSpawnMostri: 1
       canMutate: 0
       playerDistance: 2
     staticMostri:
@@ -86,7 +90,7 @@ MonoBehaviour:
     maxEnemyOndata: 8
     mostri:
     - nemicoDaIstanziare: {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
-      percentualeSpawnMostri: 20
+      percentualeSpawnMostri: 11
       canMutate: 1
       playerDistance: 3
     staticMostri:

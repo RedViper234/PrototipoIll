@@ -17,9 +17,12 @@ MonoBehaviour:
   tipoStanzaCombattimento: 0
   tipoStanzaBoss: 0
   tipoStanzaEvento: 1
+  sottoTipoStanzaMercante: 0
+  sottoTipoStanzaRiposo: 0
   tipoStanzaStoria: 2
   setDiMostriDellaStanza:
   - {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
+  - {fileID: 11400000, guid: 1d2ce3785e2335d40b74d09ff7fb80a2, type: 2}
   requisitiStanza:
   - {fileID: 11400000, guid: 6b100777b61a69545ba83e6bf389e29c, type: 2}
   prioritaStanza: 100

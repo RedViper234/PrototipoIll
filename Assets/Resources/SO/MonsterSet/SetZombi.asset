@@ -15,15 +15,15 @@ MonoBehaviour:
   tipologiaNemico: 0
   tipoSwitchOndata: 1
   pesoSet: 3
-  tipoRequisito: 1
+  tipoRequisito: 3
   valoreVitaRimasta:
-    operatori: 0
-    percentuale: 0
+    operatori: 3
+    percentuale: 100
   valoreQuantitaMassima:
     operatori: 0
     quantita: 0
   valoreQuantitaUstioni:
-    operatori: 0
+    operatori: 2
     quantitaUstioni: 0
   valoreCorruzione:
     operatori: 0
@@ -46,13 +46,13 @@ MonoBehaviour:
     operatori: 0
     valoreStatistica: 0
   listaDiOndate:
-  - minEnemyOndata: 1
+  - minEnemyOndata: 8
     maxEnemyOndata: 10
     mostri:
     - nemicoDaIstanziare: {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
-      percentualeSpawnMostri: 0
+      percentualeSpawnMostri: 100
       canMutate: 0
-      playerDistance: 2
+      playerDistance: 0
     staticMostri:
     - nemicoDaIstanziare: {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
       quantitaDiMostriDaIstanziare: 4

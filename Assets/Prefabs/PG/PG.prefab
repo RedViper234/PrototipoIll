@@ -131,6 +131,8 @@ MonoBehaviour:
   dashRememberTime: 0.2
   merchantSales: 0
   immunityFrameDuration: 0
+  majorDropChance: 0
+  minorDropChance: 0
   Strenght:
     name: 
     livello: 1
@@ -292,6 +294,12 @@ MonoBehaviour:
       value: 10
     - level: 0
       value: 15
+    majorDropProgression:
+    - level: 0
+      value: 0
+    minorDropProgression:
+    - level: 0
+      value: 0
     pc: {fileID: 0}
 --- !u!50 &5664604751966636653
 Rigidbody2D:
@@ -329,8 +337,12 @@ MonoBehaviour:
   maxHealth: 100000
   currentHealth: 100000
   ustioniAccumulate: 0
-  damageResistance: 0
-  ustioniResistance: 0
+  additiveDamageResistances: []
+  staticDamageResistances: []
+  additiveDamageVulnerabilities: []
+  staticDamageVulnerabilities: []
+  ResistanceDamageCap: []
+  VulnerabilityDamageCap: []
   damageImmunity: 0
 --- !u!114 &2125458318
 MonoBehaviour:
@@ -345,12 +357,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   malattiaGainPerSecond: 0.5
-  malattiaResistance: 0
-  malattiaImmunity: 0
   currentMalattia: 10
   stopTimeMalattiaGain: 0
   currentCorruzione: 5
-  corruptionResistance: 0
+  additiveDamageResistances: []
+  staticDamageResistances: []
+  additiveDamageVulnerabilities: []
+  staticDamageVulnerabilities: []
+  ResistanceDamageCap: []
+  VulnerabilityDamageCap: []
+  damageImmunity: 0
 --- !u!70 &7155375835084060804
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

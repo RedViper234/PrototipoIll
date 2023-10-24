@@ -17,7 +17,9 @@ public class RoomManager : Manager
     [Header("CURRENT SETTINGS")]
     [MyReadOnly] public PuntoDiInteresse currentPoint;
     [MyReadOnly] public RoomData currentRoom;
-    [HideInInspector] public AreaSO currentArea;
+    [MyReadOnly] public AreaSO currentArea;
+    [MyReadOnly] public EnemySet currentEnemySet;
+    [MyReadOnly,SerializeField] private int m_enemyQuantity;
     [Expandable]
     public List<AreaSO> areeDaEsplorare;
     public UnityEvent OnAreaChanged;
@@ -27,8 +29,10 @@ public class RoomManager : Manager
 
     private PlayerController m_playerControllerInstance;
     private FlagManager m_flagManager;
+    private int m_indiceOndataCorrente = 0;
     public void Start()
     {
+        m_indiceOndataCorrente = 0;
         m_playerControllerInstance = AppManager.Instance.playePrefabReference.GetComponent<PlayerController>();
         m_flagManager = AppManager.Instance?.flagManager;
         Initialize();
@@ -604,6 +608,8 @@ public class RoomManager : Manager
                 List<EnemySet> validEnemyList = new List<EnemySet>();
                 validEnemyList = GetValidEnemySet(currentRoom.setDiMostriDellaStanza);
                 SetEnemySet(validEnemyList);
+                Debug.Log($"<b><color=#00ff00ff>ENEMY SET FINALE: {currentEnemySet}</color></b>");
+                StartOndate();
             }
         }
         catch (Exception e)
@@ -615,6 +621,127 @@ public class RoomManager : Manager
 
 
 
+
+
+    public List<EnemySet> GetValidEnemySet(List<EnemySet> setDiMostriDellaStanza)
+    {
+        List<EnemySet> enemySetValidiAiRequisiti = new List<EnemySet>();
+        foreach (var setDiMostri in setDiMostriDellaStanza)
+        {
+            if (CheckRequisiti(setDiMostri))
+            {
+                enemySetValidiAiRequisiti.Add(setDiMostri);
+                Debug.Log($"<b><color=#FF00e1>MONSTER SET VALIDO: {setDiMostri}</color> <quad=2></b>");
+               
+            }
+            else
+            {
+                Debug.Log($"<b><color=#FF0000>MONSTER SET NON VALIDO: {setDiMostri}</color> <quad=2></b>");
+            }
+        }
+        if(enemySetValidiAiRequisiti.Count == 0)
+        {
+            foreach (var setMostriArea in currentArea.enemySet)
+            {
+                if (CheckRequisiti(setMostriArea))
+                {
+                    enemySetValidiAiRequisiti.Add(setMostriArea);
+                    Debug.Log($"<b><color=#FF00e1>MONSTER SET VALIDO: {setMostriArea}</color> <quad=2></b>");
+                }
+            }
+        }
+        if(enemySetValidiAiRequisiti.Count == 0)
+        {
+            int rangeRandomPerSpwanForzatoSet = UnityEngine.Random.Range(0,currentArea.enemySet.Count);
+            enemySetValidiAiRequisiti.Add(currentArea.enemySet[rangeRandomPerSpwanForzatoSet]);
+            Debug.LogError("Zero enemy set validi, metti almeno un'enemy set valido.\n E stato scelto un set casuale dall'area in modo forzato, risolvere");
+        }
+        return enemySetValidiAiRequisiti;
+    }
+    public void SetEnemySet(List<EnemySet> enemySets)
+    {
+        if(enemySets.Count == 1)
+        {
+            currentEnemySet = enemySets[0];
+            
+        }
+        else if(enemySets.Count > 1)
+        {
+            int pesoTotale = 0;
+            for (int i = 0; i < enemySets.Count; i++)
+            {
+                pesoTotale += enemySets[i].pesoSet;
+            }
+
+            int randomValue = UnityEngine.Random.Range(0, pesoTotale);
+
+            int pesoAccumulato = 0;
+            for (int i = 0; i < enemySets.Count; i++)
+            {
+                float percentuale = (float)enemySets[i].pesoSet / pesoTotale;
+                if (randomValue >= pesoAccumulato && randomValue < pesoAccumulato + enemySets[i].pesoSet)
+                {
+                    Debug.Log($"<b>Hai selezionato l'elemento</b>{i}<quad material=1 size=20 x=0.1 y=0.1 width=0.5 height=0.5> ");
+                    currentEnemySet = enemySets[i];
+                    break; 
+                }
+
+                pesoAccumulato += enemySets[i].pesoSet;
+            }
+
+        }
+    }
+    private void StartOndate()
+    {
+        try
+        {
+            var ondata = currentEnemySet.listaDiOndate[m_indiceOndataCorrente];
+            float enemyQuantity = (int)UnityEngine.Random.Range(ondata.minEnemyOndata, ondata.maxEnemyOndata);
+            //QUI SI CALCOLANO O POTERI E/O MORTALITA
+            m_enemyQuantity = (int)enemyQuantity;
+            enemyQuantity = AppManager.Instance.controlloMalattiaManager.mortality.applyMortalityToEnemySet(m_enemyQuantity, currentEnemySet.tipologiaNemico);
+            //ISTANZIAMO I NEMICI NON STATICI
+
+            foreach (var enemy in ondata.mostri)
+            {
+                int quantitaDaTogliere = Mathf.RoundToInt(enemyQuantity * (enemy.percentualeSpawnMostri / 100));
+                int quantitaTipoMostri = -quantitaDaTogliere;
+                if (enemyQuantity <= 0) { break; }
+                for (int y = 0; y < quantitaDaTogliere; y++)
+                {
+                    GameObject nemico;
+                    Vector2 posizioneMostro = CalcolaPosizioneGiustaPerMostro(enemy.playerDistance);
+                    nemico = Instantiate(enemy.nemicoDaIstanziare, new Vector3((float)UnityEngine.Random.Range(0, 10), (float)UnityEngine.Random.Range(0, 10), 0), Quaternion.identity);
+
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        
+
+    }
+
+    private Vector2 CalcolaPosizioneGiustaPerMostro(EDistanzaPlayerDaNemico playerDistance)
+    {
+        switch (playerDistance)
+        {
+            case EDistanzaPlayerDaNemico.NonSpecificato:
+                break;
+            case EDistanzaPlayerDaNemico.Vicino:
+                break;
+            case EDistanzaPlayerDaNemico.Intermedia:
+                break;
+            case EDistanzaPlayerDaNemico.Lontano:
+                break;
+            default:
+                break;
+        }
+        return Vector2.zero;
+    }
+
     private GameObject SetPlayerInRoom(GameObject roomSpawned)
     {
         Room roomScript = roomSpawned.GetComponent<Room>();
@@ -622,17 +749,17 @@ public class RoomManager : Manager
         int range = 0;
         if (roomScript != null)
         {
-            if(roomScript.puntiDiSpawnPossibili.Count > 1)
+            if (roomScript.puntiDiSpawnPossibili.Count > 1)
             {
                 range = UnityEngine.Random.Range(0, roomScript.puntiDiSpawnPossibili.Count);
-                playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[range].localPosition,Quaternion.identity);
+                playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[range].localPosition, Quaternion.identity);
                 print("<color=#00000>PLAYER SPAWNATO</color>");
             }
-            else if(roomScript.puntiDiSpawnPossibili.Count == 1)
+            else if (roomScript.puntiDiSpawnPossibili.Count == 1)
             {
                 playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[0].localPosition, Quaternion.identity);
             }
-            else if(roomScript.puntiDiSpawnPossibili.Count == 0 || roomScript.puntiDiSpawnPossibili == null)
+            else if (roomScript.puntiDiSpawnPossibili.Count == 0 || roomScript.puntiDiSpawnPossibili == null)
             {
                 Grid gridComponent = roomSpawned.GetComponent<Grid>();
                 Tilemap tilemap = gridComponent.GetComponentInChildren<Tilemap>();
@@ -656,45 +783,5 @@ public class RoomManager : Manager
             }
         }
         return playerSpawned;
-    }
-
-    public List<EnemySet> GetValidEnemySet(List<EnemySet> setDiMostriDellaStanza)
-    {
-        List<EnemySet> enemySetValidiAiRequisiti = new List<EnemySet>();
-        foreach (var setDiMostri in setDiMostriDellaStanza)
-        {
-            if (CheckRequisiti(setDiMostri))
-            {
-                enemySetValidiAiRequisiti.Add(setDiMostri);
-                Debug.Log($"<b><color=#FF00e1>MONSTER SET VALIDO: {setDiMostri}</color> <quad=2></b>");
-               
-            }
-            else
-            {
-                Debug.Log($"<b><color=#FF0000>MONSTER SET NON VALIDO: {setDiMostri}</color> <quad=2></b>");
-            }
-        }
-        if(setDiMostriDellaStanza.Count == 0)
-        {
-            foreach (var setMostriArea in currentArea.enemySet)
-            {
-                if (CheckRequisiti(setMostriArea))
-                {
-                    enemySetValidiAiRequisiti.Add(setMostriArea);
-                    Debug.Log($"<b><color=#FF00e1>MONSTER SET VALIDO: {setMostriArea}</color> <quad=2></b>");
-                }
-            }
-        }
-        if(enemySetValidiAiRequisiti.Count == 0)
-        {
-            int rangeRandomPerSpwanForzatoSet = UnityEngine.Random.Range(0,currentArea.enemySet.Count);
-            enemySetValidiAiRequisiti.Add(currentArea.enemySet[rangeRandomPerSpwanForzatoSet]);
-            Debug.LogError("Zero enemy set validi, metti almeno un'enemy set valido.\n E stato scelto un set casuale dall'area in modo forzato, risolvere");
-        }
-        return setDiMostriDellaStanza;
-    }
-    public void SetEnemySet(List<EnemySet> enemySets)
-    {
-        Debug.Log(enemySets);
     }
 }

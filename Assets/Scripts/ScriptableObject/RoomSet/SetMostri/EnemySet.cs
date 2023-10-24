@@ -26,6 +26,24 @@ public class EnemySet : ScriptableObject
     public RequisitoFlag flagsOnComplete;
     public bool CanRepeat = true;
 
+    private float m_percentualeTotale = 0;
+    private void OnValidate()
+    {
+        for (int i = 0; i < listaDiOndate.Count; i++)
+        {
+            var ondata = listaDiOndate[i];
+            foreach (var mostro in ondata.mostri)
+            {
+                m_percentualeTotale += mostro.percentualeSpawnMostri;
+            }
+            if(m_percentualeTotale > 100)
+            {
+                Debug.LogError($"<b>Percentuale spawn mostri nello scritpable {this.name} maggiore del 100%, risolvere immediatamente</b>");
+            }
+            m_percentualeTotale = 0;
+        }
+    }
+
     [System.Serializable]
     public struct Ondata
     {
@@ -40,7 +58,7 @@ public class EnemySet : ScriptableObject
     {
         public GameObject nemicoDaIstanziare;
         [Range(1, 100)]
-        public int percentualeSpawnMostri = 1;
+        public float percentualeSpawnMostri = 1;
         public bool canMutate;
         public EDistanzaPlayerDaNemico playerDistance;
     }    
