@@ -162,20 +162,26 @@ public class PlayerController : MonoBehaviour
     {
         foreach (var item in dmg)
         {
+            if (isActuallyImmune() && !item.ignoreImmunityFrame)
+            {
+                continue;
+            }
             switch (item.type)
             {
                 case DamageType.DamageTypes.Fisico:                   
                     if (GetComponent<Damageable>())
                     {
-                        if (item.damageOverTime)
-                        {
-                            if (item.ignoreImmunity || !isActuallyImmune())
-                                GetComponent<Damageable>().TakeDamageOverTime(item.value, item.type, item.durationDamageOverTime, false);
-                        }
-                        else
-                        {
-                            GetComponent<Damageable>().TakeDamage(item.value, item.ignoreImmunity, false);
-                        }
+                        GetComponent<Damageable>().TakeDamage(item);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Fuoco:
+                    if (GetComponent<Damageable>())
+                    {
+                        GetComponent<Damageable>().TakeDamage(item);
                     }
                     else
                     {
@@ -185,15 +191,7 @@ public class PlayerController : MonoBehaviour
                 case DamageType.DamageTypes.Ustioni:
                     if (GetComponent<Damageable>())
                     {
-                        if (item.damageOverTime)
-                        {
-                            if (item.ignoreImmunity || !isActuallyImmune())
-                                GetComponent<Damageable>().TakeDamageOverTime(item.value, item.type, item.durationDamageOverTime, true);
-                        }
-                        else
-                        {
-                            GetComponent<Damageable>().TakeDamage(item.value, item.ignoreImmunity, true);
-                        }
+                        GetComponent<Damageable>().TakeDamage(item);
                     }
                     else
                     {
@@ -203,15 +201,7 @@ public class PlayerController : MonoBehaviour
                 case DamageType.DamageTypes.Malattia:
                     if (GetComponent<MalattiaHandler>())
                     {
-                        if (item.damageOverTime)
-                        {
-                            if (item.ignoreImmunity || !isActuallyImmune())
-                                GetComponent<MalattiaHandler>().TakeIllOverTime(item.value, item.type, item.durationDamageOverTime);
-                        }
-                        else
-                        {
-                            GetComponent<MalattiaHandler>().gainMalattia(item.value, item.ignoreImmunity);
-                        }
+                        GetComponent<MalattiaHandler>().TakeDamage(item);
                     }
                     else
                     {
@@ -221,15 +211,7 @@ public class PlayerController : MonoBehaviour
                 case DamageType.DamageTypes.Corruzione:
                     if (GetComponent<MalattiaHandler>())
                     {
-                        if (item.damageOverTime)
-                        {
-                            Debug.LogError("La corruzione non può essere guadagnata overTime, ricontrolla il danno, per ora verrà chimato come danno oneShot");
-                            GetComponent<MalattiaHandler>().gainMalattia(item.value, item.ignoreImmunity);
-                        }
-                        else
-                        {
-                            GetComponent<MalattiaHandler>().gainMalattia(item.value, item.ignoreImmunity);
-                        }
+                        GetComponent<MalattiaHandler>().TakeDamage(item);
                     }
                     else
                     {
@@ -244,6 +226,69 @@ public class PlayerController : MonoBehaviour
         setImmunity();
     }
 
+    public void PlayerTakeDamage(DamageInstance dmg)
+    {
+            if (isActuallyImmune() && !dmg.ignoreImmunityFrame)
+            {
+                return;
+            }
+            switch (dmg.type)
+            {
+                case DamageType.DamageTypes.Fisico:
+                    if (GetComponent<Damageable>())
+                    {
+                        GetComponent<Damageable>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Fuoco:
+                    if (GetComponent<Damageable>())
+                    {
+                        GetComponent<Damageable>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Ustioni:
+                    if (GetComponent<Damageable>())
+                    {
+                        GetComponent<Damageable>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il damageable");
+                    }
+                    break;
+                case DamageType.DamageTypes.Malattia:
+                    if (GetComponent<MalattiaHandler>())
+                    {
+                        GetComponent<MalattiaHandler>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il malattia handler");
+                    }
+                    break;
+                case DamageType.DamageTypes.Corruzione:
+                    if (GetComponent<MalattiaHandler>())
+                    {
+                        GetComponent<MalattiaHandler>().TakeDamage(dmg);
+                    }
+                    else
+                    {
+                        Debug.LogError("Manca il malattia handler");
+                    }
+                    break;
+                default:
+                    break;
+            }        
+        setImmunity();
+    }
     public void PlayerDeath()
     {
         Debug.Log("sei morto");
@@ -674,7 +719,18 @@ public class statConstitution : stat
         if (pc.GetComponent<MalattiaHandler>())
         {
             pc.GetComponent<MalattiaHandler>().malattiaGainPerSecond = pc.Constitution.illGainRateProgression.Find(f => f.level == pc.Constitution.livello).value;
-            pc.GetComponent<MalattiaHandler>().malattiaResistance = pc.Constitution.illResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
+            if (pc.Constitution.livello > 1)
+            {
+
+            }
+            else
+            {
+                DamageModifier illResistance = new DamageModifier();
+                illResistance.tipo = DamageType.DamageTypes.Malattia;
+                illResistance.value = pc.Constitution.illResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
+                pc.GetComponent<MalattiaHandler>().AddResistance(illResistance, true);
+            }
+            
             //pc.GetComponent<MalattiaHandler>().corruptionResistance = pc.Constitution.corruptionResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
         }
         else

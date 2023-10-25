@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1162aa3d480702143a9f99cf9b91cadc, type: 3}
+  m_Name: StanzaPotentissima
+  m_EditorClassIdentifier: 
+  prefabStanza: {fileID: 913422551255417258, guid: 1b28c2113fed70b448192a446b1b7847, type: 3}
+  tipiDiStanza: 2
+  tipoStanzaCombattimento: 0
+  tipoStanzaBoss: 0
+  tipoStanzaEvento: 0
+  tipoStanzaStoria: 0
+  setDiMostriDellaStanza:
+  - {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
+  requisitiStanza:
+  - {fileID: 11400000, guid: 6b100777b61a69545ba83e6bf389e29c, type: 2}
+  prioritaStanza: 100
+  isFirstRoom: 0
+  raritaEValoreStanza:
+    tipoRaritaStanza: 0
+    percentualeRarita: 78
+  flagsOnEnter:
+    flagToSet: []
+    requiredFlagList: []
+  flagsOnComplete:
+    flagToSet: []
+    requiredFlagList: []

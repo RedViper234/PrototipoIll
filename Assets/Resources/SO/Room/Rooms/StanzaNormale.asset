@@ -18,17 +18,18 @@ MonoBehaviour:
   tipoStanzaBoss: 0
   tipoStanzaEvento: 1
   tipoStanzaStoria: 2
-  setDiMostriDellaStanza: {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
+  setDiMostriDellaStanza:
+  - {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
   requisitiStanza:
   - {fileID: 11400000, guid: 6b100777b61a69545ba83e6bf389e29c, type: 2}
-  prioritaStanza: 0
+  prioritaStanza: 100
   isFirstRoom: 1
   raritaEValoreStanza:
     tipoRaritaStanza: 0
-    percentualeRarita: 0
-  flagsOnEnter: []
+    percentualeRarita: 73.9
+  flagsOnEnter:
+    flagToSet: []
+    requiredFlagList: []
   flagsOnComplete:
-  - flagsDaSettare: []
-    flagsNecessarie:
-    - flagNecessarie:
-      - {fileID: 0}
+    flagToSet: []
+    requiredFlagList: []

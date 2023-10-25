@@ -12,6 +12,10 @@ public class EditorRoomRequisiti : Editor
     private SerializedProperty valoriDistanzaPercorsa;
     private SerializedProperty valoriPerEntrataStanze;
     private SerializedProperty valoriStatistichePersonaggio;
+    private SerializedProperty valoreQuantitaMassima;
+    private SerializedProperty valoreVitaRimasta;
+    private SerializedProperty valoreQuantitaUstioni;
+    private SerializedProperty flagCheIlPlayerDeveAvere;
     // Add other SerializedProperty variables for your other fields
 
     private void OnEnable()
@@ -29,7 +33,10 @@ public class EditorRoomRequisiti : Editor
         valoriPerPoteriSpecificiProp = serializedObject.FindProperty("valoriPerPoteriSpecifici");
         valoriPerEntrataStanze = serializedObject.FindProperty("valoriPerEntrataStanze");
         valoriStatistichePersonaggio = serializedObject.FindProperty("valoriStatistichePersonaggio");
-        // Initialize other SerializedProperty variables here
+        valoreQuantitaMassima = serializedObject.FindProperty("valoreQuantitaVitaMassima");
+        valoreVitaRimasta = serializedObject.FindProperty("valoreVitaRimasta");
+        valoreQuantitaUstioni = serializedObject.FindProperty("valoreQuantitaUstioni");
+        flagCheIlPlayerDeveAvere = serializedObject.FindProperty("flagCheIlPlayerDeveAvere");
     }
 
     public override void OnInspectorGUI()
@@ -74,11 +81,30 @@ public class EditorRoomRequisiti : Editor
                 break;   
             case TipoRequisito.ValoreDiStatistica:
                 EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(valoriStatistichePersonaggio.FindPropertyRelative("tipoStatistica"), new GUIContent("Tipo Stanza"));
                 EditorGUILayout.PropertyField(valoriStatistichePersonaggio.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
                 EditorGUILayout.PropertyField(valoriStatistichePersonaggio.FindPropertyRelative("valoreStatistica"), new GUIContent("Valore"));
                 break;
+            case TipoRequisito.PercentualeVitaRimasta:
+                EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(valoreVitaRimasta.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
+                EditorGUILayout.PropertyField(valoreVitaRimasta.FindPropertyRelative("percentuale"), new GUIContent("Percentuale"));
+                break;
+            case TipoRequisito.QuantitaVitaMassima:
+                EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(valoreQuantitaMassima.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
+                EditorGUILayout.PropertyField(valoreQuantitaMassima.FindPropertyRelative("quantita"), new GUIContent("Quantita"));
+                break;
             // Add other cases for your other fields
-
+            case TipoRequisito.Ustioni:
+                EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(valoreQuantitaUstioni.FindPropertyRelative("operatori"), new GUIContent("Operatore"));
+                EditorGUILayout.PropertyField(valoreQuantitaUstioni.FindPropertyRelative("quantitaUstioni"), new GUIContent("Quantita Ustioni"));
+                break;
+            case TipoRequisito.Flag:
+                EditorGUILayout.Space(10);
+                EditorGUILayout.PropertyField(flagCheIlPlayerDeveAvere, new GUIContent("Lista di flag che il player deve avere"));
+                break;
             default:
                 break;
         }

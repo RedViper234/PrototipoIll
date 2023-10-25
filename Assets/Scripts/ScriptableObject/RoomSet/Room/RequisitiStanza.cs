@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
+
 [CreateAssetMenu(menuName ="Rooms/Requisiti",fileName = "Rooms/Requisiti")]
 public class RequisitiStanza : ScriptableObject
 {
@@ -7,6 +9,12 @@ public class RequisitiStanza : ScriptableObject
     //VARIABILI PER CHECK GUARIGIONE/ MALATTIA
     public TipoRequisito tipoRequisito;
     public StructPerPercentualeCorruzione valoreCorruzione;
+
+    public StructPercentualeVitaRimasta valoreVitaRimasta;
+
+    public StructQuantitaVitaMassima valoreQuantitaVitaMassima;
+
+    public StructQuantitaUstioni valoreQuantitaUstioni;
     // VALORI PER POTERI
     public StructPerTipiPotereStanza valoriPerPoteri;
     // VALORI PER POTERI SPECIFICI
@@ -17,13 +25,16 @@ public class RequisitiStanza : ScriptableObject
     public StructPerConteggioDistanzaPercorsa valoriDistanzaPercorsa;
     //VALORE PER STATISTICHE PERSONAGGIO
     public StructPerValoreStatistica valoriStatistichePersonaggio;
-    //VALORE PER QUANTITA MUTAZIONI
-    
+    //VALORE PER QUANTITA USTIONI
+    public List<FlagsSO> flagCheIlPlayerDeveAvere;
 
 }
 public enum TipoRequisito
 {
     PercentualeCorruzione,
+    PercentualeVitaRimasta,
+    QuantitaVitaMassima,
+    Ustioni,
     NumeroPoteriOttenuti,
     PoterSpecifico,
     NumeroStanzeAttraversate,
