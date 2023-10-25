@@ -24,7 +24,7 @@ public class MalattiaStat
 public class Mortality : MalattiaStat
 {
     public Vector2 spawnMortalityVariation;
-    public Vector2 illResistanceMortalityVariation;
+    public Vector2 illResistance;
     public int applyMortalityToEnemySet(int totalEnemy, TipologiaEnemySet tipo)
     {
         if (tipo == TipologiaEnemySet.Umani || tipo == TipologiaEnemySet.Bestie)
@@ -33,16 +33,17 @@ public class Mortality : MalattiaStat
         }
 
         float range = spawnMortalityVariation.y - spawnMortalityVariation.x;
-        totalEnemy = Mathf.RoundToInt(spawnMortalityVariation.y - ((range / 100) * actualValue));
+        float percentage = Mathf.RoundToInt(spawnMortalityVariation.x + ((range / 100) * actualValue));
+        totalEnemy += Mathf.RoundToInt(((float)totalEnemy / 100) * percentage);
         return totalEnemy;
     }
 
     public void timeIllVulnerabilityOrResistance(MalattiaHandler handler)
     {
-        float range = illResistanceMortalityVariation.y - illResistanceMortalityVariation.x;
-        float value = Mathf.RoundToInt(illResistanceMortalityVariation.y - ((range / 100) * actualValue)); //si usa y- perchè il rapporto è inversamente proporzionale (all'aumentare della barra peggiora il value)
+        float range = illResistance.y - illResistance.x;
+        float value = Mathf.RoundToInt(illResistance.y - ((range / 100) * actualValue)); //si usa y- perchè il rapporto è inversamente proporzionale (all'aumentare della barra peggiora il value)
         DamageModifier modifier = new();
-        modifier.value = value;
+        modifier.value = MathF.Abs(value);
         modifier.tipo = DamageType.DamageTypes.Time;
         if (value > 0)
         {
@@ -87,7 +88,7 @@ public class Infectivity : MalattiaStat
 public class Mutability : MalattiaStat
 {
     public Vector2 ProbabilityMutation;
-    public Vector2 AlterationStartMutation;
+    public Vector2 QualityStartMutation;
 
     public float mutaOndata(float areaMutationVariation)
     {
@@ -98,8 +99,8 @@ public class Mutability : MalattiaStat
     }
     public float raritàMutazione(float mutationBaseValue, float min, float max)
     {
-        float range = AlterationStartMutation.y - AlterationStartMutation.x;
-        float value = Mathf.RoundToInt(AlterationStartMutation.x + ((range / 100) * actualValue));
+        float range = QualityStartMutation.y - QualityStartMutation.x;
+        float value = Mathf.RoundToInt(QualityStartMutation.x + ((range / 100) * actualValue));
         value = Mathf.Clamp(value + mutationBaseValue, min, max);
         return Mathf.Round(value);
     }
@@ -107,5 +108,40 @@ public class Mutability : MalattiaStat
 [System.Serializable]
 public class Resistance : MalattiaStat
 {
+    public Vector2 fireResistance;
+    public Vector2 corruptionIncreaseResistance;
 
+    public void FireVulnerabilityOrResistance(Damageable damager)
+    {
+        float range = fireResistance.y - fireResistance.x;
+        float value = Mathf.RoundToInt(fireResistance.x + ((range / 100) * actualValue));
+        DamageModifier modifier = new();
+        modifier.value = MathF.Abs(value);
+        modifier.tipo = DamageType.DamageTypes.Fuoco;
+        if (value > 0)
+        {
+            damager.AddResistance(modifier, true);
+        }
+        else if (value < 0)
+        {
+            damager.AddVulnerability(modifier, true);
+        }
+    }
+
+    public void CorruptionHealing(MalattiaHandler handler)
+    {
+        float range = fireResistance.y - fireResistance.x;
+        float value = Mathf.RoundToInt(fireResistance.x + ((range / 100) * actualValue));
+        HealModifier modifier = new();
+        modifier.value = MathF.Abs(value);
+        modifier.tipo = HealType.HealTypes.Corruzione;
+        if (value > 0)
+        {
+            handler.AddHealIncrease(modifier, true);
+        }
+        else if (value < 0)
+        {
+            handler.AddHealResistance(modifier, true);
+        }
+    }
 }

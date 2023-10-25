@@ -51,7 +51,7 @@ public class Damageable : MonoBehaviour
     }
 
     #region Damage Resistance and Vulnerability
-    public void AddResistence(DamageModifier modifier, bool additive)
+    public void AddResistance(DamageModifier modifier, bool additive)
     {
         if (additive)
         {
