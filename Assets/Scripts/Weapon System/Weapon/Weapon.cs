@@ -21,7 +21,7 @@ public class Weapon : MonoBehaviour, IWeapon
 
     [Header("Debug")]
     [SerializeField, MyReadOnly] private float t_cooldown;
-    [SerializeField, MyReadOnly] private int comboIndex = 0;
+    [SerializeField] private int comboIndex = 0;
 
     private Coroutine comboCoroutine;
 
@@ -64,7 +64,7 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         GameObject inst_attack;
 
-        inst_attack = Instantiate(actualAttack.AttackPrefab, transform.parent.position, Quaternion.identity, transform);
+        inst_attack = Instantiate(actualAttack.AttackPrefab, transform.position, Quaternion.identity, transform);
 
         inst_attack.GetComponent<Attack>().InitAttackValues(actualAttack);
     }
@@ -76,7 +76,7 @@ public class Weapon : MonoBehaviour, IWeapon
             if(comboIndex == ComboList.Count) 
             {
                 LastComboAttack();
-                yield return null;
+                // yield return null;
             }
 
             GenerateAttackObject(ComboList[comboIndex]);

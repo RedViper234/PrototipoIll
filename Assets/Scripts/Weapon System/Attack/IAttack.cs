@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IAttack
 {
-    public AttackSO attackSO {get; set;}
+    // public AttackSO attackSO {get; set;}
     // public GameObject AttackPrefab {get; set;}
     public float TimeToActivateHitbox {get; set;}
     public float TimeDurationHitbox {get; set;}

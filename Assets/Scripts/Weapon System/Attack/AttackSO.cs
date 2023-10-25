@@ -6,6 +6,7 @@ public class AttackSO : ScriptableObject
 {
     [Header("Attack Settings")][Space(10)]
     public GameObject AttackPrefab;
+    public AnimationClip AttackAnimation;
 
     [Space(12)]
 
