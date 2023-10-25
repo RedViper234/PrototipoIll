@@ -5,19 +5,20 @@ using UnityEngine;
 
 public abstract class AAttack : MonoBehaviour, IAttack
 {
-    public abstract AttackSO attackSO { get; set;}
-    public abstract float TimeToActivateHitbox { get; set;}
-    public abstract float TimeDurationHitbox { get; set;}
-    public abstract float TimeToEndHitbox { get; set;}
-    public abstract float PlayerSpeedModifier { get; set;}
-    public abstract PlayerDragStruct PlayerDrag { get; set;}
-    public abstract float AttackCooldown { get; set;}
-    public abstract float BaseDamageAttack { get; set;}
-    public abstract AttackRange AttackRangeAttack { get; set;}
-    public abstract DamageType.DamageTypes DamageType { get; set;}
-    public abstract List<StatusStruct> StatusEffects { get; set;}
-    public abstract float KnockbackForceAttack { get; set;}
-    public abstract MultiAttack MultiAttack { get; set; }
+    // [field: SerializeField] public AttackSO attackSO { get; set;}
+    [field: SerializeField] public AnimationClip attackAnimation { get; set;}
+    [field: SerializeField] public float TimeToActivateHitbox { get; set;}
+    [field: SerializeField] public float TimeDurationHitbox { get; set;}
+    [field: SerializeField] public float TimeToEndHitbox { get; set;}
+    [field: SerializeField] public float PlayerSpeedModifier { get; set;}
+    [field: SerializeField] public PlayerDragStruct PlayerDrag { get; set;}
+    [field: SerializeField] public float AttackCooldown { get; set;}
+    [field: SerializeField] public float BaseDamageAttack { get; set;}
+    [field: SerializeField] public AttackRange AttackRangeAttack { get; set;}
+    [field: SerializeField] public DamageType.DamageTypes DamageType { get; set;}
+    [field: SerializeField] public List<StatusStruct> StatusEffects { get; set;}
+    [field: SerializeField] public float KnockbackForceAttack { get; set;}
+    [field: SerializeField] public MultiAttack MultiAttack { get; set; }
 
     /// <summary>
     /// Initializes the attack values based on the provided AttackSO.
@@ -44,11 +45,8 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.GetComponent<Damageable>())
-        {
-            other.GetComponent<Damageable>().TakeDamage(BaseDamageAttack == 0 ? GetComponentInParent<IWeapon>().BaseDamageWeapon: BaseDamageAttack , false, false);
-            //TODO Add knockback
-        }
+        Debug.Log("Hit");
+        OnDamageableHit(other);
     }
 
     public virtual IEnumerator InitializeAttack()
@@ -56,14 +54,14 @@ public abstract class AAttack : MonoBehaviour, IAttack
         yield return new WaitForSeconds(TimeToActivateHitbox);
 
         //Activate Hitbox
-        // Debug.Log("Attivato");
+        Debug.Log("Attivato");
         DoInTimeToActivateHitbox();
         GetComponent<BoxCollider2D>().enabled = true;
 
         yield return new WaitForSeconds(TimeDurationHitbox);
 
         //Deactivate Hitbox
-        // Debug.Log("Disattivato");
+        Debug.Log("Disattivato");
         DoInTimeDurationHitbox();
         GetComponent<BoxCollider2D>().enabled = false;
 
@@ -72,7 +70,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
         //End of attack
         DoInTheEnd();
         // Destroy(this.gameObject);
-        // Debug.Log("Fine");
+        Debug.Log("Fine");
     }
 
     public virtual void DoInTimeToActivateHitbox()
@@ -88,6 +86,24 @@ public abstract class AAttack : MonoBehaviour, IAttack
     public virtual void DoInTheEnd()
     {
         // throw new NotImplementedException();
+        // Destroy(this.gameObject);
+    }
+
+    public void OnDamageableHit(Collider2D other)
+    {
+        if(other.GetComponent<Damageable>())
+        {
+            other.GetComponent<Damageable>().TakeDamage(
+                BaseDamageAttack == 0 ? GetComponentInParent<IWeapon>().BaseDamageWeapon: BaseDamageAttack, 
+                false,
+                false);
+            //TODO Add knockback
+        }
+    }
+
+    public void WeaponAnimationStart()
+    {
+        gameObject.GetComponentInParent<IWeapon>().animator.Play(attackAnimation.name);
     }
 }
 

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: SwordAttack1
   m_EditorClassIdentifier: 
   AttackPrefab: {fileID: 4072522862118810444, guid: e2141c435b35dc945a867921b455c1fa, type: 3}
-  TimeToActivateHitbox: 0.1
-  TimeDurationHitbox: 0.2
-  TimeToEndHitbox: 0.1
-  AttackCooldown: 0.2
+  TimeToActivateHitbox: 1
+  TimeDurationHitbox: 2
+  TimeToEndHitbox: 1
+  AttackCooldown: 1
   PlayerSpeedModifier: 0.1
   PlayerDrag:
     force: 0

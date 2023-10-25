@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5757729967191006494}
   - component: {fileID: -8923273264888530495}
   - component: {fileID: 1539879087704913597}
+  - component: {fileID: 2539199566639846160}
   m_Layer: 0
   m_Name: AttackObj
   m_TagString: Untagged
@@ -65,6 +66,7 @@ MonoBehaviour:
   <MultiAttack>k__BackingField:
     NumberOfAttacks: 0
     TimeBetweenAttacks: 0
+  testvar: 0
 --- !u!61 &-8923273264888530495
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -72,13 +74,13 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4072522862118810444}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.0010927916, y: 0.027222872}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -89,7 +91,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.3482709, y: 3.0071578}
   m_EdgeRadius: 0
 --- !u!212 &1539879087704913597
 SpriteRenderer:
@@ -143,3 +145,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!50 &2539199566639846160
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072522862118810444}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
