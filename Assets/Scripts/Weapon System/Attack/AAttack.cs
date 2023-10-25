@@ -91,12 +91,17 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
     public void OnDamageableHit(Collider2D other)
     {
+        DamageInstance damageInstance = new DamageInstance(
+        DamageType,
+        BaseDamageAttack,
+        false,
+        false,
+        false,
+        0);
+
         if(other.GetComponent<Damageable>())
         {
-            other.GetComponent<Damageable>().TakeDamage(
-                BaseDamageAttack == 0 ? GetComponentInParent<IWeapon>().BaseDamageWeapon: BaseDamageAttack, 
-                false,
-                false);
+            other.GetComponent<Damageable>().TakeDamage(damageInstance);
             //TODO Add knockback
         }
     }
