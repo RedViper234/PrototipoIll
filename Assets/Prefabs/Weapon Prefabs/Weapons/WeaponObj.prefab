@@ -104,13 +104,15 @@ MonoBehaviour:
   <ComboTimeProgression>k__BackingField: 0
   <PlayerSpeedModifier>k__BackingField: 0
   <AttackRangeWeapon>k__BackingField: 0
-  <DamageType>k__BackingField: 0
+  <DamageType>k__BackingField: 
   <StatusEffects>k__BackingField: []
   <KnockbackForceWeapon>k__BackingField: 0
   <ComboList>k__BackingField:
   - {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
   - {fileID: 11400000, guid: b15874024fd19a64282f023434dcb0fe, type: 2}
   - {fileID: 11400000, guid: 77f2c42cafb1e6c458e12d1347ab9a2a, type: 2}
+  RangeAttackMaxDistance: 0
+  HurtboxSize: {x: 0, y: 0}
   t_cooldown: 0
   comboIndex: 0
 --- !u!95 &6219897962907903583

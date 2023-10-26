@@ -30,12 +30,18 @@ public class Weapon : MonoBehaviour, IWeapon
         InitWeaponValues();
 
         animator = GetComponent<Animator>();
-
     }
 
     void Update()
     {
+        //Cooldown del tempo di attacco
         _ = t_cooldown > 0 ? t_cooldown -= Time.deltaTime : t_cooldown = 0;
+
+        if(!CheckAttackChildren())
+        {
+            WeaponRotation(); 
+        }
+        
     }
 
     public void InitWeaponValues()
@@ -64,9 +70,12 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         GameObject inst_attack;
 
-        inst_attack = Instantiate(actualAttack.AttackPrefab, transform.position, Quaternion.identity, transform);
+        inst_attack = Instantiate(actualAttack.AttackPrefab, 
+        transform.position, 
+        transform.parent.rotation, 
+        transform);
 
-        inst_attack.GetComponent<Attack>().InitAttackValues(actualAttack);
+        inst_attack.GetComponent<AAttack>().InitAttackValues(actualAttack);
     }
 
     private IEnumerator AttackCoroutine()
@@ -95,5 +104,25 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         comboIndex = 0;
         comboCoroutine = null;
+    }
+
+    private void WeaponRotation()
+    {
+        // Ottieni la posizione del mouse nello spazio del mondo
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        // Calcola la direzione dal player alla posizione del mouse
+        Vector2 direction = mousePosition - (Vector2)transform.parent.position;
+
+        // Calcola l'angolo tra la direzione calcolata e il vettore "up" del player
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Ruota l'arma attorno al player utilizzando l'angolo calcolato
+        transform.parent.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
+
+    private bool CheckAttackChildren()
+    {
+        return GetComponentInChildren<AAttack>();
     }
 }

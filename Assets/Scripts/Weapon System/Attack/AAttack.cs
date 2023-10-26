@@ -19,6 +19,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set;}
     [field: SerializeField] public float KnockbackForceAttack { get; set;}
     [field: SerializeField] public MultiAttack MultiAttack { get; set; }
+    public BoxCollider2D boxCollider2D { get; set; }
 
     /// <summary>
     /// Initializes the attack values based on the provided AttackSO.
@@ -38,6 +39,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
         DamageType = attackSO.DamageType;
         StatusEffects = attackSO.StatusEffects;
         KnockbackForceAttack = attackSO.KnockbackForceAttack;
+        boxCollider2D = GetComponent<BoxCollider2D>();
 
         // Start the coroutine to initialize the attack
         StartCoroutine(InitializeAttack());
@@ -51,42 +53,47 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
     public virtual IEnumerator InitializeAttack()
     {
+        //Prima che venga attivata l'hitbox    
+
         yield return new WaitForSeconds(TimeToActivateHitbox);
 
         //Activate Hitbox
-        Debug.Log("Attivato");
+        
         DoInTimeToActivateHitbox();
-        GetComponent<BoxCollider2D>().enabled = true;
+
+        Debug.Log("Attivato");
 
         yield return new WaitForSeconds(TimeDurationHitbox);
 
         //Deactivate Hitbox
-        Debug.Log("Disattivato");
+        
         DoInTimeDurationHitbox();
-        GetComponent<BoxCollider2D>().enabled = false;
+
+        Debug.Log("Disattivato");
 
         yield return new WaitForSeconds(TimeToEndHitbox);
 
         //End of attack
+
         DoInTheEnd();
-        // Destroy(this.gameObject);
+
         Debug.Log("Fine");
     }
 
     public virtual void DoInTimeToActivateHitbox()
     {
-        // throw new NotImplementedException();
+        boxCollider2D.enabled = true;
     }
 
     public virtual void DoInTimeDurationHitbox()
     {
-        // throw new NotImplementedException();
+        boxCollider2D.enabled = false;
     }
 
     public virtual void DoInTheEnd()
     {
         // throw new NotImplementedException();
-        // Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
 
     public void OnDamageableHit(Collider2D other)
