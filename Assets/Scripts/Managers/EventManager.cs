@@ -10,7 +10,7 @@ public static class EventManager
     public static UnityAction HandleBeginOfFight;
     public static UnityAction HandleEndOfFight;
     public static UnityAction HandleDeath;
-    public static UnityAction HandleEveryNRoom;
-    public static UnityAction HandleEveryNTime;
+    public static UnityAction<int> HandleEveryNRoom;
+    public static UnityAction<float> HandleEveryNTime;
 
 }

@@ -70,7 +70,7 @@ public abstract class AbstractPowers : MonoBehaviour
         InitChangePowerType();
 
         OnPowerTaken += PowerTaken;
-        OnPowerTaken.Invoke();
+        // OnPowerTaken.Invoke();
     }
 
     public virtual void InitChangePowerType()
@@ -100,7 +100,7 @@ public abstract class AbstractPowers : MonoBehaviour
         switch (triggerType)
         {
             case TriggerType.Instant:
-                // Code for Instant case
+                TriggerOnEvent();
                 break;
             case TriggerType.OnTrigger:
                 // Code for OnTrigger case
