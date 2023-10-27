@@ -8,6 +8,7 @@ public class WeaponSO : ScriptableObject
 {
     [Header("Weapon Settings")]
     public float BaseDamageWeapon;
+    public float CooldownBetweenAttacks;
     public float ComboTimeProgression;
     public AttackRange AttackRangeWeapon;
     public List<DamageType.DamageTypes> DamageType;

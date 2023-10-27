@@ -12,5 +12,4 @@ public static class EventManager
     public static UnityAction HandleDeath;
     public static UnityAction<int> HandleEveryNRoom;
     public static UnityAction<float> HandleEveryNTime;
-
 }

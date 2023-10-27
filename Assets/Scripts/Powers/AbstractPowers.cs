@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,20 +57,24 @@ public enum Evolution
 
 public abstract class AbstractPowers : MonoBehaviour
 {
-    public abstract UnityAction OnPowerTaken { get; set; }
-    public abstract PowerSubType powerSubType { get; set; }
-    public abstract PowerType powerType { get; set;}
-    public abstract Rarity rarity { get; set;}
-    public abstract TriggerType triggerType { get; set; }
-    public abstract PowerState powerState { get; set; }
-    public abstract Evolution evolution { get; set; }
+    public UnityAction OnPowerTaken { get; set; }
+    public PowerSubType powerSubType { get; set; }
+    public PowerType powerType { get; set;}
+    public Rarity rarity { get; set;}
+    public TriggerType triggerType { get; set; }
+    public PowerState powerState { get; set; }
+    public Evolution evolution { get; set; }
+    public int NRooms { get; set; }
+    public float NTime { get; set; }
     public abstract void TriggerOnEvent();
+    public abstract void TriggerOnEvent(int value);
+    public abstract void TriggerOnEvent(float value);
 
     void Start()
     {
         InitChangePowerType();
 
-        OnPowerTaken += PowerTaken;
+        // OnPowerTaken += PowerTaken;
         // OnPowerTaken.Invoke();
     }
 
@@ -92,7 +97,7 @@ public abstract class AbstractPowers : MonoBehaviour
 
     void OnDisable()
     {
-        OnPowerTaken -= PowerTaken;
+        // OnPowerTaken -= PowerTaken;
     }
 
     public void SetTrigger()
@@ -124,10 +129,10 @@ public abstract class AbstractPowers : MonoBehaviour
                 EventManager.HandleDeath += TriggerOnEvent;
                 break;
             case TriggerType.OnEveryNRoom:
-                // Code for OnEveryNRoom case
+                EventManager.HandleEveryNRoom += TriggerOnEvent;
                 break;
             case TriggerType.OnEveryNTime:
-                // Code for OnEveryNTime case
+                EventManager.HandleEveryNTime += TriggerOnEvent;
                 break;
             default:
                 Debug.LogError("Trigger type not found or not implemented: " + triggerType);

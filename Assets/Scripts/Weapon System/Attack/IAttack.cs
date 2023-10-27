@@ -17,5 +17,5 @@ public interface IAttack
     public DamageType.DamageTypes DamageType {get; set;}
     [SerializeField] public List<StatusStruct> StatusEffects {get; set;}
     public float KnockbackForceAttack {get; set;}
-    void InitAttackValues(AttackSO attackSO);
+    void InitAttackValues(AttackSO attackSO, AWeapon weaponRef, Vector2 direction);
 }

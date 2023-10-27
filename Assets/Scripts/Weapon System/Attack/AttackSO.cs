@@ -15,6 +15,7 @@ public class AttackSO : ScriptableObject
     public float TimeDurationHitbox;
     public float TimeToEndHitbox;
     public float AttackCooldown;
+    public float TimeComboProgression;
 
     [Space(12)]
 
@@ -26,4 +27,6 @@ public class AttackSO : ScriptableObject
     public DamageType.DamageTypes DamageType;
     [SerializeField] public List<StatusStruct> StatusEffects;
     public float KnockbackForceAttack;
+    public MultiAttack[] MultiAttack;
+    public float BulletSpeed;
 }

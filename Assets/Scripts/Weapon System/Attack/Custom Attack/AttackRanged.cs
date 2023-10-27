@@ -6,11 +6,18 @@ public class AttackRanged : AAttack
 {
     void Awake()
     {
-        
+       
     }
 
     private void Shoot()
     {
-        //shoot
+        Debug.Log($"Shoot: {BulletSpeed}");
+        GetComponent<Rigidbody2D>().velocity = ActualDirection * BulletSpeed;
+    }
+
+    public override void DoInTimeDurationHitbox()
+    {
+        base.DoInTimeDurationHitbox();
+        Shoot();
     }
 }

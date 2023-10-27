@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3414d77b0682885458543d4820cb7b30, type: 3}
-  m_Name: SwordSO
+  m_Name: GunSO
   m_EditorClassIdentifier: 
   BaseDamageWeapon: 40
   CooldownBetweenAttacks: 0.5
   ComboTimeProgression: 0.8
-  AttackRangeWeapon: 2
+  AttackRangeWeapon: 1
   DamageType: 
   StatusEffects:
   - type: 0
