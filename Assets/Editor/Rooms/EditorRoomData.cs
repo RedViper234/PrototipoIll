@@ -56,24 +56,24 @@ public class EditorRoomData : Editor
         GUILayout.Label("<size=20><b><color=#ffffffff>Tipologia Stanze</color></b></size>", styleLabel);
 
         // Mostra il campo per la scelta del tipo di stanza
-        roomData.tipiDiStanza = (TipiDiStanza)EditorGUILayout.EnumFlagsField("Tipo di Stanza", roomData.tipiDiStanza);
+        roomData.tipiDiStanza = (TipiDiStanzaFLag)EditorGUILayout.EnumFlagsField("Tipo di Stanza", roomData.tipiDiStanza);
 
         // Mostra solo le enum relative alle sottocategorie selezionate
         EditorGUILayout.LabelField("Sottocategorie:");
 
         EditorGUI.indentLevel++;
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Combattimento) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFLag.Combattimento) != 0)
         {
             roomData.tipoStanzaCombattimento = (SottoCategoriaStanzaCombattimento)EditorGUILayout.EnumPopup("Combattimento", roomData.tipoStanzaCombattimento);
         }
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Boss) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFLag.Boss) != 0)
         {
             roomData.tipoStanzaBoss = (SottoCategoriaStanzaBoss)EditorGUILayout.EnumPopup("Boss", roomData.tipoStanzaBoss);
         }
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Evento) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFLag.Evento) != 0)
         {
             roomData.tipoStanzaEvento = (SottoCategoriaStanzaEvento)EditorGUILayout.EnumPopup("Evento", roomData.tipoStanzaEvento);
             switch (roomData.tipoStanzaEvento)
@@ -93,13 +93,13 @@ public class EditorRoomData : Editor
             }
         }
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Storia) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFLag.Storia) != 0)
         {
             roomData.tipoStanzaStoria = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup("Storia", roomData.tipoStanzaStoria);
         }
 
         EditorGUI.indentLevel--;
-        if ((roomData.tipiDiStanza & TipiDiStanza.Combattimento) != 0 || (roomData.tipiDiStanza & TipiDiStanza.Boss) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFLag.Combattimento) != 0 || (roomData.tipiDiStanza & TipiDiStanzaFLag.Boss) != 0)
         {
             EditorGUILayout.PropertyField(setDiMostriDellaStanza,new GUIContent("Lista set mostri"));
         }

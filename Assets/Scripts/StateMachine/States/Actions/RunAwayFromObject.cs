@@ -15,6 +15,7 @@ public class RunAwayFromObject : Action
     {
         if (playerTransform == null)
         {
+            playerTransform = controller.currentEnemy.target;
             return;
         }
 
@@ -37,6 +38,7 @@ public class RunAwayFromObject : Action
     {
         if (playerTransform == null)
         {
+            playerTransform = controller.currentEnemy.target;
             return;
         }
 

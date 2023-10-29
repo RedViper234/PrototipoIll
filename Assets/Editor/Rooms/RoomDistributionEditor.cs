@@ -1,32 +1,32 @@
 ﻿//using UnityEditor;
 //using UnityEngine;
 
-//[CustomEditor(typeof(RoomDistribution))]
+//[CustomEditor(typeof(StaticRoomDistribution))]
 //public class RoomDistributionEditor : Editor
 //{
 //    public override void OnInspectorGUI()
 //    {
-//        RoomDistribution roomDistribution = (RoomDistribution)target;
+//        StaticRoomDistribution roomDistribution = (StaticRoomDistribution)target;
 
 //        // Disegna il campo per il tipo di stanza
-//        roomDistribution.tipoStanzaArea = (TipiDiStanza)EditorGUILayout.EnumPopup("Tipo di Stanza", roomDistribution.tipoStanzaArea);
+//        roomDistribution.tipoStanzaArea = (TipiDiStanzaFLag)EditorGUILayout.EnumPopup("Tipo di Stanza", roomDistribution.tipoStanzaArea);
 
 //        // A seconda del tipo di stanza, mostra le sottocategorie pertinenti
 //        switch (roomDistribution.tipoStanzaArea)
 //        {
-//            case TipiDiStanza.Combattimento:
-//                roomDistribution.tipoStanzaCombattimentoArea = (SottoCategoriaStanzaCombattimento)EditorGUILayout.EnumPopup("Sottocategoria Combattimento", roomDistribution.tipoStanzaCombattimentoArea);
+//            case TipiDiStanzaFLag.Combattimento:
+//                roomDistribution.combattimento = (SottoCategoriaStanzaCombattimento)EditorGUILayout.EnumPopup("Sottocategoria Combattimento", roomDistribution.combattimento);
 
 //                break;
-//            case TipiDiStanza.Boss:
-//                roomDistribution.tipoStanzaBossArea = (SottoCategoriaStanzaBoss)EditorGUILayout.EnumPopup("Sottocategoria Boss", roomDistribution.tipoStanzaBossArea);
+//            case TipiDiStanzaFLag.Boss:
+//                roomDistribution.boss = (SottoCategoriaStanzaBoss)EditorGUILayout.EnumPopup("Sottocategoria Boss", roomDistribution.boss);
 //                break;
-//            case TipiDiStanza.Evento:
-//                roomDistribution.tipoStanzaEvento = (SottoCategoriaStanzaEvento)EditorGUILayout.EnumPopup("Sottocategoria Evento", roomDistribution.tipoStanzaEvento);
+//            case TipiDiStanzaFLag.Evento:
+//                roomDistribution.evento = (SottoCategoriaStanzaEvento)EditorGUILayout.EnumPopup("Sottocategoria Evento", roomDistribution.evento);
 //                break;
-//            case TipiDiStanza.Storia:
-//                //roomDistribution.tipoStanzaStoriaArea = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup("Sottocategoria Storia", roomDistribution.tipoStanzaStoriaArea, typeof(SottoCategoriaStanzaStoria), true);
-//                roomDistribution.tipoStanzaStoriaArea = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup(new GUIContent("Sottocategoria Storia"), roomDistribution.tipoStanzaStoriaArea);
+//            case TipiDiStanzaFLag.Storia:
+//                //roomDistribution.storia = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup("Sottocategoria Storia", roomDistribution.storia, typeof(SottoCategoriaStanzaStoria), true);
+//                roomDistribution.storia = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup(new GUIContent("Sottocategoria Storia"), roomDistribution.storia);
 //                break;
 //            default:
 //                break;

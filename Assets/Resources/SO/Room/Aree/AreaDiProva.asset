@@ -15,9 +15,10 @@ MonoBehaviour:
   puntiDiInteresse:
   - {fileID: 11400000, guid: aa17003bfe299a940a122ac03ed6eb7b, type: 2}
   descrizioneArea: 
-  sottoAree: []
+  sottoAree:
+  - {fileID: 0}
   movementCost: -1
-  breakPointsMin: 0
+  breakPointsMin: -1
   breakPointsMax: 0
   secondTimeBattleProbablity: -1
   onCompleteFlags:
@@ -25,24 +26,30 @@ MonoBehaviour:
     - {fileID: 0}
     flagsNecessarie: []
   stanzeSpeciali:
-  - stanza: {fileID: 0}
+  - stanza: {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
+    requisiti: {fileID: 11400000, guid: 6b100777b61a69545ba83e6bf389e29c, type: 2}
     "priorit\xE0StanzaSpeciale": 0
     riproduzioneMultipla: 0
   onlyOneSpecialRoom: 0
   enemySet:
   - {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
+  roomDataArea:
+  - {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
   roomDistributions:
-  - tipoStanzaArea: 0
-    tipoStanzaCombattimentoArea: 0
-    tipoStanzaBossArea: 0
-    tipoStanzaEvento: 0
-    sottoTipoStanzaMercante: 0
-    sottoTipoStanzaRiposo: 0
-    tipoStanzaStoriaArea: 0
+  - tipoStanzaArea: 1
+    combattimento: 0
+    boss: 0
+    evento: 0
+    storia: 0
     min: 0
     max: 0
     minRespawn: -1
     maxRespawn: -1
-    tipoRicompensa: []
+    tipoRicompensa:
+    - tipoRicompensa: 0
+      dropMinimo: 0
+      dropMassimo: 0
     numeroRicompense: 0
-    accettaRipetizioniRicompense: 0
+    permettiRipetizioniRicompense: 0
+  minStaticRoom: 1
+  maxStaticRoom: 1

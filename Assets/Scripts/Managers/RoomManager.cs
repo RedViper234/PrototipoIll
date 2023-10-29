@@ -7,6 +7,8 @@ using UnityEngine.Events;
 using NavMeshPlus.Components;
 using UnityEditor;
 using UnityEngine.Tilemaps;
+using UnityEngine.AI;
+using UnityEngine.PlayerLoop;
 
 public class RoomManager : Manager
 {
@@ -30,8 +32,17 @@ public class RoomManager : Manager
     private PlayerController m_playerControllerInstance;
     private FlagManager m_flagManager;
     private int m_indiceOndataCorrente = 0;
+    private NavMeshSurface m_surface;
+    private Vector2 m_lastMonsterSpawnPosition;
+
+
+    public void Update()
+    {
+
+    }
     public void Start()
     {
+        
         m_indiceOndataCorrente = 0;
         m_playerControllerInstance = AppManager.Instance.playePrefabReference.GetComponent<PlayerController>();
         m_flagManager = AppManager.Instance?.flagManager;
@@ -100,7 +111,7 @@ public class RoomManager : Manager
     // FUNZIONI STANZE
 
     /// <summary>
-    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom è selezionato allora verrà
+    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom ï¿½ selezionato allora verrï¿½
     /// fatto in modo di pescare, se possibile, una stanza che ha il booleano attivo first room
     /// </summary>
     /// <param name="checkFirstRoom"></param>
@@ -144,8 +155,6 @@ public class RoomManager : Manager
         
 
     }
-
-   
 
 
 
@@ -370,19 +379,19 @@ public class RoomManager : Manager
         switch (set.valoreQuantitaMassima.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth > set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth > set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth == set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth == set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth < set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth < set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= set.valoreQuantitaMassima.quantita;
                 break;
         }
         return roomCanSpawn;
@@ -474,7 +483,7 @@ public class RoomManager : Manager
             }
         }
         return roomCanSpawn;
-         // Ritorna false se il tipo di statistica non è valido
+         // Ritorna false se il tipo di statistica non ï¿½ valido
     }
     private bool ControlloStatistiche(EnemySet set)
     {
@@ -511,7 +520,7 @@ public class RoomManager : Manager
             }
         }
         return roomCanSpawn;
-        // Ritorna false se il tipo di statistica non è valido
+        // Ritorna false se il tipo di statistica non ï¿½ valido
     }
 
 
@@ -599,11 +608,13 @@ public class RoomManager : Manager
         try
         {
             GameObject roomSpawned = Instantiate(currentRoom.prefabStanza);
+            Publisher.Publish(new OnRoomSpawnedMessage());
+            m_surface = roomSpawned.GetComponentInChildren<NavMeshSurface>();
             GameObject playerSpawnato = SetPlayerInRoom(roomSpawned);
             AppManager.Instance.SetPlayerObject(playerSpawnato);
             m_playerControllerInstance = playerSpawnato.GetComponent<PlayerController>();
             AppManager.Instance.SetCameraPlayer();
-            if ((currentRoom.tipiDiStanza & TipiDiStanza.Combattimento) != 0)
+            if ((currentRoom.tipiDiStanza & TipiDiStanzaFLag.Combattimento) != 0)
             {
                 List<EnemySet> validEnemyList = new List<EnemySet>();
                 validEnemyList = GetValidEnemySet(currentRoom.setDiMostriDellaStanza);
@@ -632,7 +643,6 @@ public class RoomManager : Manager
             {
                 enemySetValidiAiRequisiti.Add(setDiMostri);
                 Debug.Log($"<b><color=#FF00e1>MONSTER SET VALIDO: {setDiMostri}</color> <quad=2></b>");
-               
             }
             else
             {
@@ -711,8 +721,13 @@ public class RoomManager : Manager
                 {
                     GameObject nemico;
                     Vector2 posizioneMostro = CalcolaPosizioneGiustaPerMostro(enemy.playerDistance);
-                    nemico = Instantiate(enemy.nemicoDaIstanziare, new Vector3((float)UnityEngine.Random.Range(0, 10), (float)UnityEngine.Random.Range(0, 10), 0), Quaternion.identity);
-
+                    nemico = Instantiate(enemy.nemicoDaIstanziare, posizioneMostro, Quaternion.identity);
+                }
+            }
+            AppManager.Instance.enemyManager.GetAllEnemyInScene();
+            foreach (var enemy in AppManager.Instance.enemyManager.m_activeEnemyList){
+                if(!enemy.GetComponent<NavMeshAgent>().isOnNavMesh){
+                    enemy.SetActive(false);
                 }
             }
         }
@@ -726,20 +741,114 @@ public class RoomManager : Manager
 
     private Vector2 CalcolaPosizioneGiustaPerMostro(EDistanzaPlayerDaNemico playerDistance)
     {
+
+        Vector2 spawnPosition = Vector2.zero;
+
+        Bounds navMeshBounds = m_surface.navMeshData.sourceBounds;
+        Vector2 roomSize = new Vector2(navMeshBounds.size.x, navMeshBounds.size.z);
+
+        float rangeMin = 0f;
+        float rangeMax = 0f;
+
         switch (playerDistance)
         {
             case EDistanzaPlayerDaNemico.NonSpecificato:
                 break;
             case EDistanzaPlayerDaNemico.Vicino:
+                rangeMin = UnityEngine.Random.Range(0.0f, 0.3f);
+                rangeMax = UnityEngine.Random.Range(rangeMin, 0.3f);
                 break;
             case EDistanzaPlayerDaNemico.Intermedia:
+                rangeMin = UnityEngine.Random.Range(0.3f, 0.7f);
+                rangeMax = UnityEngine.Random.Range(rangeMin, 0.7f);
                 break;
             case EDistanzaPlayerDaNemico.Lontano:
+                rangeMin = UnityEngine.Random.Range(0.7f, 1.0f);
+                rangeMax = UnityEngine.Random.Range(rangeMin, 1.0f);
                 break;
             default:
                 break;
         }
-        return Vector2.zero;
+
+        spawnPosition = FindValidSpawnPosition(rangeMin * roomSize.x, rangeMax * roomSize.x, roomSize);
+
+        return spawnPosition;
+    }
+
+    Vector2 FindValidSpawnPosition(float rangeMin, float rangeMax,Vector2 roomSize)
+    {
+        NavMeshHit hit;
+        Vector2 spawnPosition = Vector2.zero;
+        bool positionFound = false;
+
+        Vector2 roomCenter = new Vector2(m_surface.navMeshData.sourceBounds.center.x, m_surface.navMeshData.sourceBounds.center.y);
+        int maxAttempts = 1000;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            var randomPosition = new Vector2(
+            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.x, m_surface.navMeshData.sourceBounds.max.x),
+            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.z, m_surface.navMeshData.sourceBounds.max.z));
+            spawnPosition = new Vector2(randomPosition.x, randomPosition.y);
+            bool temp = Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < 1;
+            if (Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < 1)
+            {
+                Debug.Log("<color=yellow>Posizione di spawn troppo vicina al player.</color>");
+                continue;
+            }
+            int walkableAreaMask = 1 << NavMesh.GetAreaFromName("Walkable");
+            bool temp1 = !NavMesh.SamplePosition(spawnPosition, out hit, 1.0f, walkableAreaMask);
+            if (!NavMesh.SamplePosition(spawnPosition, out hit, 1.0f, walkableAreaMask))
+            {
+                Debug.Log("<color=yellow>Posizione nella navmesh non valida.</color>");
+                continue;
+            }
+            bool temp2 = Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < rangeMin || Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) > rangeMax;
+            if (Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < rangeMin || Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) > rangeMax)
+            {
+                Debug.Log("<color=yellow>Vector2.Distance(spawnPosition, roomCenter) < rangeMin || Vector2.Distance(spawnPosition, roomCenter) > rangeMax.</color>");
+                continue;
+            }
+
+            bool tooCloseToEdges = Vector2.Distance(spawnPosition, roomCenter) < 1;
+            bool tooCloseToOtherSpawns = IsTooCloseToOtherSpawns(spawnPosition);
+
+            if (tooCloseToEdges || tooCloseToOtherSpawns)
+                continue;
+
+            positionFound = true;
+            break;
+        }
+
+        if (!positionFound)
+        {
+            Debug.LogError("<color=red>Impossibile trovare una posizione valida dopo " + maxAttempts + " tentativi.</color>");
+        }
+        Debug.Log("<color=blue>Posizione trovata: " + spawnPosition+ "</color>");
+        return spawnPosition;
+    }
+
+    bool IsTooCloseToOtherSpawns(Vector2 spawnPosition)
+    {
+        // Implementa il codice per verificare se la posizione Ã¨ troppo vicina ad altri punti di spawn
+        // Ritorna true se Ã¨ troppo vicina, altrimenti false
+        bool notCloseToOtherSpawns = false;
+        if(m_lastMonsterSpawnPosition == null){
+            m_lastMonsterSpawnPosition = spawnPosition;
+        }
+        else
+        {
+            if (Vector2.Distance(spawnPosition, m_lastMonsterSpawnPosition) < 1.5f)
+            {
+                notCloseToOtherSpawns = true;
+            }
+            else
+            {
+                m_lastMonsterSpawnPosition = spawnPosition;
+            }
+        }
+
+        return notCloseToOtherSpawns;
     }
 
     private GameObject SetPlayerInRoom(GameObject roomSpawned)
@@ -767,16 +876,11 @@ public class RoomManager : Manager
                 if (tilemap != null)
                 {
                     BoundsInt bounds = tilemap.cellBounds;
-
                     Vector3 cellSize = tilemap.cellSize;
                     Vector3 gridMin = tilemap.GetCellCenterWorld(bounds.min);
                     Vector3 gridMax = tilemap.GetCellCenterWorld(bounds.max);
-
-                    // Genera un punto casuale all'interno delle dimensioni della tilemap
                     float randomX = UnityEngine.Random.Range(gridMin.x, gridMax.x);
                     float randomY = UnityEngine.Random.Range(gridMin.y, gridMax.y);
-
-                    // Crea il punto casuale
                     Vector3 randomPointInTilemap = new Vector3(randomX, randomY, 0f);
                 }
 

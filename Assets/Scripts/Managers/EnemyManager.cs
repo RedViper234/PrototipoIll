@@ -8,12 +8,9 @@ public class EnemyManager : Manager
 
     public List<GameObject> m_activeEnemyList;
 
-    private void Awake()
-    {
-        GetAllEnemyInScene();
-    }
+
     private void OnDisable() => m_activeEnemyList = null;
-    private void GetAllEnemyInScene()
+    public void GetAllEnemyInScene()
     {
         EnemyController[] allEnemiesInScene = FindObjectsByType<EnemyController>(FindObjectsInactive.Include,FindObjectsSortMode.None);
         foreach (var enemy in allEnemiesInScene)

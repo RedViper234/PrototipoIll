@@ -23,7 +23,12 @@ public class AreaSO : ScriptableObject
     public List<SpecialRoom> stanzeSpeciali;
     public bool onlyOneSpecialRoom = false;
     public List<EnemySet> enemySet;
-    public List<RoomDistribution> roomDistributions;
+    public List<RoomData> roomDataArea;
+    public List<StaticRoomDistribution> roomDistributions;
+    [Min(0)]
+    public int minStaticRoom = 0;
+    [Min(0)]
+    public int maxStaticRoom = 1;
     public List<AreaSpawnStandardProbability> standardCombatProbability;
 
 
@@ -41,25 +46,26 @@ public class AreaSO : ScriptableObject
 [Serializable]
 public struct SpecialRoom
 {
+    [Expandable]
     public RoomData stanza;
-    [Range(-100,100)]
+    [Expandable]
+    public RequisitiStanza requisiti;
+    [Range(-100, 100)]
     public int priorit‡StanzaSpeciale;
     public bool riproduzioneMultipla;
 }
 [Serializable]
-public class RoomDistribution
+public class StaticRoomDistribution
 {
+    [Header("TIPOLOGIA STANZA")]
     public TipiDiStanza tipoStanzaArea;
     [Space]
-    public SottoCategoriaStanzaCombattimento tipoStanzaCombattimentoArea;
-    public SottoCategoriaStanzaBoss tipoStanzaBossArea;
+    [Header("SOTTO CATEGORIE")]
+    public SottoCategoriaStanzaCombattimento combattimento;
+    public SottoCategoriaStanzaBoss boss;
     // PROPRIETA PER STANZA EVENTO
-    [Space]
-    public SottoCategoriaStanzaEvento tipoStanzaEvento;
-    public ETipoEventiMercante sottoTipoStanzaMercante;
-    public ETipoEventiStanzaRiposo sottoTipoStanzaRiposo;
-    [Space]
-    public SottoCategoriaStanzaStoria tipoStanzaStoriaArea;
+    public SottoCategoriaStanzaEvento evento;
+    public SottoCategoriaStanzaStoria storia;
     [Space]
     public int min;
     public int max;
@@ -68,21 +74,19 @@ public class RoomDistribution
     [Range(-1,100)]public int maxRespawn;
     public List<SpawnRicompensa> tipoRicompensa;
     public int numeroRicompense;
-    public bool accettaRipetizioniRicompense;
+    public bool permettiRipetizioniRicompense = true;
 }
 public class PercentualRoomDistribution
 {
+    [Header("TIPOLOGIA STANZA")]
     public TipiDiStanza tipoStanzaArea;
     [Space]
-    public SottoCategoriaStanzaCombattimento tipoStanzaCombattimentoArea;
-    public SottoCategoriaStanzaBoss tipoStanzaBossArea;
+    [Header("SOTTO CATEGORIE")]
+    public SottoCategoriaStanzaCombattimento combattimento;
+    public SottoCategoriaStanzaBoss boss;
     // PROPRIETA PER STANZA EVENTO
-    [Space]
-    public SottoCategoriaStanzaEvento tipoStanzaEvento;
-    public ETipoEventiMercante sottoTipoStanzaMercante;
-    public ETipoEventiStanzaRiposo sottoTipoStanzaRiposo;
-    [Space]
-    public SottoCategoriaStanzaStoria tipoStanzaStoriaArea;
+    public SottoCategoriaStanzaEvento evento;
+    public SottoCategoriaStanzaStoria storia;
     [Space]
     public int peso = 0;
     public int maxAppereance;

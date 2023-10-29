@@ -40,6 +40,7 @@ public class AppManager : MonoBehaviour
     [HideInInspector] public PlayerController playerControllerInstance;
     [HideInInspector] public ControlloMalattiaManager controlloMalattiaManager;
     [HideInInspector] public InventoryManager inventoryManager;
+    
     private void OnEnable()
     {
         m_instance= this;
