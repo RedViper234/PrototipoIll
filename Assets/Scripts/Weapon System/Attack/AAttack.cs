@@ -8,20 +8,28 @@ public abstract class AAttack : MonoBehaviour, IAttack
 {
     // [field: SerializeField] public AttackSO attackSO { get; set;}
     [field: SerializeField] public AnimationClip attackAnimation { get; set;}
+    
+    [field: Header("Attack Time Values")]
     [field: SerializeField] public float TimeToActivateHitbox { get; set;}
     [field: SerializeField] public float TimeDurationHitbox { get; set;}
     [field: SerializeField] public float TimeToEndHitbox { get; set;}
     [field: SerializeField] public float TimeComboProgression { get; set;}
+    [field: SerializeField] public float AttackCooldown { get; set;}
+
+    [field: Header("Attack Time Values")]
     [field: SerializeField] public float PlayerSpeedModifier { get; set;}
     [field: SerializeField] public PlayerDragStruct PlayerDrag { get; set;}
-    [field: SerializeField] public float AttackCooldown { get; set;}
     [field: SerializeField] public float BaseDamageAttack { get; set;}
     [field: SerializeField] public AttackRange AttackRangeAttack { get; set;}
     [field: SerializeField] public DamageType.DamageTypes DamageType { get; set;}
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set;}
     [field: SerializeField] public float KnockbackForceAttack { get; set;}
     [field: SerializeField] public MultiAttack MultiAttack { get; set; }
+
+    [field: Header("Ranged Attack Values")]
     [field: SerializeField] public float BulletSpeed { get; set; }
+
+    [field: Header("Other/Debug")]
     public BoxCollider2D boxCollider2D { get; set; }
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference { get; set; }
     [field: SerializeField, MyReadOnly] public UnityEngine.Vector2 ActualDirection { get; set; }
@@ -66,12 +74,13 @@ public abstract class AAttack : MonoBehaviour, IAttack
     public virtual IEnumerator InitializeAttack()
     {
         //Prima che venga attivata l'hitbox    
+        DoBeforeHitboxActivation();
 
         yield return new WaitForSeconds(TimeToActivateHitbox);
 
         //Activate Hitbox
         
-        DoInTimeToActivateHitbox();
+        DoAfterHitboxActivation();
 
         Debug.Log("Attivato");
 
@@ -79,7 +88,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
         //Deactivate Hitbox
         
-        DoInTimeDurationHitbox();
+        DoBeforeAttackEnd();
 
         Debug.Log("Disattivato");
 
@@ -87,22 +96,27 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
         //End of attack
 
-        DoInTheEnd();
+        DoInAttackEnd();
 
         Debug.Log("Fine");
     }
 
-    public virtual void DoInTimeToActivateHitbox()
+    public virtual void DoAfterHitboxActivation()
     {
         boxCollider2D.enabled = true;
     }
 
-    public virtual void DoInTimeDurationHitbox()
+    public virtual void DoBeforeHitboxActivation()
+    {
+        // boxCollider2D.enabled = true;
+    }
+
+    public virtual void DoBeforeAttackEnd()
     {
         boxCollider2D.enabled = false;
     }
 
-    public virtual void DoInTheEnd()
+    public virtual void DoInAttackEnd()
     {
         weaponReference.SetTimerComboProgression(TimeComboProgression);
 

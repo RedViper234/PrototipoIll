@@ -57,15 +57,15 @@ public enum Evolution
 
 public abstract class AbstractPowers : MonoBehaviour
 {
-    public UnityAction OnPowerTaken { get; set; }
-    public PowerSubType powerSubType { get; set; }
-    public PowerType powerType { get; set;}
-    public Rarity rarity { get; set;}
-    public TriggerType triggerType { get; set; }
-    public PowerState powerState { get; set; }
-    public Evolution evolution { get; set; }
-    public int NRooms { get; set; }
-    public float NTime { get; set; }
+    // public UnityAction OnPowerTaken { get; set; }
+    [field: SerializeField] public PowerSubType powerSubType { get; set; }
+    [field: SerializeField] public PowerType powerType { get; set;}
+    [field: SerializeField] public Rarity rarity { get; set;}
+    [field: SerializeField] public TriggerType triggerType { get; set; }
+    [field: SerializeField] public PowerState powerState { get; set; }
+    [field: SerializeField] public Evolution evolution { get; set; }
+    [field: SerializeField] public int NRooms { get; set; }
+    [field: SerializeField] public float NTime { get; set; }
     public abstract void TriggerOnEvent();
     public abstract void TriggerOnEvent(int value);
     public abstract void TriggerOnEvent(float value);
@@ -80,7 +80,7 @@ public abstract class AbstractPowers : MonoBehaviour
 
     public virtual void InitChangePowerType()
     {
-        if (((int)powerSubType) >= 0 && (int)powerSubType < 3)
+        if ((int)powerSubType >= 0 && (int)powerSubType < 3)
         {
             powerType = (PowerType)1;
         }

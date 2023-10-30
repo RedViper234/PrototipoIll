@@ -13,6 +13,7 @@ public class TestPower : AbstractPowers
 
     public override void TriggerOnEvent(int value)
     {
+        
     }
 
     public override void TriggerOnEvent(float value)
