@@ -35,3 +35,4 @@ MonoBehaviour:
     TimeBetweenAttacks: 0
     AttackList: []
   BulletSpeed: 10
+  BulletAliveTime: 1.5

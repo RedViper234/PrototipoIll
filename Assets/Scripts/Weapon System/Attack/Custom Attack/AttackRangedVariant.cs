@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class AttackRangedVariant : AttackRanged
 {
-
+    protected override void StartBulletBehavior()
+    {
+        base.StartBulletBehavior();
+    }
 }

@@ -29,4 +29,5 @@ public class AttackSO : ScriptableObject
     public float KnockbackForceAttack;
     public MultiAttack[] MultiAttack;
     public float BulletSpeed;
+    public float BulletAliveTime;
 }

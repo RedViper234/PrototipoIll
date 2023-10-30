@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 
+[Serializable]
+public struct MultiAttack
+{
+    public float NumberOfAttacks;
+    public float TimeBetweenAttacks;
+    public AttackSO[] AttackList;
+}
+
 public abstract class AAttack : MonoBehaviour, IAttack
 {
     // [field: SerializeField] public AttackSO attackSO { get; set;}
@@ -28,9 +36,10 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
     [field: Header("Ranged Attack Values")]
     [field: SerializeField] public float BulletSpeed { get; set; }
+    [field: SerializeField] public float BulletAliveTime { get; set; }
 
     [field: Header("Other/Debug")]
-    public BoxCollider2D boxCollider2D { get; set; }
+    public Collider2D[] attackCollider2d { get; set; }
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference { get; set; }
     [field: SerializeField, MyReadOnly] public UnityEngine.Vector2 ActualDirection { get; set; }
 
@@ -46,20 +55,23 @@ public abstract class AAttack : MonoBehaviour, IAttack
         TimeDurationHitbox = attackSO.TimeDurationHitbox;
         TimeToEndHitbox = attackSO.TimeToEndHitbox;
         TimeComboProgression = attackSO.TimeComboProgression;
+        AttackCooldown = attackSO.AttackCooldown;
+
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
         PlayerDrag = attackSO.PlayerDrag;
-        AttackCooldown = attackSO.AttackCooldown;
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : GetComponentInParent<AWeapon>().BaseDamageWeapon;
         AttackRangeAttack = attackSO.AttackRangeAttack;
         DamageType = attackSO.DamageType;
         StatusEffects = attackSO.StatusEffects;
         KnockbackForceAttack = attackSO.KnockbackForceAttack;
-        boxCollider2D = GetComponent<BoxCollider2D>();
-        weaponReference = weaponRef;
         BulletSpeed = attackSO.BulletSpeed;
-        ActualDirection = direction;
+        BulletAliveTime = attackSO.BulletAliveTime;
 
-        Debug.Log($"weaponReference: {weaponReference.BaseDamageWeapon}");
+        attackCollider2d = GetComponents<Collider2D>();
+        ManageAttackColliders(false);
+
+        weaponReference = weaponRef;
+        ActualDirection = direction;
 
         // Start the coroutine to initialize the attack
         StartCoroutine(InitializeAttack());
@@ -74,13 +86,13 @@ public abstract class AAttack : MonoBehaviour, IAttack
     public virtual IEnumerator InitializeAttack()
     {
         //Prima che venga attivata l'hitbox    
-        DoBeforeHitboxActivation();
+        DoBeforeWaitHitboxActivation();
 
         yield return new WaitForSeconds(TimeToActivateHitbox);
 
         //Activate Hitbox
         
-        DoAfterHitboxActivation();
+        DoAfterWaitHitboxActivation();
 
         Debug.Log("Attivato");
 
@@ -101,26 +113,24 @@ public abstract class AAttack : MonoBehaviour, IAttack
         Debug.Log("Fine");
     }
 
-    public virtual void DoAfterHitboxActivation()
+    public virtual void DoBeforeWaitHitboxActivation()
     {
-        boxCollider2D.enabled = true;
+        if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
     }
 
-    public virtual void DoBeforeHitboxActivation()
+    public virtual void DoAfterWaitHitboxActivation()
     {
-        // boxCollider2D.enabled = true;
+        ManageAttackColliders(true);
     }
 
     public virtual void DoBeforeAttackEnd()
     {
-        boxCollider2D.enabled = false;
+        ManageAttackColliders(false);
     }
 
     public virtual void DoInAttackEnd()
     {
         weaponReference.SetTimerComboProgression(TimeComboProgression);
-
-        // Destroy(this.gameObject);
     }
 
     public virtual void OnDamageableHit(Collider2D other)
@@ -144,12 +154,12 @@ public abstract class AAttack : MonoBehaviour, IAttack
     {
         gameObject.GetComponentInParent<IWeapon>().animator.Play(attackAnimation.name);
     }
-}
 
-[Serializable]
-public struct MultiAttack
-{
-    public float NumberOfAttacks;
-    public float TimeBetweenAttacks;
-    public AttackSO[] AttackList;
+    public void ManageAttackColliders(bool isEnabled)
+    {
+        foreach (Collider2D collider in attackCollider2d)
+        {
+            collider.enabled = isEnabled;
+        }
+    }
 }
