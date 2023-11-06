@@ -34,7 +34,7 @@ public class Damageable : MonoBehaviour
 
     private void Awake()
     {
-        if (GetComponent<PlayerController>()) //se è il player lascio che sia la statistica ad impostare la vita
+        if (GetComponent<PlayerController>()) //se ï¿½ il player lascio che sia la statistica ad impostare la vita
         {
             maxHealth = 0;
             currentHealth = 0;
@@ -419,7 +419,7 @@ public class Damageable : MonoBehaviour
                 currentHealth = Mathf.Max(currentHealth - (int)effectiveDamage, 0);
                 if (currentHealth <= 0)
                 {
-                    Destroy(gameObject);
+                    gameObject.SetActive(false);
                 }
             }
         }
@@ -439,7 +439,7 @@ public class Damageable : MonoBehaviour
 
     private void TakeDamageOverTime(float damagePerSecond, DamageType.DamageTypes tipo, float duration)
     {
-        // Se una coroutine di guarigione è già in esecuzione, la interrompiamo.
+        // Se una coroutine di guarigione ï¿½ giï¿½ in esecuzione, la interrompiamo.
         //StopCoroutine(healOverTimeCoroutine);
         StopTakeDamage(tipo);
         coroutineDiDanno nuovoDanno = new();
@@ -615,7 +615,7 @@ public class Damageable : MonoBehaviour
     public void HealOverTime(float healPerSecond, float duration, HealType.HealTypes tipo)
     {
 
-        // Se una coroutine di guarigione è già in esecuzione, la interrompiamo.
+        // Se una coroutine di guarigione ï¿½ giï¿½ in esecuzione, la interrompiamo.
         //StopCoroutine(healOverTimeCoroutine);
         StopHealing(tipo);
         coroutineDiCura nuovaCura = new();

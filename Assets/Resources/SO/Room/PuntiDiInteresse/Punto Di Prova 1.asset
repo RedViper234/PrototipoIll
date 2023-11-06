@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9b879268eee46f448aacdba69744836, type: 3}
+  m_Name: Punto Di Prova 1
+  m_EditorClassIdentifier: 
+  roomPossibiliDaSpawnare:
+  - {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
+  - {fileID: 11400000, guid: 4b43308165663cd4680af18fa230a008, type: 2}
+  - {fileID: 11400000, guid: cc3200698fa923f40b1c2e22dd12fa3f, type: 2}
+  spawnAutomatico: 0
+  spawnRicompense: []
+  numeroRicompenseSpawn: 0
+  accettaRipetizioneRicompense: 0
+  respawn: 0
+  respawnLimit: 0
+  descrizione: 
+  movementCost: -1
+  secTimeBattleProbability: -1
+  points:
+  - points:
+    - {fileID: 0}
+    breakable: 0
+    monouso: 0
+  flagOnEnter: []
+  flagOnEnterOnlyFirstTime: 0
+  blockSpecialRoom: 0

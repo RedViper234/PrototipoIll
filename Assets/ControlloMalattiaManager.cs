@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ControlloMalattiaManager : MonoBehaviour
 {
-    //dovrà essere inserita la lista di mutazioni e la mutazione attuale
+    //dovrï¿½ essere inserita la lista di mutazioni e la mutazione attuale
     public Mortality mortality;
     public Infectivity infectivity;
     public Mutability mutability;
@@ -41,7 +41,7 @@ public class Mortality : MalattiaStat
     public void timeIllVulnerabilityOrResistance(MalattiaHandler handler)
     {
         float range = illResistance.y - illResistance.x;
-        float value = Mathf.RoundToInt(illResistance.y - ((range / 100) * actualValue)); //si usa y- perchè il rapporto è inversamente proporzionale (all'aumentare della barra peggiora il value)
+        float value = Mathf.RoundToInt(illResistance.y - ((range / 100) * actualValue)); //si usa y- perchï¿½ il rapporto ï¿½ inversamente proporzionale (all'aumentare della barra peggiora il value)
         DamageModifier modifier = new();
         modifier.value = MathF.Abs(value);
         modifier.tipo = DamageType.DamageTypes.Time;
@@ -60,7 +60,7 @@ public class Infectivity : MalattiaStat
 {
     public Vector2 spawnProbabilityInfectivity;
 
-    public List<AreaSpawnStandardProbability> calcolaProbabilitàSpawnStandardCombat(List<AreaSpawnStandardProbability> prob)
+    public List<AreaSpawnStandardProbability> calcolaProbabilitaSpawnStandardCombat(List<AreaSpawnStandardProbability> prob)
     {
         float range = spawnProbabilityInfectivity.y - spawnProbabilityInfectivity.x;
         float CureValue = Mathf.RoundToInt(spawnProbabilityInfectivity.y - ((range / 100) * actualValue));
@@ -93,11 +93,11 @@ public class Mutability : MalattiaStat
     public float mutaOndata(float areaMutationVariation)
     {
         float range = ProbabilityMutation.y - ProbabilityMutation.x;
-        float value = Mathf.RoundToInt(ProbabilityMutation.x + ((range / 100) * actualValue)); //si usa x- perchè il rapporto è direttamente proporzionale (all'aumentare della barra aumenta il value)
+        float value = Mathf.RoundToInt(ProbabilityMutation.x + ((range / 100) * actualValue)); //si usa x- perchï¿½ il rapporto ï¿½ direttamente proporzionale (all'aumentare della barra aumenta il value)
         value = Mathf.Clamp(value + areaMutationVariation, 0, 100);
         return MathF.Round(value, 1);
     }
-    public float raritàMutazione(float mutationBaseValue, float min, float max)
+    public float raritaMutazione(float mutationBaseValue, float min, float max)
     {
         float range = QualityStartMutation.y - QualityStartMutation.x;
         float value = Mathf.RoundToInt(QualityStartMutation.x + ((range / 100) * actualValue));

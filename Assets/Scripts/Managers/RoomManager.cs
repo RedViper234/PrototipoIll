@@ -5,10 +5,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using NavMeshPlus.Components;
-using UnityEditor;
 using UnityEngine.Tilemaps;
 using UnityEngine.AI;
-using UnityEngine.PlayerLoop;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEditor;
+using UnityEngine.UIElements;
+using UnityEngine.Assertions.Must;
+
+
 
 public class RoomManager : Manager
 {
@@ -21,33 +26,36 @@ public class RoomManager : Manager
     [MyReadOnly] public RoomData currentRoom;
     [MyReadOnly] public AreaSO currentArea;
     [MyReadOnly] public EnemySet currentEnemySet;
-    [MyReadOnly,SerializeField] private int m_enemyQuantity;
+    [MyReadOnly, SerializeField] private int m_enemyQuantity;
     [Expandable]
     public List<AreaSO> areeDaEsplorare;
     public UnityEvent OnAreaChanged;
     [Header("READONLY VARIABLE")]
     [SerializeField, MyReadOnly] public int m_stanzeAttraversate = 0;
+    [SerializeField, MyReadOnly] private int m_indiceOndataCorrente = 0;
+    [SerializeField, MyReadOnly] private int m_indicePuntoDiInteresseCorrente = 0;
 
 
-    private PlayerController m_playerControllerInstance;
     private FlagManager m_flagManager;
-    private int m_indiceOndataCorrente = 0;
+    private PlayerController m_playerControllerInstance;
     private NavMeshSurface m_surface;
     private Vector2 m_lastMonsterSpawnPosition;
 
-
+    private UIDocument m_mapDocument;
     public void Update()
     {
 
     }
-    public void Start()
+    public IEnumerator Start()
     {
-        
+        m_mapDocument = GetComponentInChildren<UIDocument>();
         m_indiceOndataCorrente = 0;
         m_playerControllerInstance = AppManager.Instance.playePrefabReference.GetComponent<PlayerController>();
         m_flagManager = AppManager.Instance?.flagManager;
-        Initialize();
+        var coroutineDiInizializzazione = this.RunCoroutine(Initialize());
         SpawnCurrentRoom();
+        yield return new WaitUntil(()=> coroutineDiInizializzazione.IsDone);
+
     }
 
 
@@ -55,12 +63,12 @@ public class RoomManager : Manager
     /// Inizializza il room manager impostando l'Area iniziale, e i punti di interesse e subito dopo
     /// una stanza per volta
     /// </summary>
-    private void Initialize()
+    private IEnumerator Initialize()
     {
         SetCurrentArea(firstArea);
-        SetPuntiDiInteresse();
+        CostruisciTuttiIPuntiDiInteresseDellArea();
         SetRoom(true);
-
+        yield return null;
     }
 
 
@@ -85,31 +93,62 @@ public class RoomManager : Manager
     }
 
     //FUNZIONI PUNTI DI INTERESSE
-    public void SetPuntiDiInteresse()
+    public void CostruisciTuttiIPuntiDiInteresseDellArea()
     {
-        for (int i = 0; i < currentArea.puntiDiInteresse.Count; i++)
+        currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
+        foreach (PuntoDiInteresse punto in currentArea.puntiDiInteresse)
         {
-            if (currentArea.puntiDiInteresse[i] == null) { continue; }
-            Debug.Log(currentArea.puntiDiInteresse[i]);
-            for (int y = 0; y < currentArea.puntiDiInteresse[i].points.Count; y++)
+            PrintNode(punto, 0);
+        }
+    }
+    private void PrintNode(PuntoDiInteresse punto, int level)
+    {
+        Debug.Log($"Livello {level}: {punto.name}");
+        foreach (ConnectedPoints connectedPoints in punto.points)
+        {
+            foreach (PuntoDiInteresse subPunto in connectedPoints.points)
             {
-                currentPoint = currentArea.puntiDiInteresse[i];
+                if (subPunto == punto)
+                {
+                    #if UNITY_EDITOR
+                    Debug.ClearDeveloperConsole();
+                    Debug.LogError("Ricorsione infinita");
+                    EditorApplication.isPlaying = false;
+                    #else
+                    Application.Quit();
+                    #endif
+                    return;
+                }
+                if (subPunto == null) { return; }
+                
+
+
+                PrintNode(subPunto, level + 1); // Chiamata ricorsiva
             }
         }
-
-
     }
-    public void VaiAlPuntoPrecedente(RoomData room)
+    // public void CostruisciTuttiIPuntiDiInteresseDellArea()
+    // {
+    //     if (currentArea.puntiDiInteresse.Count <= 0) { return; }
+    //     for (int i = 0; i < currentArea.puntiDiInteresse.Count; i++)
+    //     {
+    //         if(currentArea.puntiDiInteresse[i].points.Count == 0) { continue;}
+    //         for (int y = 0; y < currentArea.puntiDiInteresse[i].points.Count; y++)
+    //         {
+    //             currentPoint = currentArea.puntiDiInteresse[i];
+    //         }
+    //     }
+    // }
+    public void VaiAlPuntoPrecedente(PuntoDiInteresse puntoDiInteresse)
     {
 
     }
-    public void VaiAlPuntoSuccessivo(RoomData data)
+    public void VaiAlPuntoSuccessivo(PuntoDiInteresse puntoDiInteresse)
     {
 
     }
 
     // FUNZIONI STANZE
-
     /// <summary>
     /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom � selezionato allora verr�
     /// fatto in modo di pescare, se possibile, una stanza che ha il booleano attivo first room
@@ -121,10 +160,10 @@ public class RoomManager : Manager
         List<RoomData> stanzeCachateDaSO = currentPoint.roomPossibiliDaSpawnare;
         stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
         // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
-        List<RoomData> roomFinaliCheRispettanoLeRegole = new ();
+        List<RoomData> roomFinaliCheRispettanoLeRegole = new();
         foreach (var room in stanzeCachateDaSO)
         {
-            if(CheckRequisiti(room))
+            if (CheckRequisiti(room))
             {
                 roomFinaliCheRispettanoLeRegole.Add(room);
             }
@@ -139,7 +178,7 @@ public class RoomManager : Manager
             int temp = UnityEngine.Random.Range(0, roomFinaliCheRispettanoLeRegole.Count);
             currentRoom = roomFinaliCheRispettanoLeRegole[temp];
         }
-        else if(roomFinaliCheRispettanoLeRegole.Count == 1)
+        else if (roomFinaliCheRispettanoLeRegole.Count == 1)
         {
             currentRoom = roomFinaliCheRispettanoLeRegole[0];
         }
@@ -152,14 +191,14 @@ public class RoomManager : Manager
             if (hasFlag)
                 m_flagManager.SetFlag(currentRoom.flagsOnEnter.flagToSet);
         }
-        
+
 
     }
 
 
-
+    #region  PER REQUISITI MOSTRI E STANZE
     //CHECK REQUISITI
-    private bool CheckRequisiti(RoomData room) 
+    private bool CheckRequisiti(RoomData room)
     {
         bool roomCanSpawn = false;
         for (int i = 0; i < room.requisitiStanza.Count; i++)
@@ -203,45 +242,45 @@ public class RoomManager : Manager
         }
 
         return roomCanSpawn;
-    }    
-    private bool CheckRequisiti(EnemySet enemySet) 
+    }
+    private bool CheckRequisiti(EnemySet enemySet)
     {
         bool roomCanSpawn = false;
-            switch (enemySet.tipoRequisito)
-            {
-                case TipoRequisito.PercentualeCorruzione:
-                    roomCanSpawn = ControllaPercentualeCorruzione(enemySet);
-                    break;
-                case TipoRequisito.NumeroPoteriOttenuti:
-                    roomCanSpawn = ControllaSeNumeroPoteriCorrisponde(enemySet);
-                    break;
-                case TipoRequisito.PoterSpecifico:
-                    roomCanSpawn = true;
-                    break;
-                case TipoRequisito.NumeroStanzeAttraversate:
-                    roomCanSpawn = ControlloNumeroStanzeAttraversate(enemySet);
-                    break;
-                case TipoRequisito.DistanzaPercorsa:
-                    roomCanSpawn = true;
-                    break;
-                case TipoRequisito.ValoreDiStatistica:
-                    roomCanSpawn = ControlloStatistiche(enemySet);
-                    break;
-                case TipoRequisito.QuantitaVitaMassima:
-                    roomCanSpawn = ControlloQuantitaVitaMassima(enemySet);
-                    break;
-                case TipoRequisito.PercentualeVitaRimasta:
-                    roomCanSpawn = ControlloPercentualeVitaPlayer(enemySet);
-                    break;
-                case TipoRequisito.Ustioni:
-                    roomCanSpawn = ControlloQuantitaUstioni(enemySet);
-                    break;
-                case TipoRequisito.Flag:
-                    roomCanSpawn = true;
-                    break;
-                default:
-                    break;
-            }
+        switch (enemySet.tipoRequisito)
+        {
+            case TipoRequisito.PercentualeCorruzione:
+                roomCanSpawn = ControllaPercentualeCorruzione(enemySet);
+                break;
+            case TipoRequisito.NumeroPoteriOttenuti:
+                roomCanSpawn = ControllaSeNumeroPoteriCorrisponde(enemySet);
+                break;
+            case TipoRequisito.PoterSpecifico:
+                roomCanSpawn = true;
+                break;
+            case TipoRequisito.NumeroStanzeAttraversate:
+                roomCanSpawn = ControlloNumeroStanzeAttraversate(enemySet);
+                break;
+            case TipoRequisito.DistanzaPercorsa:
+                roomCanSpawn = true;
+                break;
+            case TipoRequisito.ValoreDiStatistica:
+                roomCanSpawn = ControlloStatistiche(enemySet);
+                break;
+            case TipoRequisito.QuantitaVitaMassima:
+                roomCanSpawn = ControlloQuantitaVitaMassima(enemySet);
+                break;
+            case TipoRequisito.PercentualeVitaRimasta:
+                roomCanSpawn = ControlloPercentualeVitaPlayer(enemySet);
+                break;
+            case TipoRequisito.Ustioni:
+                roomCanSpawn = ControlloQuantitaUstioni(enemySet);
+                break;
+            case TipoRequisito.Flag:
+                roomCanSpawn = true;
+                break;
+            default:
+                break;
+        }
 
         return roomCanSpawn;
     }
@@ -402,7 +441,7 @@ public class RoomManager : Manager
     private bool ControlloPercentualeVitaPlayer(RequisitiStanza requisiti)
     {
         bool roomCanSpawn = false;
-        switch(requisiti.valoreVitaRimasta.operatori)
+        switch (requisiti.valoreVitaRimasta.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
                 roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) > requisiti.valoreVitaRimasta.percentuale);
@@ -483,7 +522,7 @@ public class RoomManager : Manager
             }
         }
         return roomCanSpawn;
-         // Ritorna false se il tipo di statistica non � valido
+        // Ritorna false se il tipo di statistica non � valido
     }
     private bool ControlloStatistiche(EnemySet set)
     {
@@ -592,7 +631,7 @@ public class RoomManager : Manager
 
 
 
-
+    #endregion
 
 
 
@@ -620,7 +659,7 @@ public class RoomManager : Manager
                 validEnemyList = GetValidEnemySet(currentRoom.setDiMostriDellaStanza);
                 SetEnemySet(validEnemyList);
                 Debug.Log($"<b><color=#00ff00ff>ENEMY SET FINALE: {currentEnemySet}</color></b>");
-                StartOndate();
+                StartCoroutine(StartOndate());
             }
         }
         catch (Exception e)
@@ -649,7 +688,7 @@ public class RoomManager : Manager
                 Debug.Log($"<b><color=#FF0000>MONSTER SET NON VALIDO: {setDiMostri}</color> <quad=2></b>");
             }
         }
-        if(enemySetValidiAiRequisiti.Count == 0)
+        if (enemySetValidiAiRequisiti.Count == 0)
         {
             foreach (var setMostriArea in currentArea.enemySet)
             {
@@ -660,22 +699,23 @@ public class RoomManager : Manager
                 }
             }
         }
-        if(enemySetValidiAiRequisiti.Count == 0)
+        if (enemySetValidiAiRequisiti.Count == 0)
         {
-            int rangeRandomPerSpwanForzatoSet = UnityEngine.Random.Range(0,currentArea.enemySet.Count);
+            int rangeRandomPerSpwanForzatoSet = UnityEngine.Random.Range(0, currentArea.enemySet.Count);
             enemySetValidiAiRequisiti.Add(currentArea.enemySet[rangeRandomPerSpwanForzatoSet]);
             Debug.LogError("Zero enemy set validi, metti almeno un'enemy set valido.\n E stato scelto un set casuale dall'area in modo forzato, risolvere");
         }
         return enemySetValidiAiRequisiti;
     }
     public void SetEnemySet(List<EnemySet> enemySets)
+
     {
-        if(enemySets.Count == 1)
+        if (enemySets.Count == 1)
         {
             currentEnemySet = enemySets[0];
-            
+
         }
-        else if(enemySets.Count > 1)
+        else if (enemySets.Count > 1)
         {
             int pesoTotale = 0;
             for (int i = 0; i < enemySets.Count; i++)
@@ -693,7 +733,7 @@ public class RoomManager : Manager
                 {
                     Debug.Log($"<b>Hai selezionato l'elemento</b>{i}<quad material=1 size=20 x=0.1 y=0.1 width=0.5 height=0.5> ");
                     currentEnemySet = enemySets[i];
-                    break; 
+                    break;
                 }
 
                 pesoAccumulato += enemySets[i].pesoSet;
@@ -701,43 +741,133 @@ public class RoomManager : Manager
 
         }
     }
-    private void StartOndate()
+
+
+    private IEnumerator StartOndate()
     {
-        try
+        yield return new WaitForSeconds(2f);
+        GameManager.ChangeGameState(GameStates.Combattimento);
+        EnemySet.Ondata ondata = new();
+        if (m_indiceOndataCorrente + 1 <= currentEnemySet.listaDiOndate.Count)
         {
-            var ondata = currentEnemySet.listaDiOndate[m_indiceOndataCorrente];
-            float enemyQuantity = (int)UnityEngine.Random.Range(ondata.minEnemyOndata, ondata.maxEnemyOndata);
-            //QUI SI CALCOLANO O POTERI E/O MORTALITA
-            m_enemyQuantity = (int)enemyQuantity;
-            enemyQuantity = AppManager.Instance.controlloMalattiaManager.mortality.applyMortalityToEnemySet(m_enemyQuantity, currentEnemySet.tipologiaNemico);
-            //ISTANZIAMO I NEMICI NON STATICI
-
-            foreach (var enemy in ondata.mostri)
+            ondata = currentEnemySet.listaDiOndate[m_indiceOndataCorrente];
+        }
+        else
+        {
+            yield return null;
+        }
+        float enemyQuantity = (int)UnityEngine.Random.Range(ondata.minEnemyOndata, ondata.maxEnemyOndata);
+        m_enemyQuantity = (int)enemyQuantity;
+        enemyQuantity = AppManager.Instance.controlloMalattiaManager.mortality.applyMortalityToEnemySet(m_enemyQuantity, currentEnemySet.tipologiaNemico);
+        foreach (var enemy in ondata.mostri)
+        {
+            int quantitaDaTogliere = Mathf.RoundToInt(enemyQuantity * (enemy.percentualeSpawnMostri / 100));
+            int quantitaTipoMostri = -quantitaDaTogliere;
+            if (enemyQuantity <= 0) { break; }
+            for (int y = 0; y < quantitaDaTogliere; y++)
             {
-                int quantitaDaTogliere = Mathf.RoundToInt(enemyQuantity * (enemy.percentualeSpawnMostri / 100));
-                int quantitaTipoMostri = -quantitaDaTogliere;
-                if (enemyQuantity <= 0) { break; }
-                for (int y = 0; y < quantitaDaTogliere; y++)
-                {
-                    GameObject nemico;
-                    Vector2 posizioneMostro = CalcolaPosizioneGiustaPerMostro(enemy.playerDistance);
-                    nemico = Instantiate(enemy.nemicoDaIstanziare, posizioneMostro, Quaternion.identity);
-                }
-            }
-            AppManager.Instance.enemyManager.GetAllEnemyInScene();
-            foreach (var enemy in AppManager.Instance.enemyManager.m_activeEnemyList){
-                if(!enemy.GetComponent<NavMeshAgent>().isOnNavMesh){
-                    enemy.SetActive(false);
-                }
+                Vector2 posizioneMostro = CalcolaPosizioneGiustaPerMostro(enemy.playerDistance);
+                SpawnOrMoveEnemy(enemy.nemicoDaIstanziare, posizioneMostro);
             }
         }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-        
-
     }
+
+    private void SpawnOrMoveEnemy(AssetReferenceGameObject nemicoDaIstanziare, Vector2 posizioneMostro)
+    {
+        string tipoDiNemicoDaIstanziare = nemicoDaIstanziare.RuntimeKey.ToString(); // Ottieni l'identificatore univoco come stringa
+        GameObject nemico = GetInactiveEnemyFromPool(tipoDiNemicoDaIstanziare);
+        if (nemico != null)
+        {
+            if (!nemico.activeSelf)
+                nemico.SetActive(true);
+            nemico.transform.position = posizioneMostro;
+        }
+        else
+        {
+            LoadAndInstantiateAddressable(nemicoDaIstanziare, posizioneMostro);
+        }
+    }
+
+    private GameObject GetInactiveEnemyFromPool(string tipoDiNemicoDaIstanziare)
+    {
+        foreach (var enemy in AppManager.Instance.enemyManager.activeEnemyList)
+        {
+            if (!enemy.activeSelf && tipoDiNemicoDaIstanziare.Equals(enemy.GetComponent<EnemyController>().ID))
+            {
+                AppManager.Instance.enemyManager.AddEnemyToLists(enemy);
+                return enemy;
+            }
+        }
+        return null;
+    }
+
+    private async void LoadAndInstantiateAddressable(AssetReferenceGameObject nemicoDaIstanziare, Vector2 posizioneMostro)
+    {
+        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(nemicoDaIstanziare);
+        await handle.Task;
+        if (handle.Status == AsyncOperationStatus.Succeeded)
+        {
+            GameObject nemico = Instantiate(handle.Result, posizioneMostro, Quaternion.identity);
+            nemico.GetComponent<EnemyController>().ID = nemicoDaIstanziare.RuntimeKey.ToString(); // Assegna l'identificatore univoco
+            AppManager.Instance.enemyManager.AddEnemyToLists(nemico);
+        }
+        else
+        {
+            Debug.LogError("Failed to load addressable: " + nemicoDaIstanziare);
+        }
+        Addressables.Release(handle);
+    }
+
+    public void VaiAvantiDiOndata()
+    {
+        if (currentEnemySet != null)
+        {
+
+            if (currentEnemySet.listaDiOndate.Count > m_indiceOndataCorrente + 1)
+            {
+                m_indiceOndataCorrente++;
+                StartCoroutine(StartOndate());
+            }
+            else
+            {
+                StartCoroutine(DichiaraFineCombattimento());
+            }
+        }
+        else
+        {
+            Debug.LogError("ERRORE: currentEnemySet == null");
+        }
+    }
+
+
+
+    public void VaiIndietroOndate()
+    {
+        if (m_indiceOndataCorrente == 0) { return; }
+        m_indiceOndataCorrente--;
+        StartCoroutine(StartOndate());
+    }
+    
+    
+    /// <summary>
+    /// Aspetta x secondi prima di dichiarare il cambio di stato
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator DichiaraFineCombattimento()
+    {
+        m_enemyQuantity = 0;
+        GameManager.ChangeGameState(GameStates.FineCombattimento);
+        AppManager.Instance.enemyManager.RemoveEveryEnemyFromScene();
+        yield return null;
+    }
+
+
+
+
+
+
+
+
 
     private Vector2 CalcolaPosizioneGiustaPerMostro(EDistanzaPlayerDaNemico playerDistance)
     {
@@ -753,6 +883,8 @@ public class RoomManager : Manager
         switch (playerDistance)
         {
             case EDistanzaPlayerDaNemico.NonSpecificato:
+                rangeMin = 1;
+                rangeMax = 1;
                 break;
             case EDistanzaPlayerDaNemico.Vicino:
                 rangeMin = UnityEngine.Random.Range(0.0f, 0.3f);
@@ -770,49 +902,42 @@ public class RoomManager : Manager
                 break;
         }
 
-        spawnPosition = FindValidSpawnPosition(rangeMin * roomSize.x, rangeMax * roomSize.x, roomSize);
+        spawnPosition = FindValidSpawnPosition(rangeMin, rangeMax, roomSize);
 
         return spawnPosition;
     }
 
-    Vector2 FindValidSpawnPosition(float rangeMin, float rangeMax,Vector2 roomSize)
+    Vector2 FindValidSpawnPosition(float rangeMin, float rangeMax, Vector2 roomSize)
     {
         NavMeshHit hit;
         Vector2 spawnPosition = Vector2.zero;
         bool positionFound = false;
 
         Vector2 roomCenter = new Vector2(m_surface.navMeshData.sourceBounds.center.x, m_surface.navMeshData.sourceBounds.center.y);
-        int maxAttempts = 1000;
+        int maxAttempts = 200;
 
         for (int i = 0; i < maxAttempts; i++)
         {
             var randomPosition = new Vector2(
-            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.x, m_surface.navMeshData.sourceBounds.max.x),
-            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.z, m_surface.navMeshData.sourceBounds.max.z));
+            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.x * rangeMin, m_surface.navMeshData.sourceBounds.max.x * rangeMax),
+            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.z * rangeMin, m_surface.navMeshData.sourceBounds.max.z * rangeMax));
             spawnPosition = new Vector2(randomPosition.x, randomPosition.y);
-            bool temp = Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < 1;
+            int walkableAreaMask = 1 << NavMesh.GetAreaFromName("Walkable");
+            float distanceToPlayer = Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position);
             if (Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < 1)
             {
-                Debug.Log("<color=yellow>Posizione di spawn troppo vicina al player.</color>");
                 continue;
             }
-            int walkableAreaMask = 1 << NavMesh.GetAreaFromName("Walkable");
-            bool temp1 = !NavMesh.SamplePosition(spawnPosition, out hit, 1.0f, walkableAreaMask);
             if (!NavMesh.SamplePosition(spawnPosition, out hit, 1.0f, walkableAreaMask))
             {
-                Debug.Log("<color=yellow>Posizione nella navmesh non valida.</color>");
                 continue;
             }
-            bool temp2 = Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < rangeMin || Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) > rangeMax;
-            if (Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < rangeMin || Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) > rangeMax)
+            if (distanceToPlayer < rangeMin || distanceToPlayer > rangeMax)
             {
-                Debug.Log("<color=yellow>Vector2.Distance(spawnPosition, roomCenter) < rangeMin || Vector2.Distance(spawnPosition, roomCenter) > rangeMax.</color>");
                 continue;
             }
-
             bool tooCloseToEdges = Vector2.Distance(spawnPosition, roomCenter) < 1;
             bool tooCloseToOtherSpawns = IsTooCloseToOtherSpawns(spawnPosition);
-
             if (tooCloseToEdges || tooCloseToOtherSpawns)
                 continue;
 
@@ -824,7 +949,7 @@ public class RoomManager : Manager
         {
             Debug.LogError("<color=red>Impossibile trovare una posizione valida dopo " + maxAttempts + " tentativi.</color>");
         }
-        Debug.Log("<color=blue>Posizione trovata: " + spawnPosition+ "</color>");
+        Debug.Log("<color=blue>Posizione trovata: " + spawnPosition + "</color>");
         return spawnPosition;
     }
 
@@ -833,7 +958,8 @@ public class RoomManager : Manager
         // Implementa il codice per verificare se la posizione è troppo vicina ad altri punti di spawn
         // Ritorna true se è troppo vicina, altrimenti false
         bool notCloseToOtherSpawns = false;
-        if(m_lastMonsterSpawnPosition == null){
+        if (m_lastMonsterSpawnPosition == null)
+        {
             m_lastMonsterSpawnPosition = spawnPosition;
         }
         else
@@ -850,6 +976,9 @@ public class RoomManager : Manager
 
         return notCloseToOtherSpawns;
     }
+
+
+
 
     private GameObject SetPlayerInRoom(GameObject roomSpawned)
     {

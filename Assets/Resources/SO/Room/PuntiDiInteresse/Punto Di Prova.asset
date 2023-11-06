@@ -15,6 +15,7 @@ MonoBehaviour:
   roomPossibiliDaSpawnare:
   - {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
   - {fileID: 11400000, guid: 4b43308165663cd4680af18fa230a008, type: 2}
+  - {fileID: 11400000, guid: cc3200698fa923f40b1c2e22dd12fa3f, type: 2}
   spawnAutomatico: 0
   spawnRicompense: []
   numeroRicompenseSpawn: 0
@@ -26,7 +27,7 @@ MonoBehaviour:
   secTimeBattleProbability: -1
   points:
   - points:
-    - {fileID: 0}
+    - {fileID: 11400000, guid: e2963b648e45b74448a9388537ff4484, type: 2}
     breakable: 0
     monouso: 0
   flagOnEnter: []

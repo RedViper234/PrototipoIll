@@ -16,40 +16,56 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aa17003bfe299a940a122ac03ed6eb7b, type: 2}
   descrizioneArea: 
   sottoAree:
-  - {fileID: 0}
-  movementCost: -1
-  breakPointsMin: -1
+  - {fileID: 11400000, guid: 7ea8fa8962b5a1049a06cd6db3537325, type: 2}
+  - {fileID: 11400000, guid: 7da81268baec24f49b69305dea3b38ee, type: 2}
+  movementCost: 32.3
+  breakPointsMin: 39
   breakPointsMax: 0
   secondTimeBattleProbablity: -1
   onCompleteFlags:
   - flagsDaSettare:
-    - {fileID: 0}
-    flagsNecessarie: []
+    - {fileID: 11400000, guid: 4e93a23579ad7e64cb8b0fe787a2a586, type: 2}
+    flagsNecessarie:
+    - flagNecessarie:
+      - {fileID: 11400000, guid: 17fe21698de754a4ab7b58d6601a4712, type: 2}
+      - {fileID: 11400000, guid: 58909963fece92348a613a7ae30f551d, type: 2}
   stanzeSpeciali:
   - stanza: {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
     requisiti: {fileID: 11400000, guid: 6b100777b61a69545ba83e6bf389e29c, type: 2}
-    "priorit\xE0StanzaSpeciale": 0
+    prioritaStanzaSpeciale: 0
     riproduzioneMultipla: 0
   onlyOneSpecialRoom: 0
   enemySet:
   - {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
-  roomDataArea:
-  - {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
+  roomList: []
   roomDistributions:
   - tipoStanzaArea: 1
+    combattimento: 0
+    boss: 1
+    evento: 0
+    storia: 0
+    min: 1
+    max: 2
+    minRespawn: 0
+    maxRespawn: 30
+    tipoRicompensa:
+    - tipoRicompensa: 2
+      dropMinimo: 1
+      dropMassimo: 4
+    - tipoRicompensa: 7
+      dropMinimo: 1
+      dropMassimo: 2
+    numeroRicompense: 1
+    permettiRipetizioniRicompense: 1
+  percentualRoomDistributions:
+  - tipoStanzaArea: 0
     combattimento: 0
     boss: 0
     evento: 0
     storia: 0
-    min: 0
-    max: 0
-    minRespawn: -1
-    maxRespawn: -1
-    tipoRicompensa:
-    - tipoRicompensa: 0
-      dropMinimo: 0
-      dropMassimo: 0
-    numeroRicompense: 0
-    permettiRipetizioniRicompense: 0
+    peso: 0
+    maxAppereance: 0
   minStaticRoom: 1
   maxStaticRoom: 1
+  defaultRoom: {fileID: 0}
+  mutationProbabilityVariance: 0

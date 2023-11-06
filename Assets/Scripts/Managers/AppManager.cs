@@ -40,11 +40,14 @@ public class AppManager : MonoBehaviour
     [HideInInspector] public PlayerController playerControllerInstance;
     [HideInInspector] public ControlloMalattiaManager controlloMalattiaManager;
     [HideInInspector] public InventoryManager inventoryManager;
-    
+    [HideInInspector] public GameManager gameManager;
+    [HideInInspector] public MapManager mapManager;
     private void OnEnable()
     {
         m_instance= this;
         SpawnaManagersSeNonCiSono();
+        gameManager = GetComponent<GameManager>();
+        mapManager = GetComponent<MapManager>();
         enemyManager = GetComponentInChildren<EnemyManager>();
         roomManager = GetComponentInChildren<RoomManager>();
         flagManager = GetComponentInChildren<FlagManager>();

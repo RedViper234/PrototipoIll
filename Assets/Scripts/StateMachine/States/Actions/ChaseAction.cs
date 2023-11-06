@@ -18,6 +18,9 @@ public class ChaseAction : Action
     {
         if(!m_isChangingDirection)
             controller.currentEnemy.currentAgent.SetDestination(controller.currentEnemy.target.position);
+        if(controller.currentEnemy.target == null){
+            controller.currentEnemy.target = FindFirstObjectByType<PlayerController>()?.transform;
+        }
     }
 
     public override void ActionDrawGizmos(StateMachineController controller)
@@ -54,6 +57,7 @@ public class ChaseAction : Action
             if (randomForCheckDestination > m_percentualeSuccessoCambioTraiettoria) { Debug.Log("Non Passato"); yield return coroutine.MoveNext(); }
             controller.currentEnemy.currentAgent.SetDestination(Vector2.one * 10);
             yield return new WaitForSeconds(m_attesaPrimaDiRiprendereIlPath);
+            if(controller == null) {yield return null;}
             controller.currentEnemy.currentAgent.SetDestination(controller.currentEnemy.target.position);
             m_isChangingDirection = false;
         }

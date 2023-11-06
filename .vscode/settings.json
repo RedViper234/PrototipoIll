@@ -58,5 +58,7 @@
         "Knockback",
         "Meeleattack",
         "Scriptable"
-    ]
+    ],
+    "editor.foldingStrategy": "indentation",
+    "editor.stickyScroll.defaultModel": "indentationModel"
 }

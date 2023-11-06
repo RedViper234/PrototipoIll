@@ -14,6 +14,8 @@ public class EnemyController : MonoBehaviour
     public bool isNotAttacking = true;
     public Transform target;
     public bool enemyIsMutated;
+    public string ID;
+
 
     [HideInInspector] public NavMeshAgent currentAgent;
     [HideInInspector] public EnemyStatsSO enemyStats;
@@ -58,6 +60,8 @@ public class EnemyController : MonoBehaviour
             }
             CheckForAnimator();
         }
+        if(!currentAgent.isOnNavMesh)
+            gameObject.SetActive(false);
     }
 
     private void CheckForAnimator()
@@ -67,7 +71,7 @@ public class EnemyController : MonoBehaviour
         animatorNemico.SetFloat("Dir_y", rbVelocity.y);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (!this.gameObject.scene.isLoaded) return;
         if (AppManager.Instance.enemyManager != null)

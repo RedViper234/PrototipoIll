@@ -23,13 +23,16 @@ public class AreaSO : ScriptableObject
     public List<SpecialRoom> stanzeSpeciali;
     public bool onlyOneSpecialRoom = false;
     public List<EnemySet> enemySet;
-    public List<RoomData> roomDataArea;
+    public List<RoomData> roomList;
     public List<StaticRoomDistribution> roomDistributions;
+    public List<PercentualRoomDistribution> percentualRoomDistributions;
     [Min(0)]
     public int minStaticRoom = 0;
     [Min(0)]
     public int maxStaticRoom = 1;
     public List<AreaSpawnStandardProbability> standardCombatProbability;
+    public RoomData defaultRoom;
+    public float mutationProbabilityVariance = 0;
 
 
     private void OnValidate()
@@ -38,7 +41,7 @@ public class AreaSO : ScriptableObject
         {
             if(item.minRespawn > item.maxRespawn)
             {
-                item.maxRespawn = item.minRespawn;
+                item.maxRespawn = item.minRespawn+1;
             }
         }
     }
@@ -51,7 +54,7 @@ public struct SpecialRoom
     [Expandable]
     public RequisitiStanza requisiti;
     [Range(-100, 100)]
-    public int priorit‡StanzaSpeciale;
+    public int prioritaStanzaSpeciale;
     public bool riproduzioneMultipla;
 }
 [Serializable]
@@ -76,6 +79,7 @@ public class StaticRoomDistribution
     public int numeroRicompense;
     public bool permettiRipetizioniRicompense = true;
 }
+[Serializable]
 public class PercentualRoomDistribution
 {
     [Header("TIPOLOGIA STANZA")]
@@ -90,7 +94,6 @@ public class PercentualRoomDistribution
     [Space]
     public int peso = 0;
     public int maxAppereance;
-    public RoomData defaultRoom;
 }
 
 public class AreaSpawnStandardProbability
