@@ -8,4 +8,10 @@ public class AttackRangedVariant : AttackRanged
     {
         base.StartBulletBehavior();
     }
+
+    public override void DoAfterWaitHitboxActivation()
+    {
+        base.DoAfterWaitHitboxActivation();
+        Debug.Log("VARIANT BULLET");
+    }
 }

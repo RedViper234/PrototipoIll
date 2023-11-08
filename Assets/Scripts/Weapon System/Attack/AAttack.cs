@@ -33,10 +33,12 @@ public abstract class AAttack : MonoBehaviour, IAttack
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set;}
     [field: SerializeField] public float KnockbackForceAttack { get; set;}
     [field: SerializeField] public MultiAttack MultiAttack { get; set; }
+    [field: SerializeField] public DamageInstance damageInstance { get; set; }
 
     [field: Header("Ranged Attack Values")]
     [field: SerializeField] public float BulletSpeed { get; set; }
     [field: SerializeField] public float BulletAliveTime { get; set; }
+    
 
     [field: Header("Other/Debug")]
     public Collider2D[] attackCollider2d { get; set; }
@@ -52,19 +54,32 @@ public abstract class AAttack : MonoBehaviour, IAttack
     {
         // Set the attack values based on the AttackSO
         TimeToActivateHitbox = attackSO.TimeToActivateHitbox;
+
         TimeDurationHitbox = attackSO.TimeDurationHitbox;
+
         TimeToEndHitbox = attackSO.TimeToEndHitbox;
+
         TimeComboProgression = attackSO.TimeComboProgression;
+
         AttackCooldown = attackSO.AttackCooldown;
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
         PlayerDrag = attackSO.PlayerDrag;
-        BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : GetComponentInParent<AWeapon>().BaseDamageWeapon;
+
+        BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
+        damageInstance.damageValueAtkOrSec = BaseDamageAttack;
+        damageInstance.type = attackSO.DamageType;
+
         AttackRangeAttack = attackSO.AttackRangeAttack;
+
         DamageType = attackSO.DamageType;
+
         StatusEffects = attackSO.StatusEffects;
+
         KnockbackForceAttack = attackSO.KnockbackForceAttack;
+
         BulletSpeed = attackSO.BulletSpeed;
+
         BulletAliveTime = attackSO.BulletAliveTime;
 
         attackCollider2d = GetComponents<Collider2D>();
@@ -135,14 +150,6 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
     public virtual void OnDamageableHit(Collider2D other)
     {
-        DamageInstance damageInstance = new(
-        DamageType,
-        BaseDamageAttack,
-        false,
-        false,
-        false,
-        0);
-
         if(other.GetComponent<Damageable>())
         {
             other.GetComponent<Damageable>().TakeDamage(damageInstance);
