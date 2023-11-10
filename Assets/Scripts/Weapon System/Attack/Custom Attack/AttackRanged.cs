@@ -4,20 +4,15 @@ using UnityEngine;
 
 public class AttackRanged : AAttack
 {
-    void Awake()
+    protected virtual void StartBulletBehavior()
     {
-       
-    }
-
-    private void Shoot()
-    {
-        Debug.Log($"Shoot: {BulletSpeed}");
+        // Debug.Log($"Shoot: {BulletSpeed}");
         GetComponent<Rigidbody2D>().velocity = ActualDirection * BulletSpeed;
     }
 
-    public override void DoInTimeDurationHitbox()
+    public override void DoAfterWaitHitboxActivation()
     {
-        base.DoInTimeDurationHitbox();
-        Shoot();
+        base.DoAfterWaitHitboxActivation();
+        StartBulletBehavior();
     }
 }

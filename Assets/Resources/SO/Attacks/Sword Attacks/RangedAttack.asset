@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8335ce28c41c4d43ab7cf0611b1a397, type: 3}
   m_Name: RangedAttack
   m_EditorClassIdentifier: 
-  AttackPrefab: {fileID: 4072522862118810444, guid: ac7798878bfd15944a207c27dcbcb088, type: 3}
+  AttackPrefab: {fileID: 4072522862118810444, guid: 62dca6a523fdfe243a011f6f4c36c3ae, type: 3}
   AttackAnimation: {fileID: 0}
   TimeToActivateHitbox: 0.1
   TimeDurationHitbox: 0.2
@@ -35,3 +35,4 @@ MonoBehaviour:
     TimeBetweenAttacks: 0
     AttackList: []
   BulletSpeed: 10
+  BulletAliveTime: 1.5

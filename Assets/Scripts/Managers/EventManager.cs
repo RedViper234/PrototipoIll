@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public static class EventManager
 {
+    static int NPassedRooms = 0;
+
     public static UnityAction HandleBeginRoom;
     public static UnityAction HandleEndRoom;
     public static UnityAction HandleBeginOfFight;
@@ -12,4 +14,9 @@ public static class EventManager
     public static UnityAction HandleDeath;
     public static UnityAction<int> HandleEveryNRoom;
     public static UnityAction<float> HandleEveryNTime;
+
+    public static void IncrementPassedRooms()
+    {
+        NPassedRooms++;
+    }
 }

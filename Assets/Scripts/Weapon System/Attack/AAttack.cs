@@ -4,25 +4,44 @@ using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 
+[Serializable]
+public struct MultiAttack
+{
+    public float NumberOfAttacks;
+    public float TimeBetweenAttacks;
+    public AttackSO[] AttackList;
+}
+
 public abstract class AAttack : MonoBehaviour, IAttack
 {
     // [field: SerializeField] public AttackSO attackSO { get; set;}
     [field: SerializeField] public AnimationClip attackAnimation { get; set;}
+    
+    [field: Header("Attack Time Values")]
     [field: SerializeField] public float TimeToActivateHitbox { get; set;}
     [field: SerializeField] public float TimeDurationHitbox { get; set;}
     [field: SerializeField] public float TimeToEndHitbox { get; set;}
     [field: SerializeField] public float TimeComboProgression { get; set;}
+    [field: SerializeField] public float AttackCooldown { get; set;}
+
+    [field: Header("Attack Time Values")]
     [field: SerializeField] public float PlayerSpeedModifier { get; set;}
     [field: SerializeField] public PlayerDragStruct PlayerDrag { get; set;}
-    [field: SerializeField] public float AttackCooldown { get; set;}
     [field: SerializeField] public float BaseDamageAttack { get; set;}
     [field: SerializeField] public AttackRange AttackRangeAttack { get; set;}
     [field: SerializeField] public DamageType.DamageTypes DamageType { get; set;}
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set;}
     [field: SerializeField] public float KnockbackForceAttack { get; set;}
     [field: SerializeField] public MultiAttack MultiAttack { get; set; }
+    [field: SerializeField] public DamageInstance damageInstance { get; set; }
+
+    [field: Header("Ranged Attack Values")]
     [field: SerializeField] public float BulletSpeed { get; set; }
-    public BoxCollider2D boxCollider2D { get; set; }
+    [field: SerializeField] public float BulletAliveTime { get; set; }
+    
+
+    [field: Header("Other/Debug")]
+    public Collider2D[] attackCollider2d { get; set; }
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference { get; set; }
     [field: SerializeField, MyReadOnly] public UnityEngine.Vector2 ActualDirection { get; set; }
 
@@ -35,23 +54,39 @@ public abstract class AAttack : MonoBehaviour, IAttack
     {
         // Set the attack values based on the AttackSO
         TimeToActivateHitbox = attackSO.TimeToActivateHitbox;
+
         TimeDurationHitbox = attackSO.TimeDurationHitbox;
+
         TimeToEndHitbox = attackSO.TimeToEndHitbox;
+
         TimeComboProgression = attackSO.TimeComboProgression;
+
+        AttackCooldown = attackSO.AttackCooldown;
+
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
         PlayerDrag = attackSO.PlayerDrag;
-        AttackCooldown = attackSO.AttackCooldown;
-        BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : GetComponentInParent<AWeapon>().BaseDamageWeapon;
-        AttackRangeAttack = attackSO.AttackRangeAttack;
-        DamageType = attackSO.DamageType;
-        StatusEffects = attackSO.StatusEffects;
-        KnockbackForceAttack = attackSO.KnockbackForceAttack;
-        boxCollider2D = GetComponent<BoxCollider2D>();
-        weaponReference = weaponRef;
-        BulletSpeed = attackSO.BulletSpeed;
-        ActualDirection = direction;
 
-        Debug.Log($"weaponReference: {weaponReference.BaseDamageWeapon}");
+        BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
+        damageInstance.damageValueAtkOrSec = BaseDamageAttack;
+        damageInstance.type = attackSO.DamageType;
+
+        AttackRangeAttack = attackSO.AttackRangeAttack;
+
+        DamageType = attackSO.DamageType;
+
+        StatusEffects = attackSO.StatusEffects;
+
+        KnockbackForceAttack = attackSO.KnockbackForceAttack;
+
+        BulletSpeed = attackSO.BulletSpeed;
+
+        BulletAliveTime = attackSO.BulletAliveTime;
+
+        attackCollider2d = GetComponents<Collider2D>();
+        ManageAttackColliders(false);
+
+        weaponReference = weaponRef;
+        ActualDirection = direction;
 
         // Start the coroutine to initialize the attack
         StartCoroutine(InitializeAttack());
@@ -66,12 +101,13 @@ public abstract class AAttack : MonoBehaviour, IAttack
     public virtual IEnumerator InitializeAttack()
     {
         //Prima che venga attivata l'hitbox    
+        DoBeforeWaitHitboxActivation();
 
         yield return new WaitForSeconds(TimeToActivateHitbox);
 
         //Activate Hitbox
         
-        DoInTimeToActivateHitbox();
+        DoAfterWaitHitboxActivation();
 
         Debug.Log("Attivato");
 
@@ -79,7 +115,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
         //Deactivate Hitbox
         
-        DoInTimeDurationHitbox();
+        DoBeforeAttackEnd();
 
         Debug.Log("Disattivato");
 
@@ -87,38 +123,33 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
         //End of attack
 
-        DoInTheEnd();
+        DoInAttackEnd();
 
         Debug.Log("Fine");
     }
 
-    public virtual void DoInTimeToActivateHitbox()
+    public virtual void DoBeforeWaitHitboxActivation()
     {
-        boxCollider2D.enabled = true;
+        if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
     }
 
-    public virtual void DoInTimeDurationHitbox()
+    public virtual void DoAfterWaitHitboxActivation()
     {
-        boxCollider2D.enabled = false;
+        ManageAttackColliders(true);
     }
 
-    public virtual void DoInTheEnd()
+    public virtual void DoBeforeAttackEnd()
+    {
+        ManageAttackColliders(false);
+    }
+
+    public virtual void DoInAttackEnd()
     {
         weaponReference.SetTimerComboProgression(TimeComboProgression);
-
-        // Destroy(this.gameObject);
     }
 
     public virtual void OnDamageableHit(Collider2D other)
     {
-        DamageInstance damageInstance = new(
-        DamageType,
-        BaseDamageAttack,
-        false,
-        false,
-        false,
-        0);
-
         if(other.GetComponent<Damageable>())
         {
             other.GetComponent<Damageable>().TakeDamage(damageInstance);
@@ -130,12 +161,12 @@ public abstract class AAttack : MonoBehaviour, IAttack
     {
         gameObject.GetComponentInParent<IWeapon>().animator.Play(attackAnimation.name);
     }
-}
 
-[Serializable]
-public struct MultiAttack
-{
-    public float NumberOfAttacks;
-    public float TimeBetweenAttacks;
-    public AttackSO[] AttackList;
+    public void ManageAttackColliders(bool isEnabled)
+    {
+        foreach (Collider2D collider in attackCollider2d)
+        {
+            collider.enabled = isEnabled;
+        }
+    }
 }
