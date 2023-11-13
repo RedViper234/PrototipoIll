@@ -27,7 +27,7 @@ public class AttackSO : ScriptableObject
     public DamageType.DamageTypes DamageType;
     [SerializeField] public List<StatusStruct> StatusEffects;
     public float KnockbackForceAttack;
-    public MultiAttack[] MultiAttack;
+    public MultiAttack MultiAttack;
     public float BulletSpeed;
     public float BulletAliveTime;
 }

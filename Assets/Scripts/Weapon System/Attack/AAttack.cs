@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -24,7 +24,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
     [field: SerializeField] public float TimeComboProgression { get; set;}
     [field: SerializeField] public float AttackCooldown { get; set;}
 
-    [field: Header("Attack Time Values")]
+    [field: Header("Attack Properties Values")]
     [field: SerializeField] public float PlayerSpeedModifier { get; set;}
     [field: SerializeField] public PlayerDragStruct PlayerDrag { get; set;}
     [field: SerializeField] public float BaseDamageAttack { get; set;}
@@ -43,14 +43,14 @@ public abstract class AAttack : MonoBehaviour, IAttack
     [field: Header("Other/Debug")]
     public Collider2D[] attackCollider2d { get; set; }
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference { get; set; }
-    [field: SerializeField, MyReadOnly] public UnityEngine.Vector2 ActualDirection { get; set; }
+    [field: SerializeField, MyReadOnly] public Vector2 ActualDirection { get; set; }
 
 
     /// <summary>
     /// Initializes the attack values based on the provided AttackSO.
     /// </summary>
     /// <param name="attackSO">The AttackSO containing the attack values.</param>
-    public virtual void InitAttackValues(AttackSO attackSO, AWeapon weaponRef, UnityEngine.Vector2 direction)
+    public virtual void InitAttackValues(AttackSO attackSO, AWeapon weaponRef, Vector2 direction)
     {
         // Set the attack values based on the AttackSO
         TimeToActivateHitbox = attackSO.TimeToActivateHitbox;
@@ -87,9 +87,6 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
         weaponReference = weaponRef;
         ActualDirection = direction;
-
-        // Start the coroutine to initialize the attack
-        StartCoroutine(InitializeAttack());
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -101,6 +98,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
     public virtual IEnumerator InitializeAttack()
     {
         //Prima che venga attivata l'hitbox    
+
         DoBeforeWaitHitboxActivation();
 
         yield return new WaitForSeconds(TimeToActivateHitbox);
@@ -167,6 +165,44 @@ public abstract class AAttack : MonoBehaviour, IAttack
         foreach (Collider2D collider in attackCollider2d)
         {
             collider.enabled = isEnabled;
+        }
+    }
+
+    public IEnumerator MultiAttackManagerTest()
+    {
+        if(MultiAttack.AttackList.Count() > 0)
+        {
+            for (var i = 0; i < MultiAttack.AttackList.Count(); i++)
+            {
+                InitAttackValues(MultiAttack.AttackList[i], weaponReference, ActualDirection);
+                //Prima che venga attivata l'hitbox    
+
+                DoBeforeWaitHitboxActivation();
+
+                yield return new WaitForSeconds(TimeToActivateHitbox);
+
+                //Activate Hitbox
+                
+                DoAfterWaitHitboxActivation();
+
+                Debug.Log("Attivato");
+
+                yield return new WaitForSeconds(TimeDurationHitbox);
+
+                //Deactivate Hitbox
+                
+                DoBeforeAttackEnd();
+
+                Debug.Log("Disattivato");
+
+                yield return new WaitForSeconds(TimeToEndHitbox);
+
+                //End of attack
+
+                DoInAttackEnd();
+
+                Debug.Log("Fine");
+            }   
         }
     }
 }
