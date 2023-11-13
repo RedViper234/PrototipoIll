@@ -44,6 +44,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
     public Collider2D[] attackCollider2d { get; set; }
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference { get; set; }
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection { get; set; }
+    [field: SerializeField,MyReadOnly] public AttackSO attackSODefault { get; set; }
 
 
     /// <summary>
@@ -78,15 +79,19 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
         KnockbackForceAttack = attackSO.KnockbackForceAttack;
 
+        MultiAttack = attackSO.MultiAttack;
+
         BulletSpeed = attackSO.BulletSpeed;
 
         BulletAliveTime = attackSO.BulletAliveTime;
 
         attackCollider2d = GetComponents<Collider2D>();
+
         ManageAttackColliders(false);
 
         weaponReference = weaponRef;
         ActualDirection = direction;
+        attackSODefault = attackSO;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -97,33 +102,81 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
     public virtual IEnumerator InitializeAttack()
     {
-        //Prima che venga attivata l'hitbox    
+        Debug.Log($"Attacco in corso {MultiAttack.AttackList.Count()}");
 
-        DoBeforeWaitHitboxActivation();
+        if(MultiAttack.AttackList.Count() > 0)
+        {
+            for (var i = 0; i < MultiAttack.AttackList.Count(); i++)
+            {
+                Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {MultiAttack.AttackList[i].name}");
 
-        yield return new WaitForSeconds(TimeToActivateHitbox);
+                weaponReference.GenerateAttackObject(MultiAttack.AttackList[i], false);
 
-        //Activate Hitbox
-        
-        DoAfterWaitHitboxActivation();
+                // InitAttackValues(MultiAttack.AttackList[i], weaponReference, ActualDirection);
 
-        Debug.Log("Attivato");
+                //Prima che venga attivata l'hitbox    
 
-        yield return new WaitForSeconds(TimeDurationHitbox);
+                DoBeforeWaitHitboxActivation();
 
-        //Deactivate Hitbox
-        
-        DoBeforeAttackEnd();
+                yield return new WaitForSeconds(TimeToActivateHitbox);
 
-        Debug.Log("Disattivato");
+                //Activate Hitbox
+                
+                DoAfterWaitHitboxActivation();
 
-        yield return new WaitForSeconds(TimeToEndHitbox);
+                Debug.Log("Attivato");
 
-        //End of attack
+                yield return new WaitForSeconds(TimeDurationHitbox);
 
-        DoInAttackEnd();
+                //Deactivate Hitbox
+                
+                DoBeforeAttackEnd();
 
-        Debug.Log("Fine");
+                Debug.Log("Disattivato");
+
+                yield return new WaitForSeconds(TimeToEndHitbox);
+
+                //End of attack
+
+                DoInAttackEnd();
+
+                Debug.Log("Fine");
+            }   
+        }
+        else
+        {
+            Debug.Log($"Attacco: {attackSODefault.name}");
+
+            InitAttackValues(attackSODefault, weaponReference, ActualDirection);
+
+            //Prima che venga attivata l'hitbox    
+
+            DoBeforeWaitHitboxActivation();
+
+            yield return new WaitForSeconds(TimeToActivateHitbox);
+
+            //Activate Hitbox
+            
+            DoAfterWaitHitboxActivation();
+
+            Debug.Log("Attivato");
+
+            yield return new WaitForSeconds(TimeDurationHitbox);
+
+            //Deactivate Hitbox
+            
+            DoBeforeAttackEnd();
+
+            Debug.Log("Disattivato");
+
+            yield return new WaitForSeconds(TimeToEndHitbox);
+
+            //End of attack
+
+            DoInAttackEnd();
+
+            Debug.Log("Fine");
+        }
     }
 
     public virtual void DoBeforeWaitHitboxActivation()
@@ -144,6 +197,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
     public virtual void DoInAttackEnd()
     {
         weaponReference.SetTimerComboProgression(TimeComboProgression);
+        
     }
 
     public virtual void OnDamageableHit(Collider2D other)
@@ -175,6 +229,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
             for (var i = 0; i < MultiAttack.AttackList.Count(); i++)
             {
                 InitAttackValues(MultiAttack.AttackList[i], weaponReference, ActualDirection);
+
                 //Prima che venga attivata l'hitbox    
 
                 DoBeforeWaitHitboxActivation();
@@ -203,6 +258,38 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
                 Debug.Log("Fine");
             }   
+        }
+        else
+        {
+            InitAttackValues(attackSODefault, weaponReference, ActualDirection);
+
+            //Prima che venga attivata l'hitbox    
+
+            DoBeforeWaitHitboxActivation();
+
+            yield return new WaitForSeconds(TimeToActivateHitbox);
+
+            //Activate Hitbox
+            
+            DoAfterWaitHitboxActivation();
+
+            Debug.Log("Attivato");
+
+            yield return new WaitForSeconds(TimeDurationHitbox);
+
+            //Deactivate Hitbox
+            
+            DoBeforeAttackEnd();
+
+            Debug.Log("Disattivato");
+
+            yield return new WaitForSeconds(TimeToEndHitbox);
+
+            //End of attack
+
+            DoInAttackEnd();
+
+            Debug.Log("Fine");
         }
     }
 }

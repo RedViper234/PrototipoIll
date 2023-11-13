@@ -80,7 +80,7 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
         StopCoroutine(comboCoroutine);
     }
     
-    public void GenerateAttackObject(AttackSO actualAttack)
+    public void GenerateAttackObject(AttackSO actualAttack, bool startCoroutine)
     {
         GameObject inst_attack;
 
@@ -95,7 +95,7 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
                                                             this, 
                                                             (Vector2)(this.transform.position - this.transform.parent.position));
         
-        comboCoroutine = StartCoroutine(inst_attack.GetComponent<AAttack>().InitializeAttack());
+        if(startCoroutine) comboCoroutine = StartCoroutine(inst_attack.GetComponent<AAttack>().InitializeAttack());
 
         if(AttackRangeWeapon == AttackRange.Ranged) inst_attack.transform.parent = null;
     }
@@ -109,7 +109,7 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
                 LastComboAttack();
             }
 
-            GenerateAttackObject(ComboList[comboIndex]);
+            GenerateAttackObject(ComboList[comboIndex], true);
 
             comboIndex++;
 
