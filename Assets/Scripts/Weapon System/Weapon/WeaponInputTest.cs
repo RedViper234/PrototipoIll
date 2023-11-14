@@ -15,11 +15,22 @@ public class WeaponInputTest : MonoBehaviour
         
         attackAction = inputActions.Player.Meeleattack;
         attackAction.performed += Attack;
+        // attackAction.canceled += StopAttack;
         attackAction.Enable();
     }
 
     private void Attack(InputAction.CallbackContext obj)
     {
         weaponPrefab.GetComponent<Weapon>().ExecuteCombo();
+    }
+
+    private void StopAttack(InputAction.CallbackContext obj)
+    {
+        weaponPrefab.GetComponent<Weapon>().StopCombo();
+    }
+
+    void OnDisable()
+    {
+        attackAction.performed -= Attack;
     }
 }

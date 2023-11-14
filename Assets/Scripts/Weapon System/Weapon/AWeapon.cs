@@ -6,7 +6,11 @@ using UnityEngine;
 public abstract class AWeapon : MonoBehaviour, IWeapon
 {
     [field: SerializeField] public WeaponSO WeaponSO { get; set; }
+
+    [field: Header("Weapon Animation")]
     [field: SerializeField] public Animator animator { get; set; }
+    
+    [field: Header("Weapon Properties Values")]
     [field: SerializeField] public float BaseDamageWeapon { get; set; }
     [field: SerializeField] public float CooldownBetweenAttacks { get; set; }
     [field: SerializeField] public float ComboTimeProgression { get; set; }
@@ -68,21 +72,30 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
 
     public void ExecuteCombo()
     {
-        comboCoroutine = StartCoroutine(AttackCoroutine());
+        StartCoroutine(AttackCoroutine());
+    }
+
+    public void StopCombo()
+    {
+        StopCoroutine(comboCoroutine);
     }
     
-    private void GenerateAttackObject(AttackSO actualAttack)
+    public void GenerateAttackObject(AttackSO actualAttack, bool startCoroutine)
     {
         GameObject inst_attack;
 
-        inst_attack = Instantiate(actualAttack.AttackPrefab, 
-        transform.position, 
-        transform.parent.rotation, 
-        transform);
+        inst_attack = Instantiate(
+            actualAttack.AttackPrefab, 
+            transform.position, 
+            transform.parent.rotation, 
+            transform);
 
-        inst_attack.GetComponent<AAttack>().InitAttackValues(actualAttack, 
-        this, 
-        (Vector2)(this.transform.position - this.transform.parent.position));
+        inst_attack.GetComponent<AAttack>().InitAttackValues(
+                                                            actualAttack, 
+                                                            this, 
+                                                            (Vector2)(this.transform.position - this.transform.parent.position));
+        
+        if(startCoroutine) comboCoroutine = StartCoroutine(inst_attack.GetComponent<AAttack>().InitializeAttack());
 
         if(AttackRangeWeapon == AttackRange.Ranged) inst_attack.transform.parent = null;
     }
@@ -94,12 +107,9 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
             if(comboIndex == ComboList.Count) 
             {
                 LastComboAttack();
-                // yield return null;
             }
 
-            GenerateAttackObject(ComboList[comboIndex]);
-
-            // Debug.Log("Combo attacco " + ComboList[comboIndex].name + ComboList.Count);
+            GenerateAttackObject(ComboList[comboIndex], true);
 
             comboIndex++;
 
@@ -112,7 +122,6 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
     protected virtual void LastComboAttack()
     {
         comboIndex = 0;
-        comboCoroutine = null;
     }
 
     protected void WeaponRotation()
@@ -139,4 +148,32 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
     {
         t_currentCombo = time > 0 ? time : ComboTimeProgression;
     }
+
+    // public void MultiAttackGeneration(AttackSO actualAttack)
+    // {
+    //     int i = 0;
+    //     foreach (AttackSO attack in actualAttack.MultiAttack.AttackList)
+    //     {
+    //         GameObject inst_attack;
+
+    //         inst_attack = Instantiate(
+    //             actualAttack.MultiAttack.AttackList[i].AttackPrefab, 
+    //             transform.position, 
+    //             transform.parent.rotation, 
+    //             transform);
+
+    //         inst_attack.GetComponent<AAttack>().InitAttackValues(
+    //                                                             actualAttack, 
+    //                                                             this, 
+    //                                                             (Vector2)(this.transform.position - this.transform.parent.position));
+            
+    //         comboCoroutine = StartCoroutine(inst_attack.GetComponent<AAttack>().InitializeAttack());
+
+    //         if(AttackRangeWeapon == AttackRange.Ranged) inst_attack.transform.parent = null;
+
+    //         i++;    
+    //     }
+
+
+    // }
 }

@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: SwordAttack2
   m_EditorClassIdentifier: 
   AttackPrefab: {fileID: 4072522862118810444, guid: e2141c435b35dc945a867921b455c1fa, type: 3}
+  AttackAnimation: {fileID: 0}
   TimeToActivateHitbox: 0.1
   TimeDurationHitbox: 0.2
   TimeToEndHitbox: 0.1
   AttackCooldown: 0.2
+  TimeComboProgression: 0
   PlayerSpeedModifier: 0.1
   PlayerDrag:
     force: 0
@@ -28,3 +30,11 @@ MonoBehaviour:
   DamageType: 0
   StatusEffects: []
   KnockbackForceAttack: 3
+  MultiAttack:
+    NumberOfAttacks: 3
+    TimeBetweenAttacks: 0
+    AttackList:
+    - {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
+    - {fileID: 11400000, guid: 77f2c42cafb1e6c458e12d1347ab9a2a, type: 2}
+  BulletSpeed: 0
+  BulletAliveTime: 0
