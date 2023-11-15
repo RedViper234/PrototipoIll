@@ -13,12 +13,15 @@ public enum PowerType
 
 public enum PowerSubType 
 {
+    None,
     Sacred, 
     Fire, 
     Research, 
+    Depths,
     Infection, 
     Power, 
-    Transformation
+    Transformation,
+    Regeneration
 }
 
 public enum Rarity 
@@ -55,17 +58,37 @@ public enum Evolution
     Evo
 }
 
-public abstract class AbstractPowers : MonoBehaviour
+public enum PowerTag
 {
-    // public UnityAction OnPowerTaken { get; set; }
-    [field: SerializeField] public PowerSubType powerSubType { get; set; }
+    Condizione_Infuocato,
+    Attacco_Infuocato,
+    Attacco_Speciale_Infuocato,
+    Scatto_Infuocato,
+    Resistenza_alle_Fiamme,
+    Sacra_Fiamma,
+    Finale_Esplosivo,
+    Espiazione,
+    Scia_di_Fiamma,
+    Avatar_di_Fiamme,
+    Spargere_la_Fiamma,
+    Purificazione,
+    Fiamme_Potenti,
+    Bombe,
+    Pianto_del_Dio_del_Fuoco,
+    Lanciafiamme
+}
+
+public abstract class APowers : MonoBehaviour
+{
     [field: SerializeField] public PowerType powerType { get; set;}
+    [field: SerializeField] public PowerSubType powerSubType { get; set; }
     [field: SerializeField] public Rarity rarity { get; set;}
     [field: SerializeField] public TriggerType triggerType { get; set; }
     [field: SerializeField] public PowerState powerState { get; set; }
     [field: SerializeField] public Evolution evolution { get; set; }
     [field: SerializeField] public int NRooms { get; set; }
     [field: SerializeField] public float NTime { get; set; }
+    [field: SerializeField] public PowerTag powerTag { get; set; }
     public abstract void TriggerOnEvent();
     public abstract void TriggerOnEvent(int value);
     public abstract void TriggerOnEvent(float value);
@@ -73,14 +96,11 @@ public abstract class AbstractPowers : MonoBehaviour
     void Start()
     {
         InitChangePowerType();
-
-        // OnPowerTaken += PowerTaken;
-        // OnPowerTaken.Invoke();
     }
 
     public virtual void InitChangePowerType()
     {
-        if ((int)powerSubType >= 0 && (int)powerSubType < 3)
+        if ((int)powerSubType >= 0 && (int)powerSubType < 4)
         {
             powerType = (PowerType)1;
         }
@@ -95,11 +115,6 @@ public abstract class AbstractPowers : MonoBehaviour
         SetTrigger();
     }
 
-    void OnDisable()
-    {
-        // OnPowerTaken -= PowerTaken;
-    }
-
     public void SetTrigger()
     {
         switch (triggerType)
@@ -108,7 +123,7 @@ public abstract class AbstractPowers : MonoBehaviour
                 TriggerOnEvent();
                 break;
             case TriggerType.OnTrigger:
-                // Code for OnTrigger case
+                TriggerOnEvent();
                 break;
             case TriggerType.OnBeginOfRoom:
                 EventManager.HandleBeginRoom += TriggerOnEvent;
@@ -137,6 +152,6 @@ public abstract class AbstractPowers : MonoBehaviour
             default:
                 Debug.LogError("Trigger type not found or not implemented: " + triggerType);
                 break;
-        } 
+        }
     }
 }

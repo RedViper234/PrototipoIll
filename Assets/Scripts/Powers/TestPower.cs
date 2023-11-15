@@ -5,7 +5,7 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TestPower : AbstractPowers
+public class TestPower : APowers
 {
     public override void TriggerOnEvent() 
     {
