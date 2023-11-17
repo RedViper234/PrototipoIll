@@ -1,8 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI_Toolkit/StyleSheets/StyleSheetMappa.uss?fileID=7433441132597879392&amp;guid=a6baf1bbd22fe3c4f8babeefdb9fdbd4&amp;type=3#StyleSheetMappa" />
-    <ui:VisualElement name="ElementoPrincipaleMappa" class="mappa-background">
-        <ui:VisualElement name="DescrizioneMappa" style="width: 60%; height: 30%;">
-            <ui:Label text="È universalmente riconosciuto che un lettore che osserva il layout di una pagina viene distratto dal contenuto testuale se questo è leggibile. Lo scopo dell’utilizzo del Lorem Ipsum è che offre una normale distribuzione delle lettere (al contrario di quanto avviene se si utilizzano brevi frasi ripetute, ad esempio “testo qui”), apparendo come un normale blocco di testo leggibile. Molti software di impaginazione e di web design utilizzano Lorem Ipsum come testo modello. Molte versioni del testo sono state prodotte negli anni, a volte casualmente, a volte di proposito (ad esempio inserendo passaggi ironici)." display-tooltip-when-elided="true" name="LabelDescrizioneMappa" focusable="true" class="label-descrizione-area" style="position: relative; -unity-font-style: normal; -unity-text-align: upper-center; width: 100%; height: 100%; visibility: visible; flex-wrap: nowrap; flex-direction: column; align-items: stretch; justify-content: flex-start; white-space: normal;" />
-        </ui:VisualElement>
-    </ui:VisualElement>
-</ui:UXML>

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AreaDiProva
   m_EditorClassIdentifier: 
   puntiDiInteresse:
+  - {fileID: 11400000, guid: e2963b648e45b74448a9388537ff4484, type: 2}
   - {fileID: 11400000, guid: aa17003bfe299a940a122ac03ed6eb7b, type: 2}
   descrizioneArea: 
   sottoAree:

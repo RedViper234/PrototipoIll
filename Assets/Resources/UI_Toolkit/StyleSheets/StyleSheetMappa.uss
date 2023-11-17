@@ -2,7 +2,7 @@
     background-color: rgb(255, 255, 34);
     opacity: 1;
     overflow: visible;
-    display: none;
+    display: flex;
     width: 100%;
     height: 100%;
 }

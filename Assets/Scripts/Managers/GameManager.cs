@@ -1,15 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class GameManager : Manager,ISubscriber
 {
     private static GameStates m_statiDiGioco;
     [SerializeField, MyReadOnly] private GameStates m_statoDiGioco;
-    private void Start() {
+    private void Awake() {
         Publisher.Subscribe(this,new GameStateChangedMessage());
+        SceneManager.LoadScene("UIMappa",LoadSceneMode.Additive);
     }
+
+
+
     public static GameStates GetCurrentGameState(){
         return m_statiDiGioco;
     }
@@ -31,6 +36,8 @@ public class GameManager : Manager,ISubscriber
     private void OnDisable() {
         Publisher.Unsubscribe(this,new GameStateChangedMessage());
     }
+
+
 
 }
 public enum GameStates{

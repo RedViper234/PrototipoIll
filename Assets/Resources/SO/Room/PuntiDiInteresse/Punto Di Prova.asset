@@ -12,22 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b879268eee46f448aacdba69744836, type: 3}
   m_Name: Punto Di Prova
   m_EditorClassIdentifier: 
-  roomPossibiliDaSpawnare:
+  listaDiStanzeUniche:
   - {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
-  - {fileID: 11400000, guid: 4b43308165663cd4680af18fa230a008, type: 2}
-  - {fileID: 11400000, guid: cc3200698fa923f40b1c2e22dd12fa3f, type: 2}
+  - {fileID: 11400000, guid: bd2710cb5d723f947b0cfc1ed989de4e, type: 2}
   spawnAutomatico: 0
   spawnRicompense: []
   numeroRicompenseSpawn: 0
   accettaRipetizioneRicompense: 0
   respawn: 0
   respawnLimit: 0
-  descrizione: 
+  descrizione: "Entro in quella stanza decadente, le tende scure e pesanti che celano
+    le finestre, gettano l'ambiente nell'oscurit\xE0, interrotta solo da una luce
+    fioca proveniente da candele sporadicamente posizionate. Le ombre danzano sulle
+    pareti, creando forme inquietanti che sembrano raccontare storie di tempi passati.\r\n\r\nAl
+    centro della stanza, un tavolo di legno massiccio \xE8 disseminato di mappe e
+    pergamene. Mentre le candele tremolano, rivelano dettagli di percorsi possibili
+    e risorse nelle zone afflitte dalla peste. Guardo le maschere veneziane appese
+    alle pareti, ora pallide e spettrali, testimonianza di feste e gioie perdute.\r\n\r\nIl
+    pavimento \xE8 ricoperto da tappeti logori e sporchi, un mutevole mosaico di
+    desolazione. In un angolo, trovo una cassa contenente cure e pozioni incerte,
+    le cui etichette sbiadite rendono difficile distinguere tra l'efficace e l'illusorio.\r\n\r\nAttraverso
+    la finestra aperta, il suono dell'acqua che scorre nei canali e il richiamo lontano
+    di una gondola si fanno sentire, contrastando con il silenzio opprimente della
+    stanza. Il respiro affannoso del mio personaggio sembra eco nel vuoto, mentre
+    la decisione di esplorare ulteriormente o affrontare i rischi imminenti pesa
+    sulle mie spalle. Ogni dettaglio della stanza \xE8 una storia, un bivio che potrebbe
+    plasmare il destino della citt\xE0 durante questi tempi oscuri."
   movementCost: -1
   secTimeBattleProbability: -1
   points:
   - points:
-    - {fileID: 11400000, guid: e2963b648e45b74448a9388537ff4484, type: 2}
+    - {fileID: 11400000, guid: 1cb0d83c09dc76544b1946332bbf8d23, type: 2}
     breakable: 0
     monouso: 0
   flagOnEnter: []

@@ -9,7 +9,7 @@ using UnityEngine;
 public class PuntoDiInteresse : ScriptableObject
 {
     [Tooltip("Una lista di stanze possibili, la lista può anche essere lasciata vuota, nel qual caso vuol dire che la stanza verrà sicuramente pescata dalla lista di stanze dell’area o da quella di uno delle sue sottoaree a seconda delle specifiche del parametro sottogruppo (vedi sotto). Da notare che le stanze inserite qui dovrebbero essere uniche e non disponibili in altri punti di interesse. Se una stanza in lista presenta la tipologia Combattimento Standard o Boss (default) segnalare un errore in editor (qui si devono trovare solo stanze ben precise e non che richiedono ulteriori randomizzazioni) e a runtime rimuovere tale tipologia dalla lista, se è l’unica tipologia della stanza allora rimuovere la stanza.")]
-    public List<RoomData> roomPossibiliDaSpawnare;
+    public List<RoomData> listaDiStanzeUniche;
     [Tooltip("booleano che indica se il seguente punto di interesse deve selezionare per forza una delle sue stanze che appaiono in lista di stanze uniche ignorando la normale assegnazione delle stanze dell’area. Chiaramente se impostato a true ma la lista è vuota questo parametro verrà ignorato. Default true")]
     public bool spawnAutomatico = true;
     public List<SpawnRicompensa> spawnRicompense;

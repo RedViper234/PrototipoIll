@@ -10,13 +10,14 @@ using UnityEngine.AI;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEditor;
-using UnityEngine.UIElements;
-using UnityEngine.Assertions.Must;
+using AYellowpaper.SerializedCollections;
 
 
 
 public class RoomManager : Manager
 {
+    [SerializedDictionary("PuntoDiInteresse", "RoomData")]
+
     [Header("FIRST ROOM")]
 
     [Expandable]
@@ -29,6 +30,7 @@ public class RoomManager : Manager
     [MyReadOnly, SerializeField] private int m_enemyQuantity;
     [Expandable]
     public List<AreaSO> areeDaEsplorare;
+    public SerializedDictionary<PuntoDiInteresse, RoomData> m_puntiDiInteresseSpawnatiNellArea;
     public UnityEvent OnAreaChanged;
     [Header("READONLY VARIABLE")]
     [SerializeField, MyReadOnly] public int m_stanzeAttraversate = 0;
@@ -41,20 +43,19 @@ public class RoomManager : Manager
     private NavMeshSurface m_surface;
     private Vector2 m_lastMonsterSpawnPosition;
 
-    private UIDocument m_mapDocument;
     public void Update()
     {
 
     }
     public IEnumerator Start()
     {
-        m_mapDocument = GetComponentInChildren<UIDocument>();
+        m_puntiDiInteresseSpawnatiNellArea = new SerializedDictionary<PuntoDiInteresse, RoomData>();
         m_indiceOndataCorrente = 0;
         m_playerControllerInstance = AppManager.Instance.playePrefabReference.GetComponent<PlayerController>();
         m_flagManager = AppManager.Instance?.flagManager;
         var coroutineDiInizializzazione = this.RunCoroutine(Initialize());
         SpawnCurrentRoom();
-        yield return new WaitUntil(()=> coroutineDiInizializzazione.IsDone);
+        yield return new WaitUntil(() => coroutineDiInizializzazione.IsDone);
 
     }
 
@@ -65,65 +66,69 @@ public class RoomManager : Manager
     /// </summary>
     private IEnumerator Initialize()
     {
-        SetCurrentArea(firstArea);
-        CostruisciTuttiIPuntiDiInteresseDellArea();
-        SetRoom(true);
-        yield return null;
+        var coroutineArea = this.RunCoroutine(SetCurrentArea(firstArea));
+        currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
+        var coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea()); 
+        var coroutineSpawnStanza = this.RunCoroutine(SetRoom(true));
+        yield return new WaitUntil(() => coroutineArea.IsDone && coroutinePuntiDiInteresse.IsDone && coroutineSpawnStanza.IsDone);
     }
 
 
 
     // FUNZIONI AREE
-    public void SetCurrentArea(AreaSO newArea)
+    public IEnumerator SetCurrentArea(AreaSO newArea)
     {
-        try
+        if (currentArea != newArea)
         {
-            if (currentArea != newArea)
-            {
-                currentArea = newArea;
-                OnAreaChanged.Invoke();
-                Initialize();
-            }
+            currentArea = newArea;
+            OnAreaChanged.Invoke();
+            var coroutine = this.RunCoroutine(Initialize());
+            yield return new WaitUntil(() => coroutine.IsDone);
         }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-
     }
 
     //FUNZIONI PUNTI DI INTERESSE
-    public void CostruisciTuttiIPuntiDiInteresseDellArea()
+    public IEnumerator CostruisciTuttiIPuntiDiInteresseDellArea()
     {
-        currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
-        foreach (PuntoDiInteresse punto in currentArea.puntiDiInteresse)
+        for (int i = 0; i < currentArea.puntiDiInteresse.Count; i++)
         {
-            PrintNode(punto, 0);
+            PuntoDiInteresse punto = currentArea.puntiDiInteresse[i];
+            CostruisciPuntoDiInteresse(punto, 0);
+            yield return null;
         }
     }
-    private void PrintNode(PuntoDiInteresse punto, int level)
+
+
+
+    private void CostruisciPuntoDiInteresse(PuntoDiInteresse punto, int level)
     {
-        Debug.Log($"Livello {level}: {punto.name}");
-        foreach (ConnectedPoints connectedPoints in punto.points)
+        var room = SetRoom(punto, true);
+        if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(punto)) { return; }
+        m_puntiDiInteresseSpawnatiNellArea.Add(punto, room);
+        Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea,punto));
+        for (int i = 0; i < punto.points.Count; i++)
         {
-            foreach (PuntoDiInteresse subPunto in connectedPoints.points)
+            ConnectedPoints connectedPoints = punto.points[i];
+            for (int i1 = 0; i1 < connectedPoints.points.Count; i1++)
             {
+                PuntoDiInteresse subPunto = connectedPoints.points[i1];
                 if (subPunto == punto)
                 {
-                    #if UNITY_EDITOR
+#if UNITY_EDITOR
                     Debug.ClearDeveloperConsole();
                     Debug.LogError("Ricorsione infinita");
                     EditorApplication.isPlaying = false;
-                    #else
+#else
                     Application.Quit();
-                    #endif
+#endif
                     return;
                 }
                 if (subPunto == null) { return; }
-                
-
-
-                PrintNode(subPunto, level + 1); // Chiamata ricorsiva
+                var room1 = SetRoom(subPunto, true);
+                if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(subPunto)) { return; }
+                m_puntiDiInteresseSpawnatiNellArea.Add(subPunto, room1);
+                Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea,subPunto));
+                CostruisciPuntoDiInteresse(subPunto, level + 1); // Chiamata ricorsiva
             }
         }
     }
@@ -150,14 +155,55 @@ public class RoomManager : Manager
 
     // FUNZIONI STANZE
     /// <summary>
-    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom � selezionato allora verr�
+    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom è selezionato allora verrà
     /// fatto in modo di pescare, se possibile, una stanza che ha il booleano attivo first room
     /// </summary>
     /// <param name="checkFirstRoom"></param>
-    private void SetRoom(bool checkFirstRoom)
+    private RoomData SetRoom(PuntoDiInteresse punto, bool checkFirstRoom)
+    {
+        RoomData roomDataInterno = null;
+        m_stanzeAttraversate = m_stanzeAttraversate + 1;
+        List<RoomData> stanzeCachateDaSO = punto.listaDiStanzeUniche;
+        stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
+        // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
+        List<RoomData> roomFinaliCheRispettanoLeRegole = new();
+        foreach (var room in stanzeCachateDaSO)
+        {
+            if (CheckRequisiti(room))
+            {
+                roomFinaliCheRispettanoLeRegole.Add(room);
+            }
+        }
+        roomFinaliCheRispettanoLeRegole.Sort((a, b) => b.prioritaStanza.CompareTo(a.prioritaStanza));
+        int massimaPriorita = roomFinaliCheRispettanoLeRegole[0].prioritaStanza;
+        roomFinaliCheRispettanoLeRegole = roomFinaliCheRispettanoLeRegole.FindAll(x => x.prioritaStanza == massimaPriorita);
+
+
+        if (roomFinaliCheRispettanoLeRegole.Count > 1)
+        {
+            int temp = UnityEngine.Random.Range(0, roomFinaliCheRispettanoLeRegole.Count);
+            roomDataInterno = roomFinaliCheRispettanoLeRegole[temp];
+
+        }
+        else if (roomFinaliCheRispettanoLeRegole.Count == 1)
+        {
+            roomDataInterno = roomFinaliCheRispettanoLeRegole[0];
+        }
+        Debug.Log($"<color=#00FF00>STANZA SELEZIONATA</color>");
+        print(roomDataInterno.name);
+
+        foreach (var item in roomDataInterno.flagsOnEnter.requiredFlagList)
+        {
+            bool hasFlag = m_flagManager.CheckFlag(item.flagList);
+            if (hasFlag)
+                m_flagManager.SetFlag(roomDataInterno.flagsOnEnter.flagToSet);
+        }
+        return roomDataInterno;
+    }
+    private IEnumerator SetRoom(bool checkFirstRoom)
     {
         m_stanzeAttraversate = m_stanzeAttraversate + 1;
-        List<RoomData> stanzeCachateDaSO = currentPoint.roomPossibiliDaSpawnare;
+        List<RoomData> stanzeCachateDaSO = currentPoint.listaDiStanzeUniche;
         stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
         // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
         List<RoomData> roomFinaliCheRispettanoLeRegole = new();
@@ -177,6 +223,7 @@ public class RoomManager : Manager
         {
             int temp = UnityEngine.Random.Range(0, roomFinaliCheRispettanoLeRegole.Count);
             currentRoom = roomFinaliCheRispettanoLeRegole[temp];
+
         }
         else if (roomFinaliCheRispettanoLeRegole.Count == 1)
         {
@@ -191,10 +238,8 @@ public class RoomManager : Manager
             if (hasFlag)
                 m_flagManager.SetFlag(currentRoom.flagsOnEnter.flagToSet);
         }
-
-
+        yield return null;
     }
-
 
     #region  PER REQUISITI MOSTRI E STANZE
     //CHECK REQUISITI
@@ -342,20 +387,20 @@ public class RoomManager : Manager
         switch (requisiti.valoreQuantitaUstioni.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 Debug.Log(roomCanSpawn);
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
         }
         return roomCanSpawn;
@@ -368,19 +413,19 @@ public class RoomManager : Manager
         switch (set.valoreQuantitaUstioni.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
         }
         return roomCanSpawn;
@@ -394,19 +439,19 @@ public class RoomManager : Manager
         switch (requisiti.valoreQuantitaVitaMassima.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth > requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth > requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth == requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth == requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth < requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth < requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
         }
         return roomCanSpawn;
@@ -444,19 +489,19 @@ public class RoomManager : Manager
         switch (requisiti.valoreVitaRimasta.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) > requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) > requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) >= requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) >= requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) == requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) == requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) < requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) < requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) <= requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) <= requisiti.valoreVitaRimasta.percentuale;
                 break;
         }
         return roomCanSpawn;
@@ -467,19 +512,19 @@ public class RoomManager : Manager
         switch (set.valoreVitaRimasta.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) > set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) > set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) >= set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) >= set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) == set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) == set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) < set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) < set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) <= set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) <= set.valoreVitaRimasta.percentuale;
                 break;
         }
         return roomCanSpawn;
@@ -584,19 +629,19 @@ public class RoomManager : Manager
         switch (requisiti.valoreCorruzione.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Uguale:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Minore:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             default:
                 break;
@@ -609,19 +654,19 @@ public class RoomManager : Manager
         switch (set.valoreCorruzione.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                temp = (set.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                temp = (set.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Uguale:
-                temp = (set.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Minore:
-                temp = (set.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                temp = (set.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             default:
                 break;
@@ -847,8 +892,8 @@ public class RoomManager : Manager
         m_indiceOndataCorrente--;
         StartCoroutine(StartOndate());
     }
-    
-    
+
+
     /// <summary>
     /// Aspetta x secondi prima di dichiarare il cambio di stato
     /// </summary>
@@ -907,7 +952,7 @@ public class RoomManager : Manager
         return spawnPosition;
     }
 
-    Vector2 FindValidSpawnPosition(float rangeMin, float rangeMax, Vector2 roomSize)
+    private Vector2 FindValidSpawnPosition(float rangeMin, float rangeMax, Vector2 roomSize)
     {
         NavMeshHit hit;
         Vector2 spawnPosition = Vector2.zero;
@@ -945,15 +990,11 @@ public class RoomManager : Manager
             break;
         }
 
-        if (!positionFound)
-        {
-            Debug.LogError("<color=red>Impossibile trovare una posizione valida dopo " + maxAttempts + " tentativi.</color>");
-        }
         Debug.Log("<color=blue>Posizione trovata: " + spawnPosition + "</color>");
         return spawnPosition;
     }
 
-    bool IsTooCloseToOtherSpawns(Vector2 spawnPosition)
+    private bool IsTooCloseToOtherSpawns(Vector2 spawnPosition)
     {
         // Implementa il codice per verificare se la posizione è troppo vicina ad altri punti di spawn
         // Ritorna true se è troppo vicina, altrimenti false
@@ -1017,4 +1058,6 @@ public class RoomManager : Manager
         }
         return playerSpawned;
     }
+
+
 }

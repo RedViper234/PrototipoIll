@@ -328,7 +328,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 827126942018589236, guid: db0587728f499e64aa8d48922c7d4122, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: db0587728f499e64aa8d48922c7d4122, type: 3}
 --- !u!4 &3559383970499285349 stripped
 Transform:

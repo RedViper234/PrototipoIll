@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 812898772073427564}
   - component: {fileID: 2754178169541331016}
-  - component: {fileID: 827126942018589236}
   m_Layer: 0
   m_Name: MapManager
   m_TagString: Untagged
@@ -45,20 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df121fc25224ff4cbc3b4c333c5ebfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapDocument: {fileID: 0}
---- !u!114 &827126942018589236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3849910139727570583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: 73116ca0414789343a806d686e60e112, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: e288d823612ca3743bbaf1b32fca3829, type: 3}
-  m_SortingOrder: 0
+  backGroundMap: {fileID: 0}
