@@ -33,8 +33,6 @@ MonoBehaviour:
   MultiAttack:
     NumberOfAttacks: 3
     TimeBetweenAttacks: 0
-    AttackList:
-    - {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
-    - {fileID: 11400000, guid: 77f2c42cafb1e6c458e12d1347ab9a2a, type: 2}
+    AttackList: []
   BulletSpeed: 0
   BulletAliveTime: 0

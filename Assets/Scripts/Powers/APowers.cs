@@ -50,6 +50,10 @@ public enum TriggerType
     OnDeath,
     OnEveryNRoom,
     OnEveryNTime,
+    OnPlayerHit,
+    OnPlayerDie,
+    OnEnemyHit,
+    OnEnemyDie,
 }
 
 public enum Evolution
@@ -80,6 +84,7 @@ public enum PowerTag
 
 public abstract class APowers : MonoBehaviour
 {
+    [field: Header("Power")]
     [field: SerializeField] public PowerType powerType { get; set;}
     [field: SerializeField] public PowerSubType powerSubType { get; set; }
     [field: SerializeField] public Rarity rarity { get; set;}
@@ -92,10 +97,14 @@ public abstract class APowers : MonoBehaviour
     public abstract void TriggerOnEvent();
     public abstract void TriggerOnEvent(int value);
     public abstract void TriggerOnEvent(float value);
+    public abstract void TriggerOnEvent(GameObject value);
+    protected abstract void CustomTriggerEvent();
 
     void Start()
     {
         InitChangePowerType();
+
+        SetTrigger();
     }
 
     public virtual void InitChangePowerType()
@@ -123,7 +132,7 @@ public abstract class APowers : MonoBehaviour
                 TriggerOnEvent();
                 break;
             case TriggerType.OnTrigger:
-                TriggerOnEvent();
+                CustomTriggerEvent();
                 break;
             case TriggerType.OnBeginOfRoom:
                 EventManager.HandleBeginRoom += TriggerOnEvent;
@@ -148,6 +157,18 @@ public abstract class APowers : MonoBehaviour
                 break;
             case TriggerType.OnEveryNTime:
                 EventManager.HandleEveryNTime += TriggerOnEvent;
+                break;
+            case TriggerType.OnPlayerHit:
+                EventManager.HandleOnPlayerHit += TriggerOnEvent;
+                break;
+            case TriggerType.OnPlayerDie:
+                EventManager.HandleOnPlayerDie += TriggerOnEvent;
+                break;
+            case TriggerType.OnEnemyHit:
+                EventManager.HandleOnEnemyHit += TriggerOnEvent;
+                break;
+            case TriggerType.OnEnemyDie:
+                EventManager.HandleOnEnemyDie += TriggerOnEvent;
                 break;
             default:
                 Debug.LogError("Trigger type not found or not implemented: " + triggerType);

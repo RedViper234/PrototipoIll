@@ -167,6 +167,8 @@ public abstract class AAttack : MonoBehaviour
     {
         if(other.GetComponent<Damageable>())
         {
+            EventManager.HandleOnPlayerHit?.Invoke(other.gameObject);
+
             other.GetComponent<Damageable>().TakeDamage(damageInstance);
             //TODO Add knockback
         }
@@ -182,77 +184,6 @@ public abstract class AAttack : MonoBehaviour
         foreach (Collider2D collider in attackCollider2d)
         {
             collider.enabled = isEnabled;
-        }
-    }
-
-    public IEnumerator MultiAttackManagerTest()
-    {
-        if(MultiAttack.AttackList.Count() > 0)
-        {
-            for (var i = 0; i < MultiAttack.AttackList.Count(); i++)
-            {
-                InitAttackValues(MultiAttack.AttackList[i], weaponReference, ActualDirection);
-
-                //Prima che venga attivata l'hitbox    
-
-                DoBeforeWaitHitboxActivation();
-
-                yield return new WaitForSeconds(TimeToActivateHitbox);
-
-                //Activate Hitbox
-                
-                DoAfterWaitHitboxActivation();
-
-                Debug.Log("Attivato");
-
-                yield return new WaitForSeconds(TimeDurationHitbox);
-
-                //Deactivate Hitbox
-                
-                DoBeforeAttackEnd();
-
-                Debug.Log("Disattivato");
-
-                yield return new WaitForSeconds(TimeToEndHitbox);
-
-                //End of attack
-
-                DoInAttackEnd();
-
-                Debug.Log("Fine");
-            }   
-        }
-        else
-        {
-            InitAttackValues(attackSODefault, weaponReference, ActualDirection);
-
-            //Prima che venga attivata l'hitbox    
-
-            DoBeforeWaitHitboxActivation();
-
-            yield return new WaitForSeconds(TimeToActivateHitbox);
-
-            //Activate Hitbox
-            
-            DoAfterWaitHitboxActivation();
-
-            Debug.Log("Attivato");
-
-            yield return new WaitForSeconds(TimeDurationHitbox);
-
-            //Deactivate Hitbox
-            
-            DoBeforeAttackEnd();
-
-            Debug.Log("Disattivato");
-
-            yield return new WaitForSeconds(TimeToEndHitbox);
-
-            //End of attack
-
-            DoInAttackEnd();
-
-            Debug.Log("Fine");
         }
     }
 }

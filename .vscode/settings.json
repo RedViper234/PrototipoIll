@@ -56,7 +56,9 @@
         "Cooldown",
         "Hitbox",
         "Knockback",
+        "Lanciafiamme",
         "Meeleattack",
-        "Scriptable"
+        "Scriptable",
+        "Spargere"
     ]
 }
