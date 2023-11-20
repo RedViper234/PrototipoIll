@@ -6,6 +6,7 @@ using UnityEngine;
 public class BurnStatus : MonoBehaviour
 {
     [SerializeField, MyReadOnly] private Damageable damageable; 
+    public DamageType.DamageTypes damageTypes;
     public float timeToDie = 5f;
     public int ticks = 5;
     public float damage = 10f;
@@ -19,7 +20,7 @@ public class BurnStatus : MonoBehaviour
     {
         DamageInstance damageInstance = 
             new DamageInstance(
-                DamageType.DamageTypes.Ustioni, 
+                damageTypes, 
                 damage, 
                 false,
                 false,
