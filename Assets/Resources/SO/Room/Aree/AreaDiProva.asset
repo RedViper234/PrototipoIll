@@ -18,7 +18,7 @@ MonoBehaviour:
   descrizioneArea: 
   sottoAree:
   - {fileID: 11400000, guid: 7ea8fa8962b5a1049a06cd6db3537325, type: 2}
-  - {fileID: 11400000, guid: 7da81268baec24f49b69305dea3b38ee, type: 2}
+  - {fileID: 11400000, guid: e9872ea90c1cb3742ba450564af52b26, type: 2}
   movementCost: 32.3
   breakPointsMin: 39
   breakPointsMax: 0

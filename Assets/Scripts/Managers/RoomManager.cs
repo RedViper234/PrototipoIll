@@ -25,7 +25,7 @@ public class RoomManager : Manager
     [Header("CURRENT SETTINGS")]
     [MyReadOnly] public PuntoDiInteresse currentPoint;
     [MyReadOnly] public RoomData currentRoom;
-    [MyReadOnly] public AreaSO currentArea;
+    [MyReadOnly] public AreaSO currentArea = null;
     [MyReadOnly] public EnemySet currentEnemySet;
     [MyReadOnly, SerializeField] private int m_enemyQuantity;
     [Expandable]
@@ -66,7 +66,7 @@ public class RoomManager : Manager
     /// </summary>
     private IEnumerator Initialize()
     {
-        var coroutineArea = this.RunCoroutine(SetCurrentArea(firstArea));
+        var coroutineArea = this.RunCoroutine(SetCurrentArea(firstArea,false));
         currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
         var coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea()); 
         var coroutineSpawnStanza = this.RunCoroutine(SetRoom(true));
@@ -76,14 +76,56 @@ public class RoomManager : Manager
 
 
     // FUNZIONI AREE
-    public IEnumerator SetCurrentArea(AreaSO newArea)
+    public IEnumerator SetCurrentArea(AreaSO newArea,bool firstTime = false)
     {
         if (currentArea != newArea)
         {
-            currentArea = newArea;
+            Debug.Log($"<color=red>SetCurrentArea {newArea.name}</color>");
+            CoroutineHandle coroutinePuntiDiInteresse = null;
+            CoroutineHandle coroutineSpawnStanza = null;
             OnAreaChanged.Invoke();
-            var coroutine = this.RunCoroutine(Initialize());
-            yield return new WaitUntil(() => coroutine.IsDone);
+            currentArea = newArea;
+            currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
+            if(currentPoint != null){
+                /* DEVO DIFFERENZIARE TRA LA PRIMA VOLTA CHE SI ENTRA NELL'AREA E LE ALTRE VOLTE. PERCHE' LA PRIMA VOLTA SI DECIDE LA PRIMA STANZA E PUNTO CORRENTE
+                MENTRE LA SECONDA VOLTA SI COSTRUISCONO LE SOTTOAREE E I RELATIVI PUNTI DI INTERESSE*/
+                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea()); 
+                coroutineSpawnStanza = this.RunCoroutine(SetRoom(true));
+                yield return new WaitUntil(() => coroutinePuntiDiInteresse.IsDone && coroutineSpawnStanza.IsDone);
+                if(currentArea.sottoAree.Count > 0){
+                    foreach (AreaSO sottoArea in currentArea.sottoAree){
+                        CoroutineHandle coroutineSottoArea = this.RunCoroutine(SetCurrentArea(sottoArea));
+                        yield return new WaitUntil(() => coroutineSottoArea.IsDone);
+                    }
+                }
+            }
+            else{
+                // ALLORA FAI IN MODO CHE L'AREA SCELGA TUTTO QUANTO PER QUANTO RIGUARDA IL PUNTO DI INTERESSE
+            }
+        }
+    }
+    public IEnumerator SetCurrentArea(AreaSO newArea){
+        if (currentArea != newArea)
+        {
+            currentArea = newArea;
+            Debug.Log($"<color=red>SetCurrentArea {newArea.name}</color>");
+            CoroutineHandle coroutinePuntiDiInteresse = null;
+            OnAreaChanged.Invoke();
+            if(currentPoint != null){
+                /* DEVO DIFFERENZIARE TRA LA PRIMA VOLTA CHE SI ENTRA NELL'AREA E LE ALTRE VOLTE. PERCHE' LA PRIMA VOLTA SI DECIDE LA PRIMA STANZA E PUNTO CORRENTE
+                MENTRE LA SECONDA VOLTA SI COSTRUISCONO LE SOTTOAREE E I RELATIVI PUNTI DI INTERESSE*/
+                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea(currentArea)); 
+                yield return new WaitUntil(() => coroutinePuntiDiInteresse.IsDone);
+                if(currentArea.sottoAree.Count > 0){
+                    foreach (AreaSO sottoArea in currentArea.sottoAree){
+                        CoroutineHandle coroutineSottoArea = this.RunCoroutine(SetCurrentArea(sottoArea));
+                        yield return new WaitUntil(() => coroutineSottoArea.IsDone);
+                    }
+                }
+            }
+            else{
+                // ALLORA FAI IN MODO CHE L'AREA SCELGA TUTTO QUANTO PER QUANTO RIGUARDA IL PUNTO DI INTERESSE
+            }
         }
     }
 
@@ -93,6 +135,15 @@ public class RoomManager : Manager
         for (int i = 0; i < currentArea.puntiDiInteresse.Count; i++)
         {
             PuntoDiInteresse punto = currentArea.puntiDiInteresse[i];
+            CostruisciPuntoDiInteresse(punto, 0);
+            yield return null;
+        }
+    }
+    public IEnumerator CostruisciTuttiIPuntiDiInteresseDellArea(AreaSO area)
+    {
+        for (int i = 0; i < area.puntiDiInteresse.Count; i++)
+        {
+            PuntoDiInteresse punto = area.puntiDiInteresse[i];
             CostruisciPuntoDiInteresse(punto, 0);
             yield return null;
         }
@@ -163,6 +214,7 @@ public class RoomManager : Manager
     {
         RoomData roomDataInterno = null;
         m_stanzeAttraversate = m_stanzeAttraversate + 1;
+        if(punto.listaDiStanzeUniche == null){return null; }
         List<RoomData> stanzeCachateDaSO = punto.listaDiStanzeUniche;
         stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
         // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
@@ -200,9 +252,15 @@ public class RoomManager : Manager
         }
         return roomDataInterno;
     }
+    /// <summary>
+    /// Questa funzione ha di diverso che costruisce la stanza in base al punto corrente
+    /// </summary>
+    /// <param name="checkFirstRoom"></param>
+    /// <returns></returns>
     private IEnumerator SetRoom(bool checkFirstRoom)
     {
         m_stanzeAttraversate = m_stanzeAttraversate + 1;
+        if(currentPoint.listaDiStanzeUniche == null || currentPoint == null){yield return null; }
         List<RoomData> stanzeCachateDaSO = currentPoint.listaDiStanzeUniche;
         stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
         // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE

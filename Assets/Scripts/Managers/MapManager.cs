@@ -18,7 +18,7 @@ public class MapManager : Manager, ISubscriber
 
 
  
-    private LineRenderer m_lineRenderer;
+    private UILineRenderer m_lineRenderer;
     private bool isOpen = false;
     private bool m_isFirstPoint = false;
     private Vector2 lastPosition = new Vector2(0, 0);
@@ -53,11 +53,12 @@ public class MapManager : Manager, ISubscriber
     {
         inputActions = new PlayerInput();
     }
-    private void Start()
+    private IEnumerator Start()
     {
         Publisher.Publish(new OpenMapMessage(false));
-        m_lineRenderer = Instantiate(lineRendererObject, backGroundMap.transform).GetComponent<LineRenderer>();
-        m_lineRenderer.positionCount = 20;
+        m_lineRenderer = Instantiate(lineRendererObject, backGroundMap.transform).GetComponent<UILineRenderer>();
+        yield return new WaitUntil(()=> Screen.width > 0 && Screen.height > 0);
+        m_lineRenderer.SetGridSize(new Vector2Int(Screen.width,Screen.height));
     }
 
     
@@ -105,10 +106,10 @@ public void CostruisciPuntoUI(PuntoDiInteresse punto)
             default:
             break;
         }
-        puntoIstanziato = InstantiatePuntoDiInteresse(position, puntoColor, punto.name);
+        puntoIstanziato = InstantiatePuntoDiInteresse(position, puntoColor, $"{punto.name}\n {roomData.tipiDiStanza}");
         puntoIstanziato.transform.parent = backGroundMap.transform;
         lastPosition = position;
-        m_lineRenderer.SetPosition(m_counter, puntoIstanziato.transform.position);
+        m_lineRenderer.SetPoints(puntoIstanziato.transform.position);
         m_counter++;
     }
     catch (Exception e)
@@ -130,8 +131,18 @@ private GameObject InstantiatePuntoDiInteresse(Vector2 position, Color color, st
 private Vector2 CalcolaPosizioneCasuale()
 {
     System.Random random = new System.Random();
-    var xPosRandom = random.Next(150, 200);
-    var yPosRandom = random.Next(0, 200);
+    int n = random.Next(0,1);
+    bool isMinus = n == 1 ? true : false;
+    int xPosRandom = 0;
+    int yPosRandom = 0;
+    if(isMinus){
+        xPosRandom = random.Next(-150, -200);
+        yPosRandom = random.Next(0, -200);
+    }
+    else{
+        xPosRandom = random.Next(150, 200);
+        yPosRandom = random.Next(0, 200);
+    }
 
     return lastPosition += new Vector2(xPosRandom, yPosRandom);
 }
@@ -154,7 +165,7 @@ private Vector2 CalcolaPosizioneCasuale()
             TextMeshProUGUI item = array[i];
             item.enabled = isOpen;
         }
-
+        backGroundMap.GetComponentInChildren<UILineRenderer>().enabled = isOpen;
     }
     private void OpenMapViaCodice(InputAction.CallbackContext context)
     {

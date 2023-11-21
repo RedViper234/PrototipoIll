@@ -572,6 +572,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2973093587929163369, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: currentArea
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5394531132089578228, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
       propertyPath: m_NavMeshData
       value: 
