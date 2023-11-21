@@ -14,6 +14,10 @@ public static class EventManager
     public static UnityAction HandleDeath;
     public static UnityAction<int> HandleEveryNRoom;
     public static UnityAction<float> HandleEveryNTime;
+    public static UnityAction HandleOnPlayerHit;
+    public static UnityAction HandleOnPlayerDie;
+    public static UnityAction HandleOnEnemyHit;
+    public static UnityAction HandleOnEnemyDie;
 
     public static void IncrementPassedRooms()
     {

@@ -12,7 +12,7 @@ public struct MultiAttack
     public AttackSO[] AttackList;
 }
 
-public abstract class AAttack : MonoBehaviour, IAttack
+public abstract class AAttack : MonoBehaviour
 {
     // [field: SerializeField] public AttackSO attackSO { get; set;}
     [field: SerializeField] public AnimationClip attackAnimation { get; set;}
@@ -104,50 +104,13 @@ public abstract class AAttack : MonoBehaviour, IAttack
     {
         Debug.Log($"Attacco in corso {MultiAttack.AttackList.Count()}");
 
-        if(MultiAttack.AttackList.Count() > 0)
+        for (var i = 0; i < (MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList.Count(): 1); i++)
         {
-            for (var i = 0; i < MultiAttack.AttackList.Count(); i++)
-            {
-                Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {MultiAttack.AttackList[i].name}");
+            Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {(MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i].name : attackSODefault.name)}");
 
-                weaponReference.GenerateAttackObject(MultiAttack.AttackList[i], false);
-
-                // InitAttackValues(MultiAttack.AttackList[i], weaponReference, ActualDirection);
-
-                //Prima che venga attivata l'hitbox    
-
-                DoBeforeWaitHitboxActivation();
-
-                yield return new WaitForSeconds(TimeToActivateHitbox);
-
-                //Activate Hitbox
-                
-                DoAfterWaitHitboxActivation();
-
-                Debug.Log("Attivato");
-
-                yield return new WaitForSeconds(TimeDurationHitbox);
-
-                //Deactivate Hitbox
-                
-                DoBeforeAttackEnd();
-
-                Debug.Log("Disattivato");
-
-                yield return new WaitForSeconds(TimeToEndHitbox);
-
-                //End of attack
-
-                DoInAttackEnd();
-
-                Debug.Log("Fine");
-            }   
-        }
-        else
-        {
-            Debug.Log($"Attacco: {attackSODefault.name}");
-
-            InitAttackValues(attackSODefault, weaponReference, ActualDirection);
+            weaponReference.GenerateAttackObject(
+                MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i]: attackSODefault, 
+                false);
 
             //Prima che venga attivata l'hitbox    
 
@@ -176,7 +139,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
             DoInAttackEnd();
 
             Debug.Log("Fine");
-        }
+        }   
     }
 
     public virtual void DoBeforeWaitHitboxActivation()
@@ -211,7 +174,7 @@ public abstract class AAttack : MonoBehaviour, IAttack
 
     public void WeaponAnimationStart()
     {
-        gameObject.GetComponentInParent<IWeapon>().animator.Play(attackAnimation.name);
+        gameObject.GetComponentInParent<AWeapon>().animator.Play(attackAnimation.name);
     }
 
     public void ManageAttackColliders(bool isEnabled)

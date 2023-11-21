@@ -1,9 +1,36 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-public abstract class AWeapon : MonoBehaviour, IWeapon
+public enum AttackRange
+{
+    None,
+    Ranged,
+    Melee
+}
+
+
+public enum StatusType
+{
+    None
+}
+
+[Serializable]
+public struct PlayerDragStruct
+{
+    public float force, waiting, duration;
+    public Vector2 direction;
+}
+
+public struct StatusStruct
+{
+    public StatusType type;
+    [Range(0, 1)] public float probability;
+}
+
+public abstract class AWeapon : MonoBehaviour
 {
     [field: SerializeField] public WeaponSO WeaponSO { get; set; }
 
@@ -19,6 +46,7 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
     [field: SerializeField] public List<DamageType.DamageTypes> DamageType { get; set; }
     [field: SerializeField] public List<StatusStruct> StatusEffects { get; set; }
     [field: SerializeField] public float KnockbackForceWeapon { get; set; }
+    [field: SerializeField] public PlayerDragStruct playerDrag { get; set; }
     [field: SerializeField] public List<AttackSO> ComboList { get; set; }
     [field: SerializeField] public float RangeAttackMaxDistance { get; set; }
     [field: SerializeField] public Vector2 HurtboxSize { get; set; }
@@ -148,32 +176,4 @@ public abstract class AWeapon : MonoBehaviour, IWeapon
     {
         t_currentCombo = time > 0 ? time : ComboTimeProgression;
     }
-
-    // public void MultiAttackGeneration(AttackSO actualAttack)
-    // {
-    //     int i = 0;
-    //     foreach (AttackSO attack in actualAttack.MultiAttack.AttackList)
-    //     {
-    //         GameObject inst_attack;
-
-    //         inst_attack = Instantiate(
-    //             actualAttack.MultiAttack.AttackList[i].AttackPrefab, 
-    //             transform.position, 
-    //             transform.parent.rotation, 
-    //             transform);
-
-    //         inst_attack.GetComponent<AAttack>().InitAttackValues(
-    //                                                             actualAttack, 
-    //                                                             this, 
-    //                                                             (Vector2)(this.transform.position - this.transform.parent.position));
-            
-    //         comboCoroutine = StartCoroutine(inst_attack.GetComponent<AAttack>().InitializeAttack());
-
-    //         if(AttackRangeWeapon == AttackRange.Ranged) inst_attack.transform.parent = null;
-
-    //         i++;    
-    //     }
-
-
-    // }
 }

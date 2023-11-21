@@ -765,7 +765,7 @@ PrefabInstance:
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: <ComboList>k__BackingField.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: b15874024fd19a64282f023434dcb0fe, type: 2}
+      objectReference: {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: <ComboList>k__BackingField.Array.data[1]
       value: 
