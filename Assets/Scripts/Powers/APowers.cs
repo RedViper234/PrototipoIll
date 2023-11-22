@@ -91,8 +91,10 @@ public abstract class APowers : MonoBehaviour
     [field: SerializeField] public TriggerType triggerType { get; set; }
     [field: SerializeField] public PowerState powerState { get; set; }
     [field: SerializeField] public Evolution evolution { get; set; }
+
     [field: SerializeField] public int NRooms { get; set; }
     [field: SerializeField] public float NTime { get; set; }
+
     [field: SerializeField] public PowerTag powerTag { get; set; }
     public abstract void TriggerOnEvent();
     public abstract void TriggerOnEvent(int value);

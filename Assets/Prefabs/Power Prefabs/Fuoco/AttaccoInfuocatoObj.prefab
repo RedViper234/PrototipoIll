@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7161418163745090417}
   - component: {fileID: 7161418163745090416}
   m_Layer: 0
-  m_Name: PowerFireAttackObj
+  m_Name: AttaccoInfuocatoObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
