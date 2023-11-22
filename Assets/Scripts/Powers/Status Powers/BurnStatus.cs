@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
-public class BurnStatus : MonoBehaviour
+public class BurnStatus : MonoBehaviour, IStatus
 {
-    [SerializeField, MyReadOnly] private Damageable damageable; 
-    public float timeToDie = 5f;
-    public int ticks = 5;
-    public float damage = 10f;
-
-    void Update()
-    {
-
-    }
+    [field: SerializeField] public float effectDuration {get; set;}
+    [field: SerializeField] public int ticks {get; set;}
+    [field: SerializeField] public float damage {get; set;}
 
     private void BurnDamage()
     {
@@ -26,6 +20,6 @@ public class BurnStatus : MonoBehaviour
                 false,
                 0);
         
-        damageable.TakeDamage(damageInstance);
+        GetComponentInParent<Damageable>().TakeDamage(damageInstance);
     }
 }

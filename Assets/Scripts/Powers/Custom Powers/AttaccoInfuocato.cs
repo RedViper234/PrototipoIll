@@ -1,9 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttaccoInfuocato : BaseStatusApplier
+public class AttaccoInfuocato : APowers, IStatusApplier
 {
+    [field: Header("Status")]
+    [field: SerializeField] GameObject statusPrefab { get; set; }
+    [field: SerializeField] DamageType.DamageTypes statusType { get; set; }
+    [field: Range(0f, 1f)] [field: SerializeField] float chance { get; set; }
+
     public override void TriggerOnEvent()
     {  
     }
@@ -20,11 +26,12 @@ public class AttaccoInfuocato : BaseStatusApplier
     {
         Debug.Log("Apply Fire Status");
 
-        ApplyChanceRandomizer(value);
-
+        StatusApplierExtensions.ApplyChanceRandomizer(this, value, chance, statusPrefab, statusType);
     }
 
     protected override void CustomTriggerEvent()
     {
     }
+
+   
 }

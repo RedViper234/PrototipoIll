@@ -104,7 +104,7 @@ public abstract class APowers : MonoBehaviour
     {
         InitChangePowerType();
 
-        SetTrigger();
+        SetTrigger();//TO DELETE
     }
 
     public virtual void InitChangePowerType()
