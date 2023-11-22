@@ -177,4 +177,9 @@ public abstract class APowers : MonoBehaviour
                 break;
         }
     }
+
+    protected virtual void Evolution()
+    {
+        
+    }
 }

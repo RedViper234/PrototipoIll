@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 public enum AttackRange
@@ -27,33 +28,33 @@ public struct StatusStruct
 
 public abstract class AWeapon : MonoBehaviour
 {
-    [field: SerializeField] public WeaponSO WeaponSO { get; set; }
+    [field: SerializeField] public WeaponSO WeaponSO;
 
     [field: Header("Weapon Animation")]
-    [field: SerializeField] public Animator animator { get; set; }
+    [field: SerializeField] public Animator animator;
     
     [field: Header("Weapon Properties Values")]
-    [field: SerializeField] public float BaseDamageWeapon { get; set; }
-    [field: SerializeField] public float CooldownBetweenAttacks { get; set; }
-    [field: SerializeField] public float CooldownSpecialAttack { get; set; }
-    [field: SerializeField] public float ComboTimeProgression { get; set; }
-    [field: SerializeField] public float PlayerSpeedModifier { get; set; }
-    [field: SerializeField] public AttackRange AttackRangeWeapon { get; set; }
-    [field: SerializeField] public List<DamageType.DamageTypes> DamageType { get; set; }
-    [field: SerializeField] public List<StatusStruct> StatusEffects { get; set; }
-    [field: SerializeField] public float KnockbackForceWeapon { get; set; }
-    [field: SerializeField] public PlayerDragStruct playerDrag { get; set; }
-    [field: SerializeField] public List<AttackSO> ComboList { get; set; }
-    [field: SerializeField] public AttackSO SpecialAttack { get; set; }
-    [field: SerializeField] public float RangeAttackMaxDistance { get; set; }
-    [field: SerializeField] public Vector2 HurtboxSize { get; set; }
-    [field: SerializeField, MyReadOnly] public Vector2 ActualDirection { get; set; }
+    [field: SerializeField] public float BaseDamageWeapon;
+    [field: SerializeField] public float CooldownBetweenAttacks;
+    [field: SerializeField] public float CooldownSpecialAttack;
+    [field: SerializeField] public float ComboTimeProgression;
+    [field: SerializeField] public float PlayerSpeedModifier;
+    [field: SerializeField] public AttackRange AttackRangeWeapon;
+    [field: SerializeField] public List<DamageType.DamageTypes> DamageType;
+    [field: SerializeField] public List<StatusStruct> StatusEffects;
+    [field: SerializeField] public float KnockbackForceWeapon;
+    [field: SerializeField] public PlayerDragStruct playerDrag;
+    [field: SerializeField] public List<AttackSO> ComboList;
+    [field: SerializeField] public AttackSO SpecialAttack;
+    [field: SerializeField] public float RangeAttackMaxDistance;
+    [field: SerializeField] public Vector2 HurtboxSize;
+    [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
 
     [field: Header("Debug")]
-    [field: SerializeField, MyReadOnly] protected float t_cooldown { get; set; }
-    [field: SerializeField, MyReadOnly] protected float t_cooldownsp { get; set; }
-    [field: SerializeField, MyReadOnly] protected float t_currentCombo { get; set; }
-    [field: SerializeField] protected int comboIndex { get; set; }
+    [field: SerializeField, MyReadOnly] protected float t_cooldown;
+    [field: SerializeField, MyReadOnly] protected float t_cooldownsp;
+    [field: SerializeField, MyReadOnly] protected float t_currentCombo;
+    [field: SerializeField] protected int comboIndex;
     private Coroutine comboCoroutine;
 
     public virtual void Awake()
@@ -66,13 +67,13 @@ public abstract class AWeapon : MonoBehaviour
     protected virtual void Update()
     {
         //Cooldown del tempo di attacco
-        _ = t_cooldown > 0 ? t_cooldown -= Time.deltaTime : t_cooldown = 0;
+        SetTimerCooldown(ref t_cooldown);
 
         //Tempo di reset combo index
         _ = t_currentCombo > 0 ? t_currentCombo -= Time.deltaTime : comboIndex = 0;
 
         //Cooldown del tempo di attacco Speciale
-        _ = t_cooldownsp > 0 ? t_cooldownsp -= Time.deltaTime : t_cooldownsp = 0;
+        SetTimerCooldown(ref t_cooldownsp);
 
         if(!CheckAttackChildren())
         {
@@ -194,5 +195,10 @@ public abstract class AWeapon : MonoBehaviour
     public void SetTimerComboProgression(float time)
     {
         t_currentCombo = time > 0 ? time : ComboTimeProgression;
+    }
+
+    protected void SetTimerCooldown(ref float time) 
+    {
+        time = time > 0 ? time -= Time.deltaTime : 0;
     }
 }

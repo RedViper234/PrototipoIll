@@ -33,5 +33,8 @@ public class AttaccoInfuocato : APowers, IStatusApplier
     {
     }
 
-   
+    protected override void Evolution()
+    {
+        
+    }
 }

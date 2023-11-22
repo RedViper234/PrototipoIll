@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class SacraFiamma : APowers
 {
+    float chanceMultiplayer = 1.5f;
+
     public override void TriggerOnEvent()
     {
-        foreach (IStatusApplier statusApplier in transform.parent.GetComponentsInChildren<IStatusApplier>())
-        {
-            _ = statusApplier.chance < 100f ? statusApplier.chance *= 1.5f : statusApplier.chance = 100f;
-        }
+        IncreaseChance();
     }
 
     public override void TriggerOnEvent(int value)
@@ -30,5 +29,19 @@ public class SacraFiamma : APowers
     protected override void CustomTriggerEvent()
     {
         
+    }
+
+    private void IncreaseChance()
+    {
+        foreach (IStatusApplier statusApplier in transform.parent.GetComponentsInChildren<IStatusApplier>())
+        {
+            _ = statusApplier.chance < 100f ? statusApplier.chance *= chanceMultiplayer : statusApplier.chance = 100f;
+        }
+    }
+
+    protected override void Evolution()
+    {
+        chanceMultiplayer = 2f;
+        IncreaseChance();
     }
 }
