@@ -14,7 +14,6 @@ public struct MultiAttack
 
 public abstract class AAttack : MonoBehaviour
 {
-    // [field: SerializeField] public AttackSO attackSO { get; set;}
     [field: SerializeField] public AnimationClip attackAnimation { get; set;}
     
     [field: Header("Attack Time Values")]
@@ -39,7 +38,6 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField] public float BulletSpeed { get; set; }
     [field: SerializeField] public float BulletAliveTime { get; set; }
     
-
     [field: Header("Other/Debug")]
     public Collider2D[] attackCollider2d { get; set; }
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference { get; set; }

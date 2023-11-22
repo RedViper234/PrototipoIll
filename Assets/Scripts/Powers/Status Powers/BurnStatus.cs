@@ -13,7 +13,7 @@ public class BurnStatus : MonoBehaviour, IStatus
     {
         DamageInstance damageInstance = 
             new DamageInstance(
-                DamageType.DamageTypes.Ustioni, 
+                DamageType.DamageTypes.Fisico, 
                 damage, 
                 false,
                 false,
