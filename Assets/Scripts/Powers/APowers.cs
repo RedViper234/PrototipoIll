@@ -54,6 +54,7 @@ public enum TriggerType
     OnPlayerDie,
     OnEnemyHit,
     OnEnemyDie,
+    OnEndOfDash,
 }
 
 public enum Evolution
@@ -91,7 +92,7 @@ public abstract class APowers : MonoBehaviour
     [field: SerializeField] public TriggerType triggerType { get; set; }
     [field: SerializeField] public PowerState powerState { get; set; }
     [field: SerializeField] public Evolution evolution { get; set; }
-
+    
     [field: SerializeField] public int NRooms { get; set; }
     [field: SerializeField] public float NTime { get; set; }
 
@@ -171,6 +172,9 @@ public abstract class APowers : MonoBehaviour
                 break;
             case TriggerType.OnEnemyDie:
                 EventManager.HandleOnEnemyDie += TriggerOnEvent;
+                break;
+            case TriggerType.OnEndOfDash:
+                EventManager.HandleEndOfDash += TriggerOnEvent;
                 break;
             default:
                 Debug.LogError("Trigger type not found or not implemented: " + triggerType);

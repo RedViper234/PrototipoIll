@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class AttaccoInfuocato : APowers, IStatusApplier
 {
-    [field: Header("Status")]
-    [field: SerializeField] GameObject statusPrefab { get; set; }
-    [field: SerializeField] DamageType.DamageTypes statusType { get; set; }
-    [field: Range(0f, 1f)] [field: SerializeField] float chance { get; set; }
-
+    [field: Header("Status Applier")]
+    [field: SerializeField]public GameObject statusPrefab { get; set; }
+    [field: SerializeField]public DamageType.DamageTypes statusType { get; set; }
+    [field: SerializeField][field: Range(0f, 1f)] public float chance { get; set; }
+ 
     public override void TriggerOnEvent()
     {  
     }
@@ -22,15 +22,17 @@ public class AttaccoInfuocato : APowers, IStatusApplier
     {
     }
 
-    public override void TriggerOnEvent(GameObject value)
+    public override void TriggerOnEvent(GameObject objectToBeApply)
     {
         Debug.Log("Apply Fire Status");
 
-        StatusApplierExtensions.ApplyChanceRandomizer(this, value, chance, statusPrefab, statusType);
+        if(StatusApplierExtensions.ApplyChanceRandomizer(this, chance)) 
+            StatusApplierExtensions.ApplyStatus(this, objectToBeApply, statusPrefab, statusType);
     }
 
     protected override void CustomTriggerEvent()
     {
+
     }
 
     protected override void Evolution()
