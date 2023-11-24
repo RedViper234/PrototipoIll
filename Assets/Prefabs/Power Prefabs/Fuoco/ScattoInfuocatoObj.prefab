@@ -54,8 +54,10 @@ MonoBehaviour:
   <NRooms>k__BackingField: 0
   <NTime>k__BackingField: 0
   <powerTag>k__BackingField: 3
-  objectToInstantiate: {fileID: 0}
-  range: 0
+  <statusPrefab>k__BackingField: {fileID: 7451523059837456383, guid: 2a989d3ea9e02714497d6983e2a120e8, type: 3}
+  <statusType>k__BackingField: 2
+  <chance>k__BackingField: 0.05
+  radius: 0
 --- !u!58 &6780088102211505914
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -63,10 +65,10 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3009357859833230193}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

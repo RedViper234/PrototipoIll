@@ -10,6 +10,11 @@ public class BurnStatus : MonoBehaviour, IStatus
     [field: SerializeField] public float damage {get; set;}
     [field: SerializeField] public DamageType.DamageTypes statusType { get; set; }
 
+    void Start()
+    {
+        BurnDamage();
+    }
+    
     //TODO
     private void BurnDamage()
     {
