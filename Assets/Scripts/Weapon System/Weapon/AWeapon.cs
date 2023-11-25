@@ -11,12 +11,6 @@ public enum AttackRange
     Melee
 }
 
-
-public enum StatusType
-{
-    None
-}
-
 [Serializable]
 public struct PlayerDragStruct
 {
@@ -24,9 +18,10 @@ public struct PlayerDragStruct
     public Vector2 direction;
 }
 
+[Serializable]
 public struct StatusStruct
 {
-    public StatusType type;
+    public PowerSubType type;
     [Range(0, 1)] public float probability;
 }
 
@@ -40,6 +35,7 @@ public abstract class AWeapon : MonoBehaviour
     [field: Header("Weapon Properties Values")]
     [field: SerializeField] public float BaseDamageWeapon { get; set; }
     [field: SerializeField] public float CooldownBetweenAttacks { get; set; }
+    [field: SerializeField] public float CooldownSpecialAttack { get; set; }
     [field: SerializeField] public float ComboTimeProgression { get; set; }
     [field: SerializeField] public float PlayerSpeedModifier { get; set; }
     [field: SerializeField] public AttackRange AttackRangeWeapon { get; set; }
@@ -48,12 +44,14 @@ public abstract class AWeapon : MonoBehaviour
     [field: SerializeField] public float KnockbackForceWeapon { get; set; }
     [field: SerializeField] public PlayerDragStruct playerDrag { get; set; }
     [field: SerializeField] public List<AttackSO> ComboList { get; set; }
+    [field: SerializeField] public AttackSO SpecialAttack { get; set; }
     [field: SerializeField] public float RangeAttackMaxDistance { get; set; }
     [field: SerializeField] public Vector2 HurtboxSize { get; set; }
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection { get; set; }
 
     [field: Header("Debug")]
     [field: SerializeField, MyReadOnly] protected float t_cooldown { get; set; }
+    [field: SerializeField, MyReadOnly] protected float t_cooldownsp { get; set; }
     [field: SerializeField, MyReadOnly] protected float t_currentCombo { get; set; }
     [field: SerializeField] protected int comboIndex { get; set; }
     private Coroutine comboCoroutine;
@@ -72,6 +70,9 @@ public abstract class AWeapon : MonoBehaviour
 
         //Tempo di reset combo index
         _ = t_currentCombo > 0 ? t_currentCombo -= Time.deltaTime : comboIndex = 0;
+
+        //Cooldown del tempo di attacco Speciale
+        _ = t_cooldownsp > 0 ? t_cooldownsp -= Time.deltaTime : t_cooldownsp = 0;
 
         if(!CheckAttackChildren())
         {
@@ -101,6 +102,24 @@ public abstract class AWeapon : MonoBehaviour
     public void ExecuteCombo()
     {
         StartCoroutine(AttackCoroutine());
+    }
+
+    public void ExecuteSpecialAttack()
+    {
+        if(SpecialAttack != null) StartCoroutine(SpecialAttackCoroutine());
+    }
+
+    private IEnumerator SpecialAttackCoroutine()
+    {
+       if (t_cooldownsp <= 0)
+        {
+            GenerateAttackObject(SpecialAttack, true);
+
+            t_cooldownsp = CooldownSpecialAttack;
+            t_cooldown = CooldownSpecialAttack;
+        }
+
+        yield return null;
     }
 
     public void StopCombo()
