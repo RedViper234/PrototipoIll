@@ -39,7 +39,7 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField] public float BulletAliveTime;
     
     [field: Header("Other/Debug")]
-    public Collider2D[] attackCollider2d;
+    [field: SerializeField, MyReadOnly] public Collider2D[] attackCollider2d;
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference;
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
     [field: SerializeField,MyReadOnly] public AttackSO attackSODefault;
@@ -106,9 +106,13 @@ public abstract class AAttack : MonoBehaviour
         {
             Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {(MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i].name : attackSODefault.name)}");
 
-            weaponReference.GenerateAttackObject(
-                MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i]: attackSODefault, 
-                false);
+            if(MultiAttack.AttackList.Count() > 0)
+            {
+                weaponReference.GenerateAttackObject(
+                    MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i]: attackSODefault, 
+                    false);
+
+            }
 
             //Prima che venga attivata l'hitbox    
 
@@ -143,6 +147,8 @@ public abstract class AAttack : MonoBehaviour
     public virtual void DoBeforeWaitHitboxActivation()
     {
         if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
+
+        EventManager.HandlePlayerAttackBegin?.Invoke(true);
     }
 
     public virtual void DoAfterWaitHitboxActivation()
@@ -157,7 +163,16 @@ public abstract class AAttack : MonoBehaviour
 
     public virtual void DoInAttackEnd()
     {
+        EventManager.HandlePlayerAttackBegin?.Invoke(false);
+
         weaponReference.SetTimerComboProgression(TimeComboProgression);
+
+        Debug.Log($"Attack Range: {AttackRangeAttack}");
+
+        if(AttackRangeAttack == AttackRange.Melee)
+        {
+            Destroy(this.gameObject);   
+        }
     }
 
     public virtual void OnDamageableHit(Collider2D other)

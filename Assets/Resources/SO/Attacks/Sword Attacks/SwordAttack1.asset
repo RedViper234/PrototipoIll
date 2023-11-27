@@ -18,6 +18,7 @@ MonoBehaviour:
   TimeDurationHitbox: 0.2
   TimeToEndHitbox: 0.1
   AttackCooldown: 0.2
+  TimeComboProgression: 0
   PlayerSpeedModifier: 0.1
   PlayerDrag:
     force: 0
@@ -26,10 +27,12 @@ MonoBehaviour:
     direction: {x: 0, y: 0}
   BaseDamageAttack: 0
   AttackRangeAttack: 2
-  DamageType: 0
+  DamageType: 1
   StatusEffects: []
   KnockbackForceAttack: 0
   MultiAttack:
-  - NumberOfAttacks: 0
+    NumberOfAttacks: 0
     TimeBetweenAttacks: 0
     AttackList: []
+  BulletSpeed: 0
+  BulletAliveTime: 0

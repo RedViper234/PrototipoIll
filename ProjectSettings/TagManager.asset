@@ -16,8 +16,8 @@ TagManager:
   - Entities/Obstacle
   - Bullets/Player
   - Bullets/Enemy
-  - 
-  - 
+  - Attack/Player
+  - Attack/Enemy
   - 
   - 
   - 

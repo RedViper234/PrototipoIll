@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class WeaponInputTest : MonoBehaviour
+public class WeaponController : MonoBehaviour
 {
     private PlayerInput inputActions;
     private InputAction attackAction;

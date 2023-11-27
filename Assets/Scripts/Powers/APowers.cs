@@ -165,7 +165,7 @@ public abstract class APowers : MonoBehaviour
                 EventManager.HandleOnPlayerHit += TriggerOnEvent;
                 break;
             case TriggerType.OnPlayerDie:
-                EventManager.HandleOnPlayerDie += TriggerOnEvent;
+                EventManager.HandlePlayerDeath += TriggerOnEvent;
                 break;
             case TriggerType.OnEnemyHit:
                 EventManager.HandleOnEnemyHit += TriggerOnEvent;

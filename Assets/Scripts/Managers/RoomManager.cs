@@ -100,7 +100,7 @@ public class RoomManager : Manager
     // FUNZIONI STANZE
 
     /// <summary>
-    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom è selezionato allora verrà
+    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom ï¿½ selezionato allora verrï¿½
     /// fatto in modo di pescare, se possibile, una stanza che ha il booleano attivo first room
     /// </summary>
     /// <param name="checkFirstRoom"></param>
@@ -444,7 +444,7 @@ public class RoomManager : Manager
         bool roomCanSpawn = false;
         Dictionary<TipoStatistica, stat> statisticheDict = new Dictionary<TipoStatistica, stat>
         {
-            { TipoStatistica.Strenght, m_playerControllerInstance.Strenght },
+            { TipoStatistica.Strenght, m_playerControllerInstance.Strength },
             { TipoStatistica.Speed, m_playerControllerInstance.Speed },
             { TipoStatistica.Aim, m_playerControllerInstance.Aim },
             { TipoStatistica.Constitution, m_playerControllerInstance.Constitution },
@@ -474,14 +474,14 @@ public class RoomManager : Manager
             }
         }
         return roomCanSpawn;
-         // Ritorna false se il tipo di statistica non è valido
+         // Ritorna false se il tipo di statistica non ï¿½ valido
     }
     private bool ControlloStatistiche(EnemySet set)
     {
         bool roomCanSpawn = false;
         Dictionary<TipoStatistica, stat> statisticheDict = new Dictionary<TipoStatistica, stat>
         {
-            { TipoStatistica.Strenght, m_playerControllerInstance.Strenght },
+            { TipoStatistica.Strenght, m_playerControllerInstance.Strength },
             { TipoStatistica.Speed, m_playerControllerInstance.Speed },
             { TipoStatistica.Aim, m_playerControllerInstance.Aim },
             { TipoStatistica.Constitution, m_playerControllerInstance.Constitution },
@@ -511,7 +511,7 @@ public class RoomManager : Manager
             }
         }
         return roomCanSpawn;
-        // Ritorna false se il tipo di statistica non è valido
+        // Ritorna false se il tipo di statistica non ï¿½ valido
     }
 
 
