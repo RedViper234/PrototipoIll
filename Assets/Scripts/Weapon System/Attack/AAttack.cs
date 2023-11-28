@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -10,6 +11,32 @@ public struct MultiAttack
     public float NumberOfAttacks;
     public float TimeBetweenAttacks;
     public AttackSO[] AttackList;
+}
+
+[Serializable]
+public struct PlayerDragStruct
+{
+    public float force, waiting, duration;
+    public Vector2 direction;
+    public DragDirection dragDirection;
+}
+
+[Serializable]
+public enum DragDirection
+{
+    WeaponDefault,
+    Up,
+    Down,
+    Left,
+    Right,
+    UpLeft,
+    UpRight,
+    DownLeft,
+    DownRight,
+    Forward,
+    ForwardInMovement,
+    Backward,
+    BackWeardInMovement
 }
 
 public abstract class AAttack : MonoBehaviour
@@ -25,7 +52,7 @@ public abstract class AAttack : MonoBehaviour
 
     [field: Header("Attack Properties Values")]
     [field: SerializeField] public float PlayerSpeedModifier;
-    [field: SerializeField] public PlayerDragStruct PlayerDrag;
+    [field: SerializeField] public PlayerDragStruct playerDrag;
     [field: SerializeField] public float BaseDamageAttack;
     [field: SerializeField] public AttackRange AttackRangeAttack;
     [field: SerializeField] public DamageType.DamageTypes DamageType;
@@ -63,7 +90,7 @@ public abstract class AAttack : MonoBehaviour
         AttackCooldown = attackSO.AttackCooldown;
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
-        PlayerDrag = attackSO.PlayerDrag;
+        playerDrag = attackSO.PlayerDrag;
 
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
         damageInstance.damageValueAtkOrSec = BaseDamageAttack;
@@ -94,17 +121,17 @@ public abstract class AAttack : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Hit");
+        UnityEngine.Debug.Log("Hit");
         OnDamageableHit(other);
     }
 
     public virtual IEnumerator InitializeAttack()
     {
-        Debug.Log($"Attacco in corso {MultiAttack.AttackList.Count()}");
+        UnityEngine.Debug.Log($"Attacco in corso {MultiAttack.AttackList.Count()}");
 
         for (var i = 0; i < (MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList.Count(): 1); i++)
         {
-            Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {(MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i].name : attackSODefault.name)}");
+            UnityEngine.Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {(MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i].name : attackSODefault.name)}");
 
             if(MultiAttack.AttackList.Count() > 0)
             {
@@ -124,7 +151,7 @@ public abstract class AAttack : MonoBehaviour
             
             DoAfterWaitHitboxActivation();
 
-            Debug.Log("Attivato");
+            UnityEngine.Debug.Log("Attivato");
 
             yield return new WaitForSeconds(TimeDurationHitbox);
 
@@ -132,7 +159,7 @@ public abstract class AAttack : MonoBehaviour
             
             DoBeforeAttackEnd();
 
-            Debug.Log("Disattivato");
+            UnityEngine.Debug.Log("Disattivato");
 
             yield return new WaitForSeconds(TimeToEndHitbox);
 
@@ -140,7 +167,7 @@ public abstract class AAttack : MonoBehaviour
 
             DoInAttackEnd();
 
-            Debug.Log("Fine");
+            UnityEngine.Debug.Log("Fine");
         }   
     }
 
@@ -154,6 +181,7 @@ public abstract class AAttack : MonoBehaviour
     public virtual void DoAfterWaitHitboxActivation()
     {
         ManageAttackColliders(true);
+        StartCoroutine(DraggingPlayer());
     }
 
     public virtual void DoBeforeAttackEnd()
@@ -167,7 +195,7 @@ public abstract class AAttack : MonoBehaviour
 
         weaponReference.SetTimerComboProgression(TimeComboProgression);
 
-        Debug.Log($"Attack Range: {AttackRangeAttack}");
+        UnityEngine.Debug.Log($"Attack Range: {AttackRangeAttack}");
 
         if(AttackRangeAttack == AttackRange.Melee)
         {
@@ -195,6 +223,66 @@ public abstract class AAttack : MonoBehaviour
         foreach (Collider2D collider in attackCollider2d)
         {
             collider.enabled = isEnabled;
+        }
+    }
+
+    protected IEnumerator DraggingPlayer()
+    {
+        GameObject player = weaponReference.transform.parent.GetComponent<WeaponController>().playerController.gameObject;
+        // Wait for the specified amount of time before applying the drag
+        yield return new WaitForSeconds(playerDrag.waiting);
+
+        // Calculate the end time of the dragging effect
+        var endDragTime = Time.time + playerDrag.duration;
+
+        ChooseDirection();
+
+        // Continue to apply the drag effect until the end time is reached
+        while (Time.time < endDragTime)
+        {
+            // Apply the dragging force in the specified direction
+            player.GetComponent<Rigidbody2D>().AddForce(playerDrag.direction * playerDrag.force);
+            yield return null;
+        }
+    }
+
+    private void ChooseDirection()
+    {
+        switch(playerDrag.dragDirection)
+        {
+            case DragDirection.WeaponDefault:
+                playerDrag.direction = weaponReference.playerDrag.direction;
+                break;
+            case DragDirection.Up:
+                playerDrag.direction = Vector2.up;
+                break;
+            case DragDirection.Down:
+                playerDrag.direction = Vector2.down;
+                break;
+            case DragDirection.Left:
+                playerDrag.direction = Vector2.left;
+                break;
+            case DragDirection.Right:
+                playerDrag.direction = Vector2.right;
+                break;
+            case DragDirection.UpLeft:
+                playerDrag.direction = Vector2.up + Vector2.left;
+                break;
+            case DragDirection.UpRight:
+                playerDrag.direction = Vector2.up + Vector2.right;
+                break;
+            case DragDirection.DownLeft:
+                playerDrag.direction = Vector2.down + Vector2.left;
+                break;
+            case DragDirection.DownRight:
+                playerDrag.direction = Vector2.down + Vector2.right;
+                break;
+            case DragDirection.Forward:
+                playerDrag.direction = ActualDirection;
+                break;
+            case DragDirection.Backward:
+                playerDrag.direction = -ActualDirection;
+                break;
         }
     }
 }

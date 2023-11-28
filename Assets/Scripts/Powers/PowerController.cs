@@ -16,7 +16,7 @@ public class PowerController : MonoBehaviour
             {
                 GameObject powerControllerObject = new GameObject("PowerController");
                 instance = powerControllerObject.AddComponent<PowerController>();
-                DontDestroyOnLoad(powerControllerObject);
+                // DontDestroyOnLoad(powerControllerObject);
             }
 
             return instance;

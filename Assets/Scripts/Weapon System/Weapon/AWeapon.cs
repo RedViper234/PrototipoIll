@@ -12,12 +12,7 @@ public enum AttackRange
     Melee
 }
 
-[Serializable]
-public struct PlayerDragStruct
-{
-    public float force, waiting, duration;
-    public Vector2 direction;
-}
+
 
 [Serializable]
 public struct StatusStruct

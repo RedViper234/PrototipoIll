@@ -8,9 +8,12 @@ public class WeaponController : MonoBehaviour
     private PlayerInput inputActions;
     private InputAction attackAction;
     public GameObject weaponPrefab;
+    public PlayerController playerController;
 
     void Start()
     {
+        playerController = GetComponentInParent<PlayerController>();
+        
         inputActions = new PlayerInput();
         
         attackAction = inputActions.Player.Meeleattack;
