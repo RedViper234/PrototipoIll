@@ -89,6 +89,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpecialAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""099c7886-789b-4bab-8a32-3134e1f20729"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -254,6 +263,17 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1feca25e-98c4-4e97-a60d-5c6cc92b047d"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SpecialAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -868,6 +888,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_Player_ChangeAttackMode = m_Player.FindAction("ChangeAttackMode", throwIfNotFound: true);
         m_Player_MousePos = m_Player.FindAction("MousePos", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_SpecialAttack = m_Player.FindAction("SpecialAttack", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -941,12 +962,16 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
+
+        public InputAction SpecialAttack { get; internal set; }
+
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_FireMouse;
     private readonly InputAction m_Player_Meeleattack;
     private readonly InputAction m_Player_ChangeAttackMode;
     private readonly InputAction m_Player_MousePos;
     private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_SpecialAttack;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -958,6 +983,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         public InputAction @ChangeAttackMode => m_Wrapper.m_Player_ChangeAttackMode;
         public InputAction @MousePos => m_Wrapper.m_Player_MousePos;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        public InputAction @SpecialAttack => m_Wrapper.m_Player_SpecialAttack;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -988,6 +1014,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Dash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
                 @Dash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
                 @Dash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
+                @SpecialAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpecialAttack;
+                @SpecialAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpecialAttack;
+                @SpecialAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpecialAttack;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1013,6 +1042,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Dash.started += instance.OnDash;
                 @Dash.performed += instance.OnDash;
                 @Dash.canceled += instance.OnDash;
+                @SpecialAttack.started += instance.OnSpecialAttack;
+                @SpecialAttack.performed += instance.OnSpecialAttack;
+                @SpecialAttack.canceled += instance.OnSpecialAttack;
             }
         }
     }
@@ -1184,6 +1216,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnChangeAttackMode(InputAction.CallbackContext context);
         void OnMousePos(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnSpecialAttack(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

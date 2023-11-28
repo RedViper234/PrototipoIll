@@ -7,6 +7,7 @@ public class WeaponController : MonoBehaviour
 {
     private PlayerInput inputActions;
     private InputAction attackAction;
+    private InputAction specialAttackAction;
     public GameObject weaponPrefab;
     public PlayerController playerController;
 
@@ -16,20 +17,30 @@ public class WeaponController : MonoBehaviour
         
         inputActions = new PlayerInput();
         
+        //Attack action assignment
         attackAction = inputActions.Player.Meeleattack;
         attackAction.performed += Attack;
-        // attackAction.canceled += StopAttack;
         attackAction.Enable();
+
+        //special Attack action assignment
+        specialAttackAction = inputActions.Player.SpecialAttack;
+        specialAttackAction.performed += SpecialAttack;
+        specialAttackAction.Enable();
     }
 
     private void Attack(InputAction.CallbackContext obj)
     {
-        weaponPrefab.GetComponent<Weapon>().ExecuteCombo();
+        weaponPrefab.GetComponent<AWeapon>().ExecuteCombo();
+    }
+
+    private void SpecialAttack(InputAction.CallbackContext obj)
+    {
+        weaponPrefab.GetComponent<AWeapon>().ExecuteSpecialAttack();
     }
 
     private void StopAttack(InputAction.CallbackContext obj)
     {
-        weaponPrefab.GetComponent<Weapon>().StopCombo();
+        weaponPrefab.GetComponent<AWeapon>().StopCombo();
     }
 
     void OnDisable()

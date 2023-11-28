@@ -17,7 +17,7 @@ public struct MultiAttack
 public struct PlayerDragStruct
 {
     public float force, waiting, duration;
-    public Vector2 direction;
+    [MyReadOnly] public Vector2 direction;
     public DragDirection dragDirection;
 }
 
@@ -36,7 +36,7 @@ public enum DragDirection
     Forward,
     ForwardInMovement,
     Backward,
-    BackWeardInMovement
+    BackWardInMovement
 }
 
 public abstract class AAttack : MonoBehaviour
@@ -69,7 +69,7 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField, MyReadOnly] public Collider2D[] attackCollider2d;
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference;
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
-    [field: SerializeField,MyReadOnly] public AttackSO attackSODefault;
+    [field: SerializeField, MyReadOnly] public AttackSO attackSODefault;
 
 
     /// <summary>
@@ -193,7 +193,7 @@ public abstract class AAttack : MonoBehaviour
     {
         EventManager.HandlePlayerAttackBegin?.Invoke(false);
 
-        weaponReference.SetTimerComboProgression(TimeComboProgression);
+        if(TimeComboProgression > 0) weaponReference.SetTimerComboProgression(TimeComboProgression);
 
         UnityEngine.Debug.Log($"Attack Range: {AttackRangeAttack}");
 
