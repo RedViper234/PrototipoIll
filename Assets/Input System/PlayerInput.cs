@@ -962,9 +962,6 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
-
-        public InputAction SpecialAttack { get; internal set; }
-
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_FireMouse;
     private readonly InputAction m_Player_Meeleattack;

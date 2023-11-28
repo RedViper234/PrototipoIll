@@ -638,6 +638,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GunObj
       objectReference: {fileID: 0}
+    - target: {fileID: 2526943844679209982, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2526943844679209983, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -923,6 +927,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 3744ce9bcb2bb6048ab847e5707f9aa5, type: 2}
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
+      propertyPath: SpecialAttack
+      value: 
+      objectReference: {fileID: 11400000, guid: fee31ed7ad617af45af7108b10a82133, type: 2}
+    - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: playerDrag.force
       value: 100
       objectReference: {fileID: 0}
@@ -958,6 +966,14 @@ PrefabInstance:
       propertyPath: ComboList.Array.data[2]
       value: 
       objectReference: {fileID: 11400000, guid: 77f2c42cafb1e6c458e12d1347ab9a2a, type: 2}
+    - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
+      propertyPath: StatusEffects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
+      propertyPath: playerDrag.dragDirection
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: <ComboList>k__BackingField.Array.size
       value: 3
