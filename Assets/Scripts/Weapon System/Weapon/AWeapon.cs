@@ -119,9 +119,8 @@ public abstract class AWeapon : MonoBehaviour
     
     public void GenerateAttackObject(AttackSO actualAttack, bool startCoroutine)
     {
-        GameObject inst_attack;
 
-        inst_attack = Instantiate(
+        GameObject inst_attack = Instantiate(
             actualAttack.AttackPrefab, 
             transform.position, 
             transform.parent.rotation, 
