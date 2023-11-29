@@ -168,8 +168,14 @@ public abstract class AWeapon : MonoBehaviour
             // Calcola l'angolo tra la direzione calcolata e il vettore "up" del player
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
+            Debug.Log("ANGLE: " + Mathf.Floor(angle));
+
             // Ruota l'arma attorno al player utilizzando l'angolo calcolato
-            transform.parent.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            float rangeLowerLimit = 0f;
+            float rangeUpperLimit = 1f;
+            float floorAngle = Mathf.Floor(angle) % 45;
+            
+            if( floorAngle >= rangeLowerLimit && floorAngle <= rangeUpperLimit) transform.parent.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
 
