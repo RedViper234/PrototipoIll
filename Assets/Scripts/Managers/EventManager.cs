@@ -25,6 +25,7 @@ public static class EventManager
     public static UnityAction HandlePlayerAttackBegin;
     public static UnityAction HandlePlayerAttackEnd;
     public static UnityAction HandlePlayerSpecialAttack; 
+    public static UnityAction HandleEndOfDash; 
 
 
     public static void IncrementPassedRooms()

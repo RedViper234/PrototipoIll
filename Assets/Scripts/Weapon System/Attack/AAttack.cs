@@ -14,35 +14,35 @@ public struct MultiAttack
 
 public abstract class AAttack : MonoBehaviour
 {
-    [field: SerializeField] public AnimationClip attackAnimation { get; set;}
+    [field: SerializeField] public AnimationClip attackAnimation;
     
     [field: Header("Attack Time Values")]
-    [field: SerializeField] public float TimeToActivateHitbox { get; set;}
-    [field: SerializeField] public float TimeDurationHitbox { get; set;}
-    [field: SerializeField] public float TimeToEndHitbox { get; set;}
-    [field: SerializeField] public float TimeComboProgression { get; set;}
-    [field: SerializeField] public float AttackCooldown { get; set;}
+    [field: SerializeField] public float TimeToActivateHitbox;
+    [field: SerializeField] public float TimeDurationHitbox;
+    [field: SerializeField] public float TimeToEndHitbox;
+    [field: SerializeField] public float TimeComboProgression;
+    [field: SerializeField] public float AttackCooldown;
 
     [field: Header("Attack Properties Values")]
-    [field: SerializeField] public float PlayerSpeedModifier { get; set;}
-    [field: SerializeField] public PlayerDragStruct PlayerDrag { get; set;}
-    [field: SerializeField] public float BaseDamageAttack { get; set;}
-    [field: SerializeField] public AttackRange AttackRangeAttack { get; set;}
-    [field: SerializeField] public DamageType.DamageTypes DamageType { get; set;}
-    [field: SerializeField] public List<StatusStruct> StatusEffects { get; set;}
-    [field: SerializeField] public float KnockbackForceAttack { get; set;}
-    [field: SerializeField] public MultiAttack MultiAttack { get; set; }
-    [field: SerializeField] public DamageInstance damageInstance { get; set; }
+    [field: SerializeField] public float PlayerSpeedModifier;
+    [field: SerializeField] public PlayerDragStruct PlayerDrag;
+    [field: SerializeField] public float BaseDamageAttack;
+    [field: SerializeField] public AttackRange AttackRangeAttack;
+    [field: SerializeField] public DamageType.DamageTypes DamageType;
+    [field: SerializeField] public List<StatusStruct> StatusEffects;
+    [field: SerializeField] public float KnockbackForceAttack;
+    [field: SerializeField] public MultiAttack MultiAttack;
+    [field: SerializeField] public DamageInstance damageInstance;
 
     [field: Header("Ranged Attack Values")]
-    [field: SerializeField] public float BulletSpeed { get; set; }
-    [field: SerializeField] public float BulletAliveTime { get; set; }
+    [field: SerializeField] public float BulletSpeed;
+    [field: SerializeField] public float BulletAliveTime;
     
     [field: Header("Other/Debug")]
-    public Collider2D[] attackCollider2d { get; set; }
-    [field: SerializeField, MyReadOnly] public AWeapon weaponReference { get; set; }
-    [field: SerializeField, MyReadOnly] public Vector2 ActualDirection { get; set; }
-    [field: SerializeField,MyReadOnly] public AttackSO attackSODefault { get; set; }
+    public Collider2D[] attackCollider2d;
+    [field: SerializeField, MyReadOnly] public AWeapon weaponReference;
+    [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
+    [field: SerializeField,MyReadOnly] public AttackSO attackSODefault;
 
 
     /// <summary>
@@ -158,7 +158,6 @@ public abstract class AAttack : MonoBehaviour
     public virtual void DoInAttackEnd()
     {
         weaponReference.SetTimerComboProgression(TimeComboProgression);
-        
     }
 
     public virtual void OnDamageableHit(Collider2D other)
@@ -168,7 +167,6 @@ public abstract class AAttack : MonoBehaviour
             EventManager.HandleOnPlayerHit?.Invoke(other.gameObject);
 
             other.GetComponent<Damageable>().TakeDamage(damageInstance);
-            //TODO Add knockback
         }
     }
 
