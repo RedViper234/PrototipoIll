@@ -11,6 +11,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEditor;
 using AYellowpaper.SerializedCollections;
+using System.Threading.Tasks;
 
 
 
@@ -42,7 +43,9 @@ public class RoomManager : Manager
     private PlayerController m_playerControllerInstance;
     private NavMeshSurface m_surface;
     private Vector2 m_lastMonsterSpawnPosition;
+    private GameObject m_currentRoomGameObject;
 
+    private GameObject m_currentPlayerGameOBject;
     public void Update()
     {
 
@@ -66,9 +69,9 @@ public class RoomManager : Manager
     /// </summary>
     private IEnumerator Initialize()
     {
-        var coroutineArea = this.RunCoroutine(SetCurrentArea(firstArea,false));
+        var coroutineArea = this.RunCoroutine(SetCurrentArea(firstArea, false));
         currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
-        var coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea()); 
+        var coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea());
         var coroutineSpawnStanza = this.RunCoroutine(SetRoom(true));
         yield return new WaitUntil(() => coroutineArea.IsDone && coroutinePuntiDiInteresse.IsDone && coroutineSpawnStanza.IsDone);
     }
@@ -76,7 +79,7 @@ public class RoomManager : Manager
 
 
     // FUNZIONI AREE
-    public IEnumerator SetCurrentArea(AreaSO newArea,bool firstTime = false)
+    public IEnumerator SetCurrentArea(AreaSO newArea, bool firstTime = false)
     {
         if (currentArea != newArea)
         {
@@ -86,44 +89,53 @@ public class RoomManager : Manager
             OnAreaChanged.Invoke();
             currentArea = newArea;
             currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
-            if(currentPoint != null){
+            if (currentPoint != null)
+            {
                 /* DEVO DIFFERENZIARE TRA LA PRIMA VOLTA CHE SI ENTRA NELL'AREA E LE ALTRE VOLTE. PERCHE' LA PRIMA VOLTA SI DECIDE LA PRIMA STANZA E PUNTO CORRENTE
                 MENTRE LA SECONDA VOLTA SI COSTRUISCONO LE SOTTOAREE E I RELATIVI PUNTI DI INTERESSE*/
-                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea()); 
+                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea());
                 coroutineSpawnStanza = this.RunCoroutine(SetRoom(true));
                 yield return new WaitUntil(() => coroutinePuntiDiInteresse.IsDone && coroutineSpawnStanza.IsDone);
-                if(currentArea.sottoAree.Count > 0){
-                    foreach (AreaSO sottoArea in currentArea.sottoAree){
+                if (currentArea.sottoAree.Count > 0)
+                {
+                    foreach (AreaSO sottoArea in currentArea.sottoAree)
+                    {
                         CoroutineHandle coroutineSottoArea = this.RunCoroutine(SetCurrentArea(sottoArea));
                         yield return new WaitUntil(() => coroutineSottoArea.IsDone);
                     }
                 }
             }
-            else{
+            else
+            {
                 // ALLORA FAI IN MODO CHE L'AREA SCELGA TUTTO QUANTO PER QUANTO RIGUARDA IL PUNTO DI INTERESSE
             }
         }
     }
-    public IEnumerator SetCurrentArea(AreaSO newArea){
-        if (currentArea != newArea)
+    private AreaSO m_tempArea = null;
+    public IEnumerator SetCurrentArea(AreaSO newArea)
+    {
+        if (m_tempArea != newArea)
         {
-            currentArea = newArea;
-            Debug.Log($"<color=red>SetCurrentArea {newArea.name}</color>");
+            m_tempArea = newArea;
             CoroutineHandle coroutinePuntiDiInteresse = null;
             OnAreaChanged.Invoke();
-            if(currentPoint != null){
+            if (m_tempArea.puntiDiInteresse.Count > 0)
+            {
                 /* DEVO DIFFERENZIARE TRA LA PRIMA VOLTA CHE SI ENTRA NELL'AREA E LE ALTRE VOLTE. PERCHE' LA PRIMA VOLTA SI DECIDE LA PRIMA STANZA E PUNTO CORRENTE
                 MENTRE LA SECONDA VOLTA SI COSTRUISCONO LE SOTTOAREE E I RELATIVI PUNTI DI INTERESSE*/
-                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea(currentArea)); 
+                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea(m_tempArea));
                 yield return new WaitUntil(() => coroutinePuntiDiInteresse.IsDone);
-                if(currentArea.sottoAree.Count > 0){
-                    foreach (AreaSO sottoArea in currentArea.sottoAree){
+                if (m_tempArea.sottoAree.Count > 0)
+                {
+                    foreach (AreaSO sottoArea in m_tempArea.sottoAree)
+                    {
                         CoroutineHandle coroutineSottoArea = this.RunCoroutine(SetCurrentArea(sottoArea));
                         yield return new WaitUntil(() => coroutineSottoArea.IsDone);
                     }
                 }
             }
-            else{
+            else
+            {
                 // ALLORA FAI IN MODO CHE L'AREA SCELGA TUTTO QUANTO PER QUANTO RIGUARDA IL PUNTO DI INTERESSE
             }
         }
@@ -156,7 +168,7 @@ public class RoomManager : Manager
         var room = SetRoom(punto, true);
         if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(punto)) { return; }
         m_puntiDiInteresseSpawnatiNellArea.Add(punto, room);
-        Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea,punto));
+        Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea, punto));
         for (int i = 0; i < punto.points.Count; i++)
         {
             ConnectedPoints connectedPoints = punto.points[i];
@@ -178,7 +190,7 @@ public class RoomManager : Manager
                 var room1 = SetRoom(subPunto, true);
                 if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(subPunto)) { return; }
                 m_puntiDiInteresseSpawnatiNellArea.Add(subPunto, room1);
-                Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea,subPunto));
+                Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea, subPunto));
                 CostruisciPuntoDiInteresse(subPunto, level + 1); // Chiamata ricorsiva
             }
         }
@@ -195,13 +207,38 @@ public class RoomManager : Manager
     //         }
     //     }
     // }
-    public void VaiAlPuntoPrecedente(PuntoDiInteresse puntoDiInteresse)
+    public void VaiAlPuntoPrecedente()
     {
-
+        if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(currentPoint))
+        {
+            var keys = new List<PuntoDiInteresse>(m_puntiDiInteresseSpawnatiNellArea.Keys);
+            int index = keys.IndexOf(currentPoint);
+            if (index != -1 && index < keys.Count - 1)
+            {
+                PuntoDiInteresse nextKey = keys[index - 1];
+                RoomData room = m_puntiDiInteresseSpawnatiNellArea[nextKey];
+                currentRoom = room;
+                currentPoint = nextKey;
+                SpawnCurrentRoom();
+            }
+        }
     }
-    public void VaiAlPuntoSuccessivo(PuntoDiInteresse puntoDiInteresse)
+    
+    public void VaiAlPuntoSuccessivo()
     {
-
+        if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(currentPoint))
+        {
+            var keys = new List<PuntoDiInteresse>(m_puntiDiInteresseSpawnatiNellArea.Keys);
+            int index = keys.IndexOf(currentPoint);
+            if (index != -1 && index < keys.Count - 1)
+            {
+                PuntoDiInteresse nextKey = keys[index + 1];
+                RoomData room = m_puntiDiInteresseSpawnatiNellArea[nextKey];
+                currentRoom = room;
+                currentPoint = nextKey;
+                SpawnCurrentRoom();
+            }
+        }
     }
 
     // FUNZIONI STANZE
@@ -213,8 +250,7 @@ public class RoomManager : Manager
     private RoomData SetRoom(PuntoDiInteresse punto, bool checkFirstRoom)
     {
         RoomData roomDataInterno = null;
-        m_stanzeAttraversate = m_stanzeAttraversate + 1;
-        if(punto.listaDiStanzeUniche == null){return null; }
+        if (punto.listaDiStanzeUniche == null) { return null; }
         List<RoomData> stanzeCachateDaSO = punto.listaDiStanzeUniche;
         stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
         // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
@@ -225,6 +261,9 @@ public class RoomManager : Manager
             {
                 roomFinaliCheRispettanoLeRegole.Add(room);
             }
+        }
+        if(roomFinaliCheRispettanoLeRegole.Count == 0){
+            return null;
         }
         roomFinaliCheRispettanoLeRegole.Sort((a, b) => b.prioritaStanza.CompareTo(a.prioritaStanza));
         int massimaPriorita = roomFinaliCheRispettanoLeRegole[0].prioritaStanza;
@@ -241,6 +280,7 @@ public class RoomManager : Manager
         {
             roomDataInterno = roomFinaliCheRispettanoLeRegole[0];
         }
+
         Debug.Log($"<color=#00FF00>STANZA SELEZIONATA</color>");
         print(roomDataInterno.name);
 
@@ -259,8 +299,7 @@ public class RoomManager : Manager
     /// <returns></returns>
     private IEnumerator SetRoom(bool checkFirstRoom)
     {
-        m_stanzeAttraversate = m_stanzeAttraversate + 1;
-        if(currentPoint.listaDiStanzeUniche == null || currentPoint == null){yield return null; }
+        if (currentPoint.listaDiStanzeUniche == null || currentPoint == null) { yield return null; }
         List<RoomData> stanzeCachateDaSO = currentPoint.listaDiStanzeUniche;
         stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
         // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
@@ -745,24 +784,41 @@ public class RoomManager : Manager
 
 
     // ROOMS
-    public void SpawnCurrentRoom()
+    //PROVA A RENDERE ASINCRONO IL DESTROY
+    public async void SpawnCurrentRoom()
     {
         try
         {
-            GameObject roomSpawned = Instantiate(currentRoom.prefabStanza);
-            Publisher.Publish(new OnRoomSpawnedMessage());
-            m_surface = roomSpawned.GetComponentInChildren<NavMeshSurface>();
-            GameObject playerSpawnato = SetPlayerInRoom(roomSpawned);
-            AppManager.Instance.SetPlayerObject(playerSpawnato);
-            m_playerControllerInstance = playerSpawnato.GetComponent<PlayerController>();
+            if (m_currentRoomGameObject != null)
+            {
+                m_surface.RemoveData();
+                await DestroyAndWait(m_currentRoomGameObject);
+            }
+            m_currentRoomGameObject = Instantiate(currentRoom.prefabStanza);
+            m_surface = m_currentRoomGameObject.GetComponentInChildren<NavMeshSurface>();
+            m_currentPlayerGameOBject = SetPlayerInRoom(m_currentRoomGameObject);
+            AppManager.Instance.SetPlayerObject(m_currentPlayerGameOBject);
+            m_playerControllerInstance = m_currentPlayerGameOBject.GetComponent<PlayerController>();
             AppManager.Instance.SetCameraPlayer();
+            m_surface?.BuildNavMesh();
+            m_currentPlayerGameOBject.SetActive(true);
             if ((currentRoom.tipiDiStanza & TipiDiStanzaFLag.Combattimento) != 0)
             {
                 List<EnemySet> validEnemyList = new List<EnemySet>();
                 validEnemyList = GetValidEnemySet(currentRoom.setDiMostriDellaStanza);
                 SetEnemySet(validEnemyList);
                 Debug.Log($"<b><color=#00ff00ff>ENEMY SET FINALE: {currentEnemySet}</color></b>");
+                GameManager.ChangeGameState(GameStates.Combattimento);
                 StartCoroutine(StartOndate());
+            }
+            else if((currentRoom.tipiDiStanza & TipiDiStanzaFLag.Evento) != 0){
+                GameManager.ChangeGameState(GameStates.InizioEvento);
+            }
+            else if((currentRoom.tipiDiStanza & TipiDiStanzaFLag.Storia) != 0){
+                GameManager.ChangeGameState(GameStates.InizioParteStoria);
+            }
+            else if((currentRoom.tipiDiStanza & TipiDiStanzaFLag.Boss) != 0){
+                GameManager.ChangeGameState(GameStates.CombattimentoBoss);
             }
         }
         catch (Exception e)
@@ -771,7 +827,19 @@ public class RoomManager : Manager
         }
 
     }
+    private async Task DestroyAndWait(GameObject obj)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        StartCoroutine(DestroyCoroutine(obj, tcs));
+        await tcs.Task;
+    }
 
+    private IEnumerator DestroyCoroutine(GameObject obj, TaskCompletionSource<bool> tcs)
+    {
+        Destroy(obj);
+        yield return null;
+        tcs.SetResult(true);
+    }
 
 
 
@@ -862,16 +930,21 @@ public class RoomManager : Manager
         float enemyQuantity = (int)UnityEngine.Random.Range(ondata.minEnemyOndata, ondata.maxEnemyOndata);
         m_enemyQuantity = (int)enemyQuantity;
         enemyQuantity = AppManager.Instance.controlloMalattiaManager.mortality.applyMortalityToEnemySet(m_enemyQuantity, currentEnemySet.tipologiaNemico);
-        foreach (var enemy in ondata.mostri)
-        {
-            int quantitaDaTogliere = Mathf.RoundToInt(enemyQuantity * (enemy.percentualeSpawnMostri / 100));
-            int quantitaTipoMostri = -quantitaDaTogliere;
-            if (enemyQuantity <= 0) { break; }
-            for (int y = 0; y < quantitaDaTogliere; y++)
+        if(ondata.mostri.Count > 0 || ondata.mostri != null){
+            foreach (var enemy in ondata.mostri)
             {
-                Vector2 posizioneMostro = CalcolaPosizioneGiustaPerMostro(enemy.playerDistance);
-                SpawnOrMoveEnemy(enemy.nemicoDaIstanziare, posizioneMostro);
+                int quantitaDaTogliere = Mathf.RoundToInt(enemyQuantity * (enemy.percentualeSpawnMostri / 100));
+                int quantitaTipoMostri = -quantitaDaTogliere;
+                if (enemyQuantity <= 0) { break; }
+                for (int y = 0; y < quantitaDaTogliere; y++)
+                {
+                    Vector2 posizioneMostro = CalcolaPosizioneGiustaPerMostro(enemy.playerDistance);
+                    SpawnOrMoveEnemy(enemy.nemicoDaIstanziare, posizioneMostro);
+                }
             }
+        }
+        else{
+            throw new Exception("Non ci sono nemici da istanziare");
         }
     }
 
@@ -1089,12 +1162,27 @@ public class RoomManager : Manager
             if (roomScript.puntiDiSpawnPossibili.Count > 1)
             {
                 range = UnityEngine.Random.Range(0, roomScript.puntiDiSpawnPossibili.Count);
-                playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[range].localPosition, Quaternion.identity);
+                if (m_currentPlayerGameOBject == null)
+                {
+                    playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[range].localPosition, Quaternion.identity);
+                }
+                else
+                {
+                    playerSpawned = m_currentPlayerGameOBject;
+                }
+
                 print("<color=#00000>PLAYER SPAWNATO</color>");
             }
             else if (roomScript.puntiDiSpawnPossibili.Count == 1)
             {
-                playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[0].localPosition, Quaternion.identity);
+                if (m_currentPlayerGameOBject == null)
+                {
+                    playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[0].localPosition, Quaternion.identity);
+                }
+                else
+                {
+                    playerSpawned = m_currentPlayerGameOBject;
+                }
             }
             else if (roomScript.puntiDiSpawnPossibili.Count == 0 || roomScript.puntiDiSpawnPossibili == null)
             {
@@ -1114,6 +1202,7 @@ public class RoomManager : Manager
 
             }
         }
+        playerSpawned.SetActive(false);
         return playerSpawned;
     }
 

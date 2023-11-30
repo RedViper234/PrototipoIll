@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StanzaNormale
   m_EditorClassIdentifier: 
   prefabStanza: {fileID: 8412162658129126049, guid: 3486d48a62de72445840314d442ab61b, type: 3}
-  tipiDiStanza: 8
+  tipiDiStanza: 2
   tipoStanzaCombattimento: 0
   tipoStanzaBoss: 0
   tipoStanzaEvento: 1

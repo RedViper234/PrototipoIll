@@ -43,7 +43,7 @@ MonoBehaviour:
   points:
   - points:
     - {fileID: 11400000, guid: 1cb0d83c09dc76544b1946332bbf8d23, type: 2}
-    breakable: 0
+    breakable: 1
     monouso: 0
   flagOnEnter: []
   flagOnEnterOnlyFirstTime: 0

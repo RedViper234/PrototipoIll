@@ -42,6 +42,10 @@ public class EnemyManager : Manager
             Destroy(enemy);
         }
     }
+    public void RemoveEveryEnemyFromTheList(){
+        m_privateEnemyList.Clear();
+        activeEnemyList.Clear();
+    }
     private void Start()
     {
         GetAllEnemyInScene();

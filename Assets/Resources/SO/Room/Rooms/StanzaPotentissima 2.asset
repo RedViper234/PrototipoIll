@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StanzaPotentissima 2
   m_EditorClassIdentifier: 
   prefabStanza: {fileID: 913422551255417258, guid: 1b28c2113fed70b448192a446b1b7847, type: 3}
-  tipiDiStanza: 8
+  tipiDiStanza: 2
   tipoStanzaCombattimento: 0
   tipoStanzaBoss: 0
   tipoStanzaEvento: 0

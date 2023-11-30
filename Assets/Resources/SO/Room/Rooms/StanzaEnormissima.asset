@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StanzaEnormissima
   m_EditorClassIdentifier: 
   prefabStanza: {fileID: 4758983615770535611, guid: 421cbc3f12a530849bfd97c699360656, type: 3}
-  tipiDiStanza: 8
+  tipiDiStanza: 2
   tipoStanzaCombattimento: 0
   tipoStanzaBoss: 0
   tipoStanzaEvento: 0

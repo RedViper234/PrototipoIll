@@ -17,7 +17,7 @@ public class MapManager : Manager, ISubscriber
     [SerializeField] private GameObject lineRendererObject;
 
 
- 
+
     private UILineRenderer m_lineRenderer;
     private bool isOpen = false;
     private bool m_isFirstPoint = false;
@@ -57,95 +57,104 @@ public class MapManager : Manager, ISubscriber
     {
         Publisher.Publish(new OpenMapMessage(false));
         m_lineRenderer = Instantiate(lineRendererObject, backGroundMap.transform).GetComponent<UILineRenderer>();
-        yield return new WaitUntil(()=> Screen.width > 0 && Screen.height > 0);
-        m_lineRenderer.SetGridSize(new Vector2Int(Screen.width,Screen.height));
+        yield return new WaitUntil(() => Screen.width > 0 && Screen.height > 0);
+        m_lineRenderer.SetGridSize(new Vector2Int(Screen.width, Screen.height));
     }
 
-    
-public void CostruisciPuntoUI(PuntoDiInteresse punto)
-{
-    try
+
+    public void CostruisciPuntoUI(PuntoDiInteresse punto)
     {
-        GameObject puntoIstanziato;
-        Debug.Log("CostruisciPuntoUI");
-        RoomData roomData = m_puntiDiInteresseSpawnatiNellArea[punto];
-        if (prefabPuntoDiInteresse == null)
+        try
         {
-            Debug.LogError("PuntoDiInteresse non trovato");
-            return;
+            GameObject puntoIstanziato;
+            Debug.Log("CostruisciPuntoUI");
+            RoomData roomData = m_puntiDiInteresseSpawnatiNellArea[punto];
+            if (roomData != null)
+            {
+                if (prefabPuntoDiInteresse == null)
+                {
+                    Debug.LogError("PuntoDiInteresse non trovato");
+                    return;
+                }
+                Vector2 position;
+                Color puntoColor = Color.white;
+                if (m_isFirstPoint)
+                {
+                    position = CalcolaPosizioneCasuale();
+
+                }
+                else
+                {
+                    position = backGroundMap.transform.GetChild(0).GetComponent<RectTransform>().position;
+                    Destroy(backGroundMap.transform.GetChild(0).gameObject);
+                    m_isFirstPoint = true;
+
+                }
+                switch (roomData.tipiDiStanza)
+                {
+                    case TipiDiStanzaFLag.Boss:
+                        puntoColor = Color.red;
+                        break;
+                    case TipiDiStanzaFLag.Combattimento:
+                        puntoColor = Color.cyan;
+                        break;
+                    case TipiDiStanzaFLag.Storia:
+                        puntoColor = Color.green;
+                        break;
+                    case TipiDiStanzaFLag.Evento:
+                        puntoColor = Color.yellow;
+                        break;
+
+                    default:
+                        break;
+                }
+                puntoIstanziato = InstantiatePuntoDiInteresse(position, puntoColor, $"{punto.name}\n {roomData.tipiDiStanza}");
+                puntoIstanziato.transform.SetParent(backGroundMap.transform);
+                lastPosition = position;
+                m_lineRenderer.SetPoints(puntoIstanziato.transform.position);
+                m_counter++;
+            }
+            else
+            {
+                
+            }
         }
-        Vector2 position;
-        Color puntoColor = Color.white;
-        if (m_isFirstPoint)
+        catch (Exception e)
         {
-            position = CalcolaPosizioneCasuale();
-        
+            Debug.LogException(e);
+            throw;
+        }
+    }
+
+    private GameObject InstantiatePuntoDiInteresse(Vector2 position, Color color, string nomeDescrizione)
+    {
+        GameObject puntoIstanziato = Instantiate(prefabPuntoDiInteresse, position, Quaternion.identity);
+        puntoIstanziato.GetComponent<PuntoDiInteresseComponent>().SetDescrizione(nomeDescrizione);
+        puntoIstanziato.GetComponent<Image>().color = color;
+
+        return puntoIstanziato;
+    }
+
+    private Vector2 CalcolaPosizioneCasuale()
+    {
+        System.Random random = new System.Random();
+        int n = random.Next(0, 1);
+        bool isMinus = n == 1 ? true : false;
+        int xPosRandom = 0;
+        int yPosRandom = 0;
+        if (isMinus)
+        {
+            xPosRandom = random.Next(-150, -200);
+            yPosRandom = random.Next(0, -200);
         }
         else
         {
-            position = backGroundMap.transform.GetChild(0).GetComponent<RectTransform>().position;
-            Destroy(backGroundMap.transform.GetChild(0).gameObject);
-            m_isFirstPoint = true;
-        
+            xPosRandom = random.Next(150, 200);
+            yPosRandom = random.Next(0, 200);
         }
-        switch (roomData.tipiDiStanza)
-        {
-            case TipiDiStanzaFLag.Boss:
-                puntoColor = Color.red;
-                break;
-            case TipiDiStanzaFLag.Combattimento:
-                puntoColor = Color.cyan;
-                break;
-            case TipiDiStanzaFLag.Storia:
-                puntoColor = Color.green;
-                break;
-            case TipiDiStanzaFLag.Evento:
-                puntoColor = Color.yellow;
-                break;
 
-            default:
-            break;
-        }
-        puntoIstanziato = InstantiatePuntoDiInteresse(position, puntoColor, $"{punto.name}\n {roomData.tipiDiStanza}");
-        puntoIstanziato.transform.parent = backGroundMap.transform;
-        lastPosition = position;
-        m_lineRenderer.SetPoints(puntoIstanziato.transform.position);
-        m_counter++;
+        return lastPosition += new Vector2(xPosRandom, yPosRandom);
     }
-    catch (Exception e)
-    {
-        Debug.LogException(e);
-        throw;
-    }
-}
-
-private GameObject InstantiatePuntoDiInteresse(Vector2 position, Color color, string nomeDescrizione)
-{
-    GameObject puntoIstanziato = Instantiate(prefabPuntoDiInteresse, position, Quaternion.identity);
-    puntoIstanziato.GetComponent<PuntoDiInteresseComponent>().SetDescrizione(nomeDescrizione);
-    puntoIstanziato.GetComponent<Image>().color = color;
-
-    return puntoIstanziato;
-}
-
-private Vector2 CalcolaPosizioneCasuale()
-{
-    System.Random random = new System.Random();
-    int n = random.Next(0,1);
-    bool isMinus = n == 1 ? true : false;
-    int xPosRandom = 0;
-    int yPosRandom = 0;
-    if(isMinus){
-        xPosRandom = random.Next(-150, -200);
-        yPosRandom = random.Next(0, -200);
-    }
-    else{
-        xPosRandom = random.Next(150, 200);
-        yPosRandom = random.Next(0, 200);
-    }
-
-    return lastPosition += new Vector2(xPosRandom, yPosRandom);
-}
 
 
 

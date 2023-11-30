@@ -18,9 +18,15 @@ public class Room : MonoBehaviour,ISubscriber
     {
         if(message is OnRoomSpawnedMessage)
         {
+            m_surface = null;
+            m_surface = GetComponentInChildren<NavMeshSurface>();
             m_surface.BuildNavMesh();
         }
     }
-    private void OnDisable() =>Publisher.Unsubscribe(this, new OnRoomSpawnedMessage());
-    private void OnDestroy() =>Publisher.Unsubscribe(this, new OnRoomSpawnedMessage());
+    private void OnDisable(){
+        Publisher.Unsubscribe(this, new OnRoomSpawnedMessage());
+    }
+    private void OnDestroy(){
+        Publisher.Unsubscribe(this, new OnRoomSpawnedMessage());
+    }
 }

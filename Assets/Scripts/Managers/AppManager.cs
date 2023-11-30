@@ -53,15 +53,7 @@ public class AppManager : MonoBehaviour
         flagManager = GetComponentInChildren<FlagManager>();
         controlloMalattiaManager = GetComponentInChildren<ControlloMalattiaManager>();
         inventoryManager = GetComponentInChildren<InventoryManager>();
-        if (FindAnyObjectByType(typeof(CinemachineVirtualCamera)) != null)
-        {
-            virtualMachineCameraPlayerPrefab = FindAnyObjectByType<CinemachineVirtualCamera>().gameObject;
-        }
-        else
-        {
-            GameObject camera = Instantiate(virtualMachineCameraPlayerPrefab, new Vector3(0,0,0),Quaternion.identity);
-            virtualMachineCameraPlayerPrefab = camera;
-        }
+        SpawnPlayerAndCamera();
     }
     private void Awake()
     {
@@ -74,6 +66,18 @@ public class AppManager : MonoBehaviour
         //{
         //    playerControllerInstance = playePrefabReference.GetComponent<PlayerController>();
         //}
+    }
+    public void SpawnPlayerAndCamera()
+    {
+        if (FindAnyObjectByType(typeof(CinemachineVirtualCamera)) != null)
+        {
+            virtualMachineCameraPlayerPrefab = FindAnyObjectByType<CinemachineVirtualCamera>().gameObject;
+        }
+        else
+        {
+            GameObject camera = Instantiate(virtualMachineCameraPlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            virtualMachineCameraPlayerPrefab = camera;
+        }
     }
     public void SpawnaManagersSeNonCiSono()
     {

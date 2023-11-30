@@ -22,6 +22,7 @@ namespace AYellowpaper.SerializedCollections
             }
         }
 
+
         private DictionaryLookupTable<TKey, TValue> _lookupTable;
 #endif
         

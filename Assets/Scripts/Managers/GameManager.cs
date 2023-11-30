@@ -44,9 +44,15 @@ public enum GameStates{
     MenuPrincipale,
     PreRun,
     Combattimento,
-    CombattimentoBoss,
     FineCombattimento,
-    Morte
+    CombattimentoBoss,
+    FineCombattimentoBoss,
+    Morte,
+    InizioEvento,
+    FineEvento,
+    InizioParteStoria,
+    FineParteStoria
+    
 }
 
 public struct GameStateChangedMessage: IMessage{
