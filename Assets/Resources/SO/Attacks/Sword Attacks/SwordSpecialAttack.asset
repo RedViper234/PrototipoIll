@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8335ce28c41c4d43ab7cf0611b1a397, type: 3}
-  m_Name: SwordAttack3
+  m_Name: SwordSpecialAttack
   m_EditorClassIdentifier: 
-  AttackPrefab: {fileID: 4072522862118810444, guid: e2141c435b35dc945a867921b455c1fa, type: 3}
+  AttackPrefab: {fileID: 4072522862118810444, guid: 457ffe382117d954a83b627083e5ead5, type: 3}
   AttackAnimation: {fileID: 0}
-  TimeToActivateHitbox: 0.3
+  TimeToActivateHitbox: 0.2
   TimeDurationHitbox: 0.4
   TimeToEndHitbox: 0.2
-  AttackCooldown: 0.2
+  AttackCooldown: 0
   TimeComboProgression: 0
-  PlayerSpeedModifier: 0.1
+  PlayerSpeedModifier: 0
   PlayerDrag:
-    force: 100
-    waiting: 0.2
-    duration: 2
+    force: 0
+    waiting: 0
+    duration: 0
     direction: {x: 0, y: 0}
-    dragDirection: 9
-  BaseDamageAttack: 60
+    dragDirection: 0
+  BaseDamageAttack: 40
   AttackRangeAttack: 2
   DamageType: 0
   StatusEffects: []

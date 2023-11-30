@@ -13,13 +13,6 @@ public enum AttackRange
 }
 
 [Serializable]
-public struct PlayerDragStruct
-{
-    public float force, waiting, duration;
-    public Vector2 direction;
-}
-
-[Serializable]
 public struct StatusStruct
 {
     public PowerSubType type;
@@ -75,10 +68,7 @@ public abstract class AWeapon : MonoBehaviour
         //Cooldown del tempo di attacco Speciale
         SetTimerCooldown(ref t_cooldownsp);
 
-        if(!CheckAttackChildren())
-        {
-            WeaponRotation(); 
-        }
+        WeaponRotation();      
     }
 
     public void InitWeaponValues()
@@ -117,7 +107,6 @@ public abstract class AWeapon : MonoBehaviour
             GenerateAttackObject(SpecialAttack, true);
 
             t_cooldownsp = CooldownSpecialAttack;
-            t_cooldown = CooldownSpecialAttack;
         }
 
         yield return null;
@@ -130,9 +119,8 @@ public abstract class AWeapon : MonoBehaviour
     
     public void GenerateAttackObject(AttackSO actualAttack, bool startCoroutine)
     {
-        GameObject inst_attack;
 
-        inst_attack = Instantiate(
+        GameObject inst_attack = Instantiate(
             actualAttack.AttackPrefab, 
             transform.position, 
             transform.parent.rotation, 
@@ -150,7 +138,7 @@ public abstract class AWeapon : MonoBehaviour
 
     protected virtual IEnumerator AttackCoroutine()
     {
-        if (t_cooldown <= 0)
+        if (t_cooldown <= 0 && !CheckAttackChildren())
         {
             if(comboIndex == ComboList.Count) 
             {
@@ -167,24 +155,28 @@ public abstract class AWeapon : MonoBehaviour
         yield return null;
     }
 
-    protected virtual void LastComboAttack()
-    {
-        comboIndex = 0;
-    }
-
     protected void WeaponRotation()
     {
-        // Ottieni la posizione del mouse nello spazio del mondo
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if(!CheckAttackChildren())
+        {
+            // Ottieni la posizione del mouse nello spazio del mondo
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        // Calcola la direzione dal player alla posizione del mouse
-        Vector2 direction = mousePosition - (Vector2)transform.parent.position;
+            // Calcola la direzione dal player alla posizione del mouse
+            Vector2 direction = mousePosition - (Vector2)transform.parent.position;
 
-        // Calcola l'angolo tra la direzione calcolata e il vettore "up" del player
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            // Calcola l'angolo tra la direzione calcolata e il vettore "up" del player
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        // Ruota l'arma attorno al player utilizzando l'angolo calcolato
-        transform.parent.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            Debug.Log("ANGLE: " + Mathf.Floor(angle));
+
+            // Ruota l'arma attorno al player utilizzando l'angolo calcolato
+            float rangeLowerLimit = 0f;
+            float rangeUpperLimit = 1f;
+            float floorAngle = Mathf.Floor(angle) % 45;
+            
+            if( floorAngle >= rangeLowerLimit && floorAngle <= rangeUpperLimit) transform.parent.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 
     protected bool CheckAttackChildren()
@@ -200,5 +192,10 @@ public abstract class AWeapon : MonoBehaviour
     protected void SetTimerCooldown(ref float time) 
     {
         time = time > 0 ? time -= Time.deltaTime : 0;
+    }
+
+    protected virtual void LastComboAttack()
+    {
+        comboIndex = 0;
     }
 }

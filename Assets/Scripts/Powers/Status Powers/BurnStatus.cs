@@ -24,8 +24,8 @@ public class BurnStatus : MonoBehaviour, IStatus
                 damage,
                 false,
                 false,
-                false,
-                0);
+                true,
+                effectDuration);
         
         GetComponentInParent<Damageable>().TakeDamage(damageInstance);
     }

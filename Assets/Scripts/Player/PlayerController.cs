@@ -27,12 +27,11 @@ public class PlayerController : MonoBehaviour
     public float critChance = 0.05f;
     [Range(0, 1)]
     public float atkSlow = 0.5f;
-    private float lastAttackTime = 0f;
+    // private float lastAttackTime = 0f;
     private bool waitingForAttackPerformed = false;
-    private float attackRange = 1f;
+    // private float attackRange = 1f;
     private Vector2 atkDirection;
     private Coroutine atkRememberCor;
-
 
     [Header("Ranged Attack")]
     public UnityEngine.GameObject rangedProjectilePrefab;
@@ -78,12 +77,12 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     //public statCombat Forza = new statCombat();
-    //public statSpeed Veloctà = new statSpeed();
+    //public statSpeed Veloctï¿½ = new statSpeed();
     //public statResistence Costituzione = new statResistence();
 
     public PlayerInput actions;
     [Header("Player stats")]
-    public statStrenght Strenght = new statStrenght();
+    public statStrenght Strength = new statStrenght();
     public statSpeed Speed = new statSpeed();
     public statAim Aim = new statAim();
     public statConstitution Constitution = new statConstitution();
@@ -91,6 +90,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        EventManager.HandlePlayerAttackBegin += SetInAttack;
+
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
         if (actions == null)
@@ -105,11 +106,15 @@ public class PlayerController : MonoBehaviour
         actions.Player.Move.Enable();
         actions.Player.Move.performed += OnMove;
         actions.Player.Move.canceled += OnMove;
+
         actions.Player.MousePos.performed += mousePosition;
+
         actions.Player.ChangeAttackMode.Enable();
         actions.Player.ChangeAttackMode.performed += ChangeMode;
+
         actions.Player.Dash.Enable();
         actions.Player.Dash.performed += OnDash;
+        
         if (usingController)
         {
             actions.Player.Fire.Enable();
@@ -123,28 +128,35 @@ public class PlayerController : MonoBehaviour
             actions.Player.FireMouse.canceled += OffAim;
         }
 
-        actions.Player.Meeleattack.Enable();
-        actions.Player.Meeleattack.performed += OnMeleeAttack;
+        // actions.Player.Meeleattack.Enable();
+        // actions.Player.Meeleattack.performed += OnMeleeAttack;
 
     }
 
     private void OnDisable()
     {
         actions.Player.Move.Disable();
+
         actions.Player.Move.performed -= OnMove;
         actions.Player.Move.canceled -= OnMove;
+
         actions.Player.Fire.Disable();
+
         actions.Player.FireMouse.Disable();
+
         actions.Player.FireMouse.performed -= OnAim;
         actions.Player.FireMouse.canceled -= OffAim;
+
         actions.Player.Fire.performed -= OnAimController;
         actions.Player.Fire.canceled -= OnAimController;
+
         actions.Player.Meeleattack.Disable();
+
         actions.Player.Meeleattack.performed -= OnAim;
     }
     private void Start()
     {
-        Strenght.setStat();
+        Strength.setStat();
         Speed.setStat();
         Constitution.setStat();
         Aim.setStat();
@@ -154,8 +166,8 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         HandleMovement();
-        HandleMeleeAttack();
-        HandleRangedAttack();
+        // HandleMeleeAttack();
+        // HandleRangedAttack();
         HandleDash();
         HandleImmunity();
     }
@@ -341,76 +353,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleMeleeAttack()
-    {
-        if (meleeMode && meleeAttacking && Time.timeSinceLevelLoad - lastAttackTime >= meleeRecoveryTime && !waitingForAttackPerformed)
-        {
-            if (!isDashing)
-            {
-                // Perform melee attack logic
-                waitingForAttackPerformed = true;
-                atkDirection = direction;
-                Invoke("attackMelee", meleeHitDelay);
-            }
-            else
-            {
-                atkRememberCor = StartCoroutine(rememberAtk());
-            }
-        }
-    }
+    // private void HandleMeleeAttack()
+    // {
+    //     if (meleeMode && meleeAttacking && Time.timeSinceLevelLoad - lastAttackTime >= meleeRecoveryTime && !waitingForAttackPerformed)
+    //     {
+    //         if (!isDashing)
+    //         {
+    //             // Perform melee attack logic
+    //             waitingForAttackPerformed = true;
+    //             atkDirection = direction;
+    //             Invoke("attackMelee", meleeHitDelay);
+    //         }
+    //         else
+    //         {
+    //             atkRememberCor = StartCoroutine(rememberAtk());
+    //         }
+    //     }
+    // }
 
-    IEnumerator rememberAtk()
-    {
-        yield return new WaitUntil(()=> !isDashing);
-        HandleMeleeAttack();
-        atkRememberCor = null;
-    }
+    // IEnumerator rememberAtk()
+    // {
+    //     yield return new WaitUntil(()=> !isDashing);
+    //     HandleMeleeAttack();
+    //     atkRememberCor = null;
+    // }
 
-    private void attackMelee()
-    {
-        lastAttackTime = Time.timeSinceLevelLoad;
-        UnityEngine.GameObject attack = Instantiate(meleeAttackPrefab, new Vector3(GetComponent<Transform>().position.x + attackRange * atkDirection.x, GetComponent<Transform>().position.y + attackRange * atkDirection.y, 1), Quaternion.identity);
-        // Calcola l'angolo di rotazione in base a direction
-        float angle = Mathf.Atan2(atkDirection.y, atkDirection.x) * Mathf.Rad2Deg;
+    // private void attackMelee()
+    // {
+    //     lastAttackTime = Time.timeSinceLevelLoad;
+    //     UnityEngine.GameObject attack = Instantiate(meleeAttackPrefab, new Vector3(GetComponent<Transform>().position.x + attackRange * atkDirection.x, GetComponent<Transform>().position.y + attackRange * atkDirection.y, 1), Quaternion.identity);
+    //     // Calcola l'angolo di rotazione in base a direction
+    //     float angle = Mathf.Atan2(atkDirection.y, atkDirection.x) * Mathf.Rad2Deg;
 
-        // Crea una rotazione basata sull'angolo calcolato
-        Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
+    //     // Crea una rotazione basata sull'angolo calcolato
+    //     Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
 
-        // Applica la rotazione a attack
-        attack.transform.rotation = targetRotation;
-        meleeAttacking = false;
-        StartCoroutine(destroyattack(attack));
-    }
+    //     // Applica la rotazione a attack
+    //     attack.transform.rotation = targetRotation;
+    //     meleeAttacking = false;
+    //     StartCoroutine(destroyattack(attack));
+    // }
 
-    public IEnumerator destroyattack(GameObject attack)
-    {
-        yield return new WaitForSeconds(meleeHitTime);
-        waitingForAttackPerformed = false;
-        Destroy(attack);
-    }
+    // public IEnumerator destroyattack(GameObject attack)
+    // {
+    //     yield return new WaitForSeconds(meleeHitTime);
+    //     waitingForAttackPerformed = false;
+    //     Destroy(attack);
+    // }
 
-    private void HandleRangedAttack()
-    {
-        if (!meleeMode && rangedAttacking && Time.timeSinceLevelLoad - lastShotTime >= rangedAttackCooldown)
-        {
-            UnityEngine.GameObject projectile = Instantiate(rangedProjectilePrefab, GetComponent<Transform>().position, Quaternion.identity);
-            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-            if (!usingController)
-            {
-                Vector2 direction = (Camera.main.ScreenToWorldPoint(mousePos) - GetComponent<Transform>().position).normalized;
-                direction = new Vector2(direction.x * 1000, direction.y * 1000).normalized;
-                Vector2 force = direction * projectileSpeed;
+    // private void HandleRangedAttack()
+    // {
+    //     if (!meleeMode && rangedAttacking && Time.timeSinceLevelLoad - lastShotTime >= rangedAttackCooldown)
+    //     {
+    //         UnityEngine.GameObject projectile = Instantiate(rangedProjectilePrefab, GetComponent<Transform>().position, Quaternion.identity);
+    //         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+    //         if (!usingController)
+    //         {
+    //             Vector2 direction = (Camera.main.ScreenToWorldPoint(mousePos) - GetComponent<Transform>().position).normalized;
+    //             direction = new Vector2(direction.x * 1000, direction.y * 1000).normalized;
+    //             Vector2 force = direction * projectileSpeed;
 
-                rb.AddForce(force, ForceMode2D.Impulse);
-            }
-            else
-            {
-                rb.AddForce(aimInput * projectileSpeed, ForceMode2D.Impulse);
-            }
-            Destroy(projectile, projectileDuration);
-            lastShotTime = Time.timeSinceLevelLoad;
-        }
-    }
+    //             rb.AddForce(force, ForceMode2D.Impulse);
+    //         }
+    //         else
+    //         {
+    //             rb.AddForce(aimInput * projectileSpeed, ForceMode2D.Impulse);
+    //         }
+    //         Destroy(projectile, projectileDuration);
+    //         lastShotTime = Time.timeSinceLevelLoad;
+    //     }
+    // }
 
     private void HandleDash()
     {
@@ -534,35 +546,36 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnMeleeAttack(InputAction.CallbackContext context)
-    {
-        if (!waitingForAttackPerformed)
-        {
-            meleeAttacking = true;
-        }
-    }
+    // public void OnMeleeAttack(InputAction.CallbackContext context)
+    // {
+    //     if (!waitingForAttackPerformed)
+    //     {
+    //         meleeAttacking = true;
+    //     }
+    // }
 
-    public void OnRangedAttack(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            rangedAttacking = true;
-        }
-        else if (context.canceled)
-        {
-            rangedAttacking = false;
-        }
-    }
+    // public void OnRangedAttack(InputAction.CallbackContext context)
+    // {
+    //     if (context.started)
+    //     {
+    //         rangedAttacking = true;
+    //     }
+    //     else if (context.canceled)
+    //     {
+    //         rangedAttacking = false;
+    //     }
+    // }
+    
     private void setLevelsToStat()
     {
-        Strenght.pc = this;
-        foreach (var item in Strenght.damageProgression)
+        Strength.pc = this;
+        foreach (var item in Strength.damageProgression)
         {
-            item.level = Strenght.damageProgression.IndexOf(item) + 1;
+            item.level = Strength.damageProgression.IndexOf(item) + 1;
         }
-        foreach (var item in Strenght.knockBackProgression)
+        foreach (var item in Strength.knockBackProgression)
         {
-            item.level = Strenght.knockBackProgression.IndexOf(item) + 1;
+            item.level = Strength.knockBackProgression.IndexOf(item) + 1;
         }
         //foreach (var item in Strenght.stunTimeProgression)
         //{
@@ -634,6 +647,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void SetInAttack(bool isAttacking)
+    {
+        waitingForAttackPerformed = isAttacking;
+    }
 }
 
 [System.Serializable]
@@ -667,8 +684,8 @@ public class statStrenght : stat
 
     public void setStat()
     {
-        pc.meleeKnockbackModifier = pc.Strenght.knockBackProgression.Find(f => f.level == pc.Strenght.livello).value;
-        pc.meleeDamageModifier =  pc.Strenght.damageProgression.Find(f => f.level == pc.Strenght.livello).value;
+        pc.meleeKnockbackModifier = pc.Strength.knockBackProgression.Find(f => f.level == pc.Strength.livello).value;
+        pc.meleeDamageModifier =  pc.Strength.damageProgression.Find(f => f.level == pc.Strength.livello).value;
         //pc.stunTime = pc.Strenght.stunTimeProgression.Find(f => f.level == pc.Strenght.livello).value;
     }
 }
@@ -724,7 +741,7 @@ public class statConstitution : stat
         if (pc.GetComponent<Damageable>())
             pc.GetComponent<Damageable>().SetMaxHealthBar(pc.Constitution.healthProgression.Find(f => f.level == pc.Constitution.livello).value, true);
         else
-            Debug.LogError("Non c'è il damageable");
+            Debug.LogError("Non c'ï¿½ il damageable");
 
         if (pc.GetComponent<MalattiaHandler>())
         {
@@ -738,7 +755,7 @@ public class statConstitution : stat
             //pc.GetComponent<MalattiaHandler>().corruptionResistance = pc.Constitution.corruptionResistanceProgression.Find(f => f.level == pc.Constitution.livello).value;
         }
         else
-            Debug.LogError("Non c'è il malattiaHandler");
+            Debug.LogError("Non c'ï¿½ il malattiaHandler");
     }
 }
 
