@@ -122,13 +122,13 @@ public abstract class AAttack : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        UnityEngine.Debug.Log("Hit");
+        // UnityEngine.Debug.Log("Hit");
         OnDamageableHit(other);
     }
 
     public virtual IEnumerator InitializeAttack()
     {
-        UnityEngine.Debug.Log($"Attacco in corso {MultiAttack.AttackList.Count()}");
+        // UnityEngine.Debug.Log($"Attacco in corso {MultiAttack.AttackList.Count()}");
 
         for (var i = 0; i < (MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList.Count(): 1); i++)
         {
@@ -152,7 +152,7 @@ public abstract class AAttack : MonoBehaviour
             
             DoAfterWaitHitboxActivation();
 
-            UnityEngine.Debug.Log("Attivato");
+            // UnityEngine.Debug.Log("Attivato");
 
             yield return new WaitForSeconds(TimeDurationHitbox);
 
@@ -160,7 +160,7 @@ public abstract class AAttack : MonoBehaviour
             
             DoBeforeAttackEnd();
 
-            UnityEngine.Debug.Log("Disattivato");
+            // UnityEngine.Debug.Log("Disattivato");
 
             yield return new WaitForSeconds(TimeToEndHitbox);
 
@@ -174,11 +174,15 @@ public abstract class AAttack : MonoBehaviour
 
     public virtual void DoBeforeWaitHitboxActivation()
     {
-        if(playerDragCoroutine != null) StopCoroutine(playerDragCoroutine);
+        if(playerDragCoroutine != null)
+        {
+            StopCoroutine(playerDragCoroutine);
+            playerDragCoroutine = null;
+        } 
 
         if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
 
-        EventManager.HandlePlayerAttackBegin?.Invoke(true);
+        if(AttackRangeAttack == AttackRange.Melee) EventManager.HandlePlayerAttackBegin?.Invoke(true);
     }
 
     public virtual void DoAfterWaitHitboxActivation()
@@ -195,14 +199,11 @@ public abstract class AAttack : MonoBehaviour
 
     public virtual void DoInAttackEnd()
     {
-        EventManager.HandlePlayerAttackBegin?.Invoke(false);
-
         weaponReference.SetTimerComboProgression(TimeComboProgression);
 
-        if(AttackRangeAttack == AttackRange.Melee)
-        {
-            Destroy(this.gameObject);   
-        }
+        EventManager.HandlePlayerAttackBegin?.Invoke(false);
+
+        if(AttackRangeAttack == AttackRange.Melee) Destroy(this.gameObject);   
     }
 
     public virtual void OnDamageableHit(Collider2D other)
@@ -231,6 +232,7 @@ public abstract class AAttack : MonoBehaviour
     protected IEnumerator DraggingPlayer()
     {
         GameObject player = weaponReference.transform.parent.GetComponent<WeaponController>().playerController.gameObject;
+
         // Wait for the specified amount of time before applying the drag
         yield return new WaitForSeconds(playerDrag.waiting);
 
@@ -249,6 +251,8 @@ public abstract class AAttack : MonoBehaviour
 
             yield return null;
         }
+
+        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
 
     private void ChooseDirection()

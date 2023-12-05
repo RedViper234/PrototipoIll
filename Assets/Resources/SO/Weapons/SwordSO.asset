@@ -15,7 +15,7 @@ MonoBehaviour:
   BaseDamageWeapon: 40
   CooldownBetweenAttacks: 0.5
   CooldownSpecialAttack: 5
-  ComboTimeProgression: 0.8
+  ComboTimeProgression: 100
   AttackRangeWeapon: 2
   DamageType: 01000000
   StatusEffects:
