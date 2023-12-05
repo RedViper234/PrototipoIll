@@ -32,7 +32,7 @@ Transform:
   - {fileID: 455534803}
   - {fileID: 2526943845129303190}
   m_Father: {fileID: 5664604751966636654}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &934345512
 MonoBehaviour:
@@ -82,7 +82,7 @@ Transform:
   - {fileID: 7161418164939324487}
   - {fileID: 795147974132939713}
   m_Father: {fileID: 5664604751966636654}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1342900463
 MonoBehaviour:
@@ -167,7 +167,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5664604751966636654}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1537794448
 SpriteRenderer:
@@ -275,9 +275,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1537794446}
   - {fileID: 1342900460}
   - {fileID: 934345513}
-  - {fileID: 1537794446}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -927,16 +927,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 3744ce9bcb2bb6048ab847e5707f9aa5, type: 2}
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
+      propertyPath: offsetUpAim
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
+      propertyPath: offsetLowAim
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: SpecialAttack
       value: 
       objectReference: {fileID: 11400000, guid: fee31ed7ad617af45af7108b10a82133, type: 2}
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: playerDrag.force
-      value: 100
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: playerDrag.waiting
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8833871040528005766, guid: bddb543868c0bd64f9d6a305de65212b, type: 3}
       propertyPath: playerDrag.duration

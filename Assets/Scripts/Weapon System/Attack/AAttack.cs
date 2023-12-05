@@ -70,6 +70,7 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference;
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
     [field: SerializeField, MyReadOnly] public AttackSO attackSODefault;
+    [field: SerializeField, MyReadOnly] public Coroutine playerDragCoroutine;
 
 
     /// <summary>
@@ -173,6 +174,8 @@ public abstract class AAttack : MonoBehaviour
 
     public virtual void DoBeforeWaitHitboxActivation()
     {
+        if(playerDragCoroutine != null) StopCoroutine(playerDragCoroutine);
+
         if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
 
         EventManager.HandlePlayerAttackBegin?.Invoke(true);
@@ -181,7 +184,8 @@ public abstract class AAttack : MonoBehaviour
     public virtual void DoAfterWaitHitboxActivation()
     {
         ManageAttackColliders(true);
-        StartCoroutine(DraggingPlayer());
+
+        playerDragCoroutine = StartCoroutine(DraggingPlayer());
     }
 
     public virtual void DoBeforeAttackEnd()
@@ -235,11 +239,14 @@ public abstract class AAttack : MonoBehaviour
 
         ChooseDirection();
 
+        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+
         // Continue to apply the drag effect until the end time is reached
         while (Time.time < endDragTime)
         {
             // Apply the dragging force in the specified direction
-            player.GetComponent<Rigidbody2D>().AddForce(playerDrag.direction * playerDrag.force);
+            player.GetComponent<Rigidbody2D>().AddForce(playerDrag.direction.normalized * playerDrag.force, ForceMode2D.Force);
+
             yield return null;
         }
     }
@@ -280,6 +287,9 @@ public abstract class AAttack : MonoBehaviour
                 break;
             case DragDirection.Backward:
                 playerDrag.direction = -ActualDirection;
+                break;
+            default:
+                playerDrag.direction = ActualDirection;
                 break;
         }
     }
