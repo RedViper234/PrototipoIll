@@ -18,7 +18,7 @@ MonoBehaviour:
   TimeDurationHitbox: 0.4
   TimeToEndHitbox: 0.2
   AttackCooldown: 0
-  TimeComboProgression: 0
+  TimeComboProgression: -1
   PlayerSpeedModifier: 0
   PlayerDrag:
     force: 0

@@ -193,9 +193,7 @@ public abstract class AAttack : MonoBehaviour
     {
         EventManager.HandlePlayerAttackBegin?.Invoke(false);
 
-        if(TimeComboProgression > 0) weaponReference.SetTimerComboProgression(TimeComboProgression);
-
-        UnityEngine.Debug.Log($"Attack Range: {AttackRangeAttack}");
+        weaponReference.SetTimerComboProgression(TimeComboProgression);
 
         if(AttackRangeAttack == AttackRange.Melee)
         {

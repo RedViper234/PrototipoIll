@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseDamageWeapon: 40
   CooldownBetweenAttacks: 0.5
-  CooldownSpecialAttacks: 5
+  CooldownSpecialAttack: 5
   ComboTimeProgression: 0.8
   AttackRangeWeapon: 2
-  DamageType: 
+  DamageType: 01000000
   StatusEffects:
   - type: 0
     probability: 0
