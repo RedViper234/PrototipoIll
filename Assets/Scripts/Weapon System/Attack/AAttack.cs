@@ -132,7 +132,7 @@ public abstract class AAttack : MonoBehaviour
 
         for (var i = 0; i < (MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList.Count(): 1); i++)
         {
-            UnityEngine.Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {(MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i].name : attackSODefault.name)}");
+            // UnityEngine.Debug.Log($"MultiAttacco {i+1}/{MultiAttack.AttackList.Count()}: {(MultiAttack.AttackList.Count() > 0 ? MultiAttack.AttackList[i].name : attackSODefault.name)}");
 
             if(MultiAttack.AttackList.Count() > 0)
             {
@@ -162,27 +162,28 @@ public abstract class AAttack : MonoBehaviour
 
             // UnityEngine.Debug.Log("Disattivato");
 
-            yield return new WaitForSeconds(TimeToEndHitbox);
+            yield return new WaitForSeconds(TimeToEndHitbox + playerDrag.duration);
 
             //End of attack
 
             DoInAttackEnd();
 
-            UnityEngine.Debug.Log("Fine");
+            // UnityEngine.Debug.Log("Fine");
         }   
     }
 
     public virtual void DoBeforeWaitHitboxActivation()
     {
-        if(playerDragCoroutine != null)
-        {
-            StopCoroutine(playerDragCoroutine);
-            playerDragCoroutine = null;
-        } 
+        if(AttackRangeAttack == AttackRange.Melee) EventManager.HandlePlayerAttackBegin?.Invoke(true);
 
         if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
 
-        if(AttackRangeAttack == AttackRange.Melee) EventManager.HandlePlayerAttackBegin?.Invoke(true);
+        if(playerDragCoroutine != null)
+        {
+            StopCoroutine(playerDragCoroutine);
+            
+            playerDragCoroutine = null;
+        } 
     }
 
     public virtual void DoAfterWaitHitboxActivation()
@@ -210,6 +211,8 @@ public abstract class AAttack : MonoBehaviour
     {
         if(other.GetComponent<Damageable>())
         {
+            UnityEngine.Debug.Log("HIT");
+
             EventManager.HandleOnPlayerHit?.Invoke(other.gameObject);
 
             other.GetComponent<Damageable>().TakeDamage(damageInstance);
@@ -238,17 +241,22 @@ public abstract class AAttack : MonoBehaviour
 
         // Calculate the end time of the dragging effect
         var endDragTime = Time.time + playerDrag.duration;
-
+        var timer = 0f;
+        
         ChooseDirection();
 
         player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 
         // Continue to apply the drag effect until the end time is reached
-        while (Time.time < endDragTime)
+        while (timer <= playerDrag.duration)
         {
+            timer += Time.deltaTime;
+            
             // Apply the dragging force in the specified direction
-            player.GetComponent<Rigidbody2D>().AddForce(playerDrag.direction.normalized * playerDrag.force, ForceMode2D.Force);
+            // UnityEngine.Debug.Log($" DIR: {playerDrag.direction.normalized * playerDrag.force} - T: {timer}");
 
+            player.GetComponent<Rigidbody2D>().AddForce(playerDrag.direction.normalized * playerDrag.force, ForceMode2D.Force);
+            
             yield return null;
         }
 

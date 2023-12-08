@@ -67,10 +67,12 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 movementInput;
     private Vector2 aimInput;
+
     private bool meleeAttacking;
     private bool rangedAttacking;
     private float meleeAttackTimer;
     private float rangedAttackTimer;
+
     private bool usingController = false;
     private Vector2 mousePos;
     private bool meleeMode = true;
@@ -305,7 +307,7 @@ public class PlayerController : MonoBehaviour
     }
     public void PlayerDeath()
     {
-        Debug.Log("sei morto");
+        // Debug.Log("sei morto");
     }
 
     private void HandleImmunity()

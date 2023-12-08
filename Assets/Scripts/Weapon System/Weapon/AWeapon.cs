@@ -140,7 +140,7 @@ public abstract class AWeapon : MonoBehaviour
 
         if(AttackRangeWeapon == AttackRange.Ranged) inst_attack.transform.parent = null;
 
-        Debug.Log("Attacco Generato");
+        // Debug.Log("Attacco Generato");
     }
 
     protected virtual IEnumerator AttackCoroutine()
