@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
     public float meleeKnockbackDuration = 0.5f;
     public float meleeHitTime = 0.2f;
     public float meleeHitDelay = 0.1f;
-    public float meleeRecoveryTime = 0.5f;
     public float stunTime = 0.1f;
     [Range(0,1)]
     public float critChance = 0.05f;
@@ -43,7 +42,6 @@ public class PlayerController : MonoBehaviour
     public float projectileDuration = 2f;
     //public bool destroyProjectileOnImpact = true;
     public float rangedAttackCooldown = 1f;
-    private float lastShotTime = 0f;
 
     [Header("Dash")]
     public bool isDashing;
@@ -161,7 +159,6 @@ public class PlayerController : MonoBehaviour
         Strength.setStat();
         Speed.setStat();
         Constitution.setStat();
-        Aim.setStat();
         Luck.setStat();
     }
 
@@ -593,24 +590,20 @@ public class PlayerController : MonoBehaviour
         {
             item.level = Speed.dashRecoverProgression.IndexOf(item) + 1;
         }
-        foreach (var item in Speed.attackRateProgression)
-        {
-            item.level = Speed.attackRateProgression.IndexOf(item) + 1;
-        }
 
-        Aim.pc = this;
-        foreach (var item in Aim.fireRateProgression)
-        {
-            item.level = Aim.fireRateProgression.IndexOf(item) + 1;
-        }
-        foreach (var item in Aim.fireDamageProgression)
-        {
-            item.level = Aim.fireDamageProgression.IndexOf(item) + 1;
-        }
-        foreach (var item in Aim.projectileSpeedProgression)
-        {
-            item.level = Aim.projectileSpeedProgression.IndexOf(item) + 1;
-        }
+        // Aim.pc = this;
+        // foreach (var item in Aim.fireRateProgression)
+        // {
+        //     item.level = Aim.fireRateProgression.IndexOf(item) + 1;
+        // }
+        // foreach (var item in Aim.fireDamageProgression)
+        // {
+        //     item.level = Aim.fireDamageProgression.IndexOf(item) + 1;
+        // }
+        // foreach (var item in Aim.projectileSpeedProgression)
+        // {
+        //     item.level = Aim.projectileSpeedProgression.IndexOf(item) + 1;
+        // }
 
         Constitution.pc = this;
         foreach (var item in Constitution.healthProgression)
@@ -696,7 +689,6 @@ public class statStrenght : stat
 public class statSpeed : stat
 {
     public List<StatValueDictionaryEntry> speedProgression;
-    public List<StatValueDictionaryEntry> attackRateProgression;
     public List<StatValueDictionaryEntry> dashRecoverProgression;
     [HideInInspector]
     public PlayerController pc;
@@ -705,7 +697,6 @@ public class statSpeed : stat
     {
         pc.baseSpeed = pc.Speed.speedProgression.Find(f => f.level == pc.Speed.livello).value;
         pc.dashRecoveryTime = pc.Speed.dashRecoverProgression.Find(f => f.level == pc.Speed.livello).value;
-        pc.meleeRecoveryTime = pc.Speed.attackRateProgression.Find(f => f.level == pc.Speed.livello).value;
     }
 }
 
@@ -719,12 +710,12 @@ public class statAim : stat
     public PlayerController pc;
 
 
-    public void setStat()
-    {
-        pc.rangedDamage = pc.Aim.fireDamageProgression.Find(f => f.level == pc.Aim.livello).value;
-        pc.rangedAttackCooldown = pc.Aim.fireRateProgression.Find(f => f.level == pc.Aim.livello).value;
-        pc.projectileSpeed = pc.Aim.projectileSpeedProgression.Find(f => f.level == pc.Aim.livello).value;
-    }
+    // public void setStat()
+    // {
+    //     pc.rangedDamage = pc.Aim.fireDamageProgression.Find(f => f.level == pc.Aim.livello).value;
+    //     pc.rangedAttackCooldown = pc.Aim.fireRateProgression.Find(f => f.level == pc.Aim.livello).value;
+    //     pc.projectileSpeed = pc.Aim.projectileSpeedProgression.Find(f => f.level == pc.Aim.livello).value;
+    // }
 }
 
 [System.Serializable]
