@@ -44,10 +44,13 @@ public abstract class AWeapon : MonoBehaviour
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
 
     [field: Header("Debug")]
-    [field: SerializeField, MyReadOnly] protected float t_cooldown;
-    [field: SerializeField, MyReadOnly] protected float t_cooldownsp;
+    [field: SerializeField, MyReadOnly] protected float t_cooldownAttack;
+    [field: SerializeField, MyReadOnly] protected float t_cooldownSpecialAttack;
     [field: SerializeField, MyReadOnly] protected float t_currentCombo;
-    [field: SerializeField] protected int comboIndex;
+    [field: SerializeField] protected int comboIndex = 0;
+    [SerializeField] protected float offsetLowAim = 0f;
+    [SerializeField] protected float offsetUpAim = 1f;
+    [SerializeField, MyReadOnly] protected int counter = 0;
     private Coroutine comboCoroutine;
 
     public virtual void Awake()
@@ -60,15 +63,15 @@ public abstract class AWeapon : MonoBehaviour
     protected virtual void Update()
     {
         //Cooldown del tempo di attacco
-        SetTimerCooldown(ref t_cooldown);
+        SetTimerCooldown(ref t_cooldownAttack);
 
         //Tempo di reset combo index
         _ = t_currentCombo > 0 ? t_currentCombo -= Time.deltaTime : comboIndex = 0;
 
         //Cooldown del tempo di attacco Speciale
-        SetTimerCooldown(ref t_cooldownsp);
+        SetTimerCooldown(ref t_cooldownSpecialAttack);
 
-        WeaponRotation();      
+        WeaponRotation(offsetLowAim, offsetUpAim);   
     }
 
     public void InitWeaponValues()
@@ -76,6 +79,8 @@ public abstract class AWeapon : MonoBehaviour
         BaseDamageWeapon = WeaponSO.BaseDamageWeapon;
 
         CooldownBetweenAttacks = WeaponSO.CooldownBetweenAttacks;
+
+        CooldownSpecialAttack = WeaponSO.CooldownSpecialAttack;
 
         ComboTimeProgression = WeaponSO.ComboTimeProgression;
 
@@ -102,11 +107,11 @@ public abstract class AWeapon : MonoBehaviour
 
     private IEnumerator SpecialAttackCoroutine()
     {
-       if (t_cooldownsp <= 0)
+       if (t_cooldownSpecialAttack <= 0 && !CheckAttackChildren())
         {
             GenerateAttackObject(SpecialAttack, true);
 
-            t_cooldownsp = CooldownSpecialAttack;
+            t_cooldownSpecialAttack = CooldownSpecialAttack;
         }
 
         yield return null;
@@ -134,11 +139,13 @@ public abstract class AWeapon : MonoBehaviour
         if(startCoroutine) comboCoroutine = StartCoroutine(inst_attack.GetComponent<AAttack>().InitializeAttack());
 
         if(AttackRangeWeapon == AttackRange.Ranged) inst_attack.transform.parent = null;
+
+        // Debug.Log("Attacco Generato");
     }
 
     protected virtual IEnumerator AttackCoroutine()
     {
-        if (t_cooldown <= 0 && !CheckAttackChildren())
+        if (t_cooldownAttack <= 0 || !CheckAttackChildren())
         {
             if(comboIndex == ComboList.Count) 
             {
@@ -147,15 +154,17 @@ public abstract class AWeapon : MonoBehaviour
 
             GenerateAttackObject(ComboList[comboIndex], true);
 
-            comboIndex++;
+            t_cooldownAttack = CooldownBetweenAttacks;
 
-            t_cooldown = CooldownBetweenAttacks;
+            SetTimerComboProgression(5f);
+            
+            comboIndex++;
         }
 
         yield return null;
     }
 
-    protected void WeaponRotation()
+    protected void WeaponRotation(float lowerLimit, float upperLimit)
     {
         if(!CheckAttackChildren())
         {
@@ -168,14 +177,18 @@ public abstract class AWeapon : MonoBehaviour
             // Calcola l'angolo tra la direzione calcolata e il vettore "up" del player
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            Debug.Log("ANGLE: " + Mathf.Floor(angle));
-
             // Ruota l'arma attorno al player utilizzando l'angolo calcolato
-            float rangeLowerLimit = 0f;
-            float rangeUpperLimit = 1f;
-            float floorAngle = Mathf.Floor(angle) % 45;
-            
-            if( floorAngle >= rangeLowerLimit && floorAngle <= rangeUpperLimit) transform.parent.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            float angleFromFloor = Math.Abs(angle % 45);
+
+            if (angleFromFloor <= lowerLimit)
+            {
+                transform.parent.rotation = Quaternion.AngleAxis(angle > 0 ? angle - angleFromFloor : angle + angleFromFloor, Vector3.forward);
+            } 
+            else if (angleFromFloor >= upperLimit)
+            {
+                float angleDiff = Math.Abs((angleFromFloor - 45));
+                transform.parent.rotation = Quaternion.AngleAxis(angle > 0 ? angle + angleDiff : angle - angleDiff, Vector3.forward);
+            }
         }
     }
 

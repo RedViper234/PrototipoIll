@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7451523059837456382}
   - component: {fileID: 7451523059837456377}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BurnStatusObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee0ab0ce03684bb409458726b1056285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageable: {fileID: 0}
-  timeToDie: 5
-  ticks: 5
-  damage: 10
+  <effectDuration>k__BackingField: 0
+  <ticks>k__BackingField: 0
+  <damage>k__BackingField: 0
+  <statusType>k__BackingField: 0

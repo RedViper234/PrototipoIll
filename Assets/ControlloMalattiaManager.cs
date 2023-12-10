@@ -36,6 +36,7 @@ public class Mortality : MalattiaStat
         float percentage = Mathf.RoundToInt(spawnMortalityVariation.x + ((range / 100) * actualValue));
         totalEnemy += Mathf.RoundToInt(((float)totalEnemy / 100) * percentage);
         return totalEnemy;
+        //ciao
     }
 
     public void timeIllVulnerabilityOrResistance(MalattiaHandler handler)
