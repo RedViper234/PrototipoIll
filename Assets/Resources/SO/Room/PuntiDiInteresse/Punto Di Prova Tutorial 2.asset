@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b879268eee46f448aacdba69744836, type: 3}
   m_Name: Punto Di Prova Tutorial 2
   m_EditorClassIdentifier: 
-  listaDiStanzeUniche:
-  - {fileID: 11400000, guid: cc3200698fa923f40b1c2e22dd12fa3f, type: 2}
-  - {fileID: 11400000, guid: ece9cf57d60635c4cb7ac3dc2db303aa, type: 2}
+  listaDiStanzeUniche: []
   spawnAutomatico: 0
   spawnRicompense: []
   numeroRicompenseSpawn: 0

@@ -25,9 +25,10 @@ MonoBehaviour:
   onlyOneSpecialRoom: 0
   enemySet: []
   roomList: []
-  roomDistributions: []
+  staticRoomDistributions: []
   percentualRoomDistributions: []
   minStaticRoom: 0
-  maxStaticRoom: 1
+  maxStaticRoom: 13
   defaultRoom: {fileID: 0}
   mutationProbabilityVariance: 0
+  listaPerPescaggioStanzePerRoomsDistribution: []

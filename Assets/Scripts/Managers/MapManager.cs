@@ -24,7 +24,7 @@ public class MapManager : Manager, ISubscriber
     private Vector2 lastPosition = new Vector2(0, 0);
     private int m_counter = 0;
 
-    private SerializedDictionary<PuntoDiInteresse, RoomData> m_puntiDiInteresseSpawnatiNellArea = new();
+    private Dictionary<PuntoDiInteresse, StrutturaPerDictionaryRoom> m_puntiDiInteresseSpawnatiNellArea = new();
 
     public void OnPublish(IMessage message)
     {
@@ -68,7 +68,7 @@ public class MapManager : Manager, ISubscriber
         {
             GameObject puntoIstanziato;
             Debug.Log("CostruisciPuntoUI");
-            RoomData roomData = m_puntiDiInteresseSpawnatiNellArea[punto];
+            RoomData roomData = m_puntiDiInteresseSpawnatiNellArea[punto].room;
             if (roomData != null)
             {
                 if (prefabPuntoDiInteresse == null)
@@ -92,16 +92,16 @@ public class MapManager : Manager, ISubscriber
                 }
                 switch (roomData.tipiDiStanza)
                 {
-                    case TipiDiStanzaFLag.Boss:
+                    case TipiDiStanzaFlag.Boss:
                         puntoColor = Color.red;
                         break;
-                    case TipiDiStanzaFLag.Combattimento:
+                    case TipiDiStanzaFlag.Combattimento:
                         puntoColor = Color.cyan;
                         break;
-                    case TipiDiStanzaFLag.Storia:
+                    case TipiDiStanzaFlag.Storia:
                         puntoColor = Color.green;
                         break;
-                    case TipiDiStanzaFLag.Evento:
+                    case TipiDiStanzaFlag.Evento:
                         puntoColor = Color.yellow;
                         break;
 
@@ -122,7 +122,6 @@ public class MapManager : Manager, ISubscriber
         catch (Exception e)
         {
             Debug.LogException(e);
-            throw;
         }
     }
 

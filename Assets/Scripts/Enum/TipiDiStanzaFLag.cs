@@ -1,8 +1,9 @@
 ﻿using System;
 
 [Flags]
-public enum TipiDiStanzaFLag
+public enum TipiDiStanzaFlag
 {
+    None = 0,
     Combattimento = 2,
     Boss = 4,
     Evento = 8,
@@ -10,6 +11,7 @@ public enum TipiDiStanzaFLag
 }
 public enum TipiDiStanza
 {
+    None,
     Combattimento,
     Boss,
     Evento,

@@ -15,6 +15,20 @@ MonoBehaviour:
   puntiDiInteresse:
   - {fileID: 11400000, guid: e2963b648e45b74448a9388537ff4484, type: 2}
   - {fileID: 11400000, guid: aa17003bfe299a940a122ac03ed6eb7b, type: 2}
+  - {fileID: 11400000, guid: 94910a7ff0a51594f85f93a95ea72683, type: 2}
+  - {fileID: 11400000, guid: 997493ade53da024bbd4f4f1f5a1d9be, type: 2}
+  - {fileID: 11400000, guid: 8d290e8b78982444a91462df179f7ad0, type: 2}
+  - {fileID: 11400000, guid: 44a5628ead2033744867f651a7b1a274, type: 2}
+  - {fileID: 11400000, guid: b2f8d5dfac2c74c4c966760384c7dde9, type: 2}
+  - {fileID: 11400000, guid: 76058e71744ab33429e94d715c681a29, type: 2}
+  - {fileID: 11400000, guid: 33c500451f8311d4990261b36c5fb7c2, type: 2}
+  - {fileID: 11400000, guid: 1158381a971686141ba2dca29a876679, type: 2}
+  - {fileID: 11400000, guid: c2f9a9c120a5c5f49845716d2ac84e1e, type: 2}
+  - {fileID: 11400000, guid: bd20d8e8832cbcb4eb95fcd0324d4ca7, type: 2}
+  - {fileID: 11400000, guid: 97daf4ad9857ae84bbe9130882945116, type: 2}
+  - {fileID: 11400000, guid: 92124f29765cc8d4688f1f4b4add9b61, type: 2}
+  - {fileID: 11400000, guid: 598bd6e1db7380649b22a4cd42eeb092, type: 2}
+  - {fileID: 11400000, guid: 88c595564ec334e4e8744b51de817fc0, type: 2}
   descrizioneArea: 
   sottoAree:
   - {fileID: 11400000, guid: 7ea8fa8962b5a1049a06cd6db3537325, type: 2}
@@ -39,34 +53,66 @@ MonoBehaviour:
   enemySet:
   - {fileID: 11400000, guid: 26bf7af666e965940849c8d283c8d63d, type: 2}
   roomList: []
-  roomDistributions:
-  - tipoStanzaArea: 1
+  staticRoomDistributions:
+  - tipoStanzaArea: 2
+    combattimento: 1
+    boss: 0
+    evento: 2
+    storia: 0
+    min: 4
+    max: 6
+    minRespawn: 1
+    maxRespawn: 12
+    tipoRicompensa:
+    - tipoRicompensa: 7
+      dropMinimo: 1
+      dropMassimo: 4
+    - tipoRicompensa: 2
+      dropMinimo: 1
+      dropMassimo: 4
+    numeroRicompense: 5
+    permettiRipetizioniRicompense: 1
+  - tipoStanzaArea: 4
+    combattimento: 0
+    boss: 1
+    evento: 2
+    storia: 0
+    min: 1
+    max: 1
+    minRespawn: 1
+    maxRespawn: 12
+    tipoRicompensa:
+    - tipoRicompensa: 7
+      dropMinimo: 1
+      dropMassimo: 4
+    - tipoRicompensa: 2
+      dropMinimo: 1
+      dropMassimo: 4
+    numeroRicompense: 5
+    permettiRipetizioniRicompense: 1
+  percentualRoomDistributions:
+  - tipoStanzaArea: 16
+    combattimento: 1
+    boss: 0
+    evento: 0
+    storia: 0
+    peso: 10
+    maxAppereance: 0
+  - tipoStanzaArea: 8
     combattimento: 0
     boss: 1
     evento: 0
     storia: 0
-    min: 1
-    max: 2
-    minRespawn: 0
-    maxRespawn: 30
-    tipoRicompensa:
-    - tipoRicompensa: 2
-      dropMinimo: 1
-      dropMassimo: 4
-    - tipoRicompensa: 7
-      dropMinimo: 1
-      dropMassimo: 2
-    numeroRicompense: 1
-    permettiRipetizioniRicompense: 1
-  percentualRoomDistributions:
-  - tipoStanzaArea: 0
-    combattimento: 0
-    boss: 0
-    evento: 0
-    storia: 0
-    peso: 0
+    peso: 5
     maxAppereance: 0
   minStaticRoom: 1
-  maxStaticRoom: 1
-  defaultRoom: {fileID: 0}
+  maxStaticRoom: 10
+  defaultRoom: {fileID: 11400000, guid: bd2710cb5d723f947b0cfc1ed989de4e, type: 2}
   mutationProbabilityVariance: 0
+  listaPerPescaggioStanzePerRoomsDistribution:
+  - {fileID: 11400000, guid: cc3200698fa923f40b1c2e22dd12fa3f, type: 2}
+  - {fileID: 11400000, guid: 73da27e9560b4334b8a380f65ae04952, type: 2}
+  - {fileID: 11400000, guid: 4b43308165663cd4680af18fa230a008, type: 2}
+  - {fileID: 11400000, guid: f14d0427485cea947891ccfacd1032e5, type: 2}
+  - {fileID: 11400000, guid: ece9cf57d60635c4cb7ac3dc2db303aa, type: 2}
+  - {fileID: 11400000, guid: bd2710cb5d723f947b0cfc1ed989de4e, type: 2}

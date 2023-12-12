@@ -11,7 +11,7 @@ public class RoomData : ScriptableObject
 {
     public GameObject prefabStanza;
 
-    [SerializeField] public TipiDiStanzaFLag tipiDiStanza;
+    [SerializeField] public TipiDiStanzaFlag tipiDiStanza;
     [Space(20)]
     // PROPRIETA PER STANZA COMBATTIMENTO
     [SerializeField] public SottoCategoriaStanzaCombattimento tipoStanzaCombattimento;

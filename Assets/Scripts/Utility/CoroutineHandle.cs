@@ -20,8 +20,7 @@ public class CoroutineHandle : IEnumerator
     private IEnumerator Wrap(IEnumerator coroutine)
     {
         yield return coroutine;
-        if(onCourotineDone != null)
-            onCourotineDone.Invoke();
+        onCourotineDone?.Invoke();
         IsDone = true;
     }
 }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9b879268eee46f448aacdba69744836, type: 3}
-  m_Name: Punto Di Prova Tutorial 1
+  m_Name: Punto Di Prova Tutorial 5
   m_EditorClassIdentifier: 
   listaDiStanzeUniche: []
   spawnAutomatico: 0
@@ -25,10 +25,7 @@ MonoBehaviour:
     pareti, creando forme inquietanti che sembrano raccontare storie di tempi passati.\r"
   movementCost: -1
   secTimeBattleProbability: -1
-  points:
-  - points: []
-    breakable: 0
-    monouso: 0
+  points: []
   flagOnEnter: []
   flagOnEnterOnlyFirstTime: 0
   blockSpecialRoom: 0

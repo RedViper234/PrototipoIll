@@ -24,7 +24,7 @@ public class AreaSO : ScriptableObject
     public bool onlyOneSpecialRoom = false;
     public List<EnemySet> enemySet;
     public List<RoomData> roomList;
-    public List<StaticRoomDistribution> roomDistributions;
+    public List<StaticRoomDistribution> staticRoomDistributions;
     public List<PercentualRoomDistribution> percentualRoomDistributions;
     [Min(0)]
     public int minStaticRoom = 0;
@@ -33,11 +33,11 @@ public class AreaSO : ScriptableObject
     public List<AreaSpawnStandardProbability> standardCombatProbability;
     public RoomData defaultRoom;
     public float mutationProbabilityVariance = 0;
-
+    public List<RoomData> listaPerPescaggioStanzePerRoomsDistribution;
 
     private void OnValidate()
     {
-        foreach (var item in roomDistributions)
+        foreach (var item in staticRoomDistributions)
         {
             if(item.minRespawn > item.maxRespawn)
             {
@@ -61,7 +61,7 @@ public struct SpecialRoom
 public class StaticRoomDistribution
 {
     [Header("TIPOLOGIA STANZA")]
-    public TipiDiStanza tipoStanzaArea;
+    public TipiDiStanzaFlag tipoStanzaArea;
     [Space]
     [Header("SOTTO CATEGORIE")]
     public SottoCategoriaStanzaCombattimento combattimento;
@@ -83,7 +83,7 @@ public class StaticRoomDistribution
 public class PercentualRoomDistribution
 {
     [Header("TIPOLOGIA STANZA")]
-    public TipiDiStanza tipoStanzaArea;
+    public TipiDiStanzaFlag tipoStanzaArea;
     [Space]
     [Header("SOTTO CATEGORIE")]
     public SottoCategoriaStanzaCombattimento combattimento;

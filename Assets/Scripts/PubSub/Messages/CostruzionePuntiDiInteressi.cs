@@ -5,9 +5,9 @@ using AYellowpaper.SerializedCollections;
 
 
 public struct CostruzionePuntiDiInteressi : IMessage {
-    public SerializedDictionary<PuntoDiInteresse,RoomData>  dizionarioPuntiEStanze;
+    public Dictionary<PuntoDiInteresse,StrutturaPerDictionaryRoom>  dizionarioPuntiEStanze;
     public PuntoDiInteresse puntoDiInteresseChiave;
-    public CostruzionePuntiDiInteressi(SerializedDictionary<PuntoDiInteresse,RoomData> dizionarioPuntiEStanze, PuntoDiInteresse puntoDiInteresseChiave)
+    public CostruzionePuntiDiInteressi(Dictionary<PuntoDiInteresse,StrutturaPerDictionaryRoom> dizionarioPuntiEStanze, PuntoDiInteresse puntoDiInteresseChiave)
     {
         this.dizionarioPuntiEStanze = dizionarioPuntiEStanze;
         this.puntoDiInteresseChiave = puntoDiInteresseChiave;

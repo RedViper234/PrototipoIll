@@ -9,22 +9,22 @@
 //        StaticRoomDistribution roomDistribution = (StaticRoomDistribution)target;
 
 //        // Disegna il campo per il tipo di stanza
-//        roomDistribution.tipoStanzaArea = (TipiDiStanzaFLag)EditorGUILayout.EnumPopup("Tipo di Stanza", roomDistribution.tipoStanzaArea);
+//        roomDistribution.tipoStanzaArea = (TipiDiStanzaFlag)EditorGUILayout.EnumPopup("Tipo di Stanza", roomDistribution.tipoStanzaArea);
 
 //        // A seconda del tipo di stanza, mostra le sottocategorie pertinenti
 //        switch (roomDistribution.tipoStanzaArea)
 //        {
-//            case TipiDiStanzaFLag.Combattimento:
+//            case TipiDiStanzaFlag.Combattimento:
 //                roomDistribution.combattimento = (SottoCategoriaStanzaCombattimento)EditorGUILayout.EnumPopup("Sottocategoria Combattimento", roomDistribution.combattimento);
 
 //                break;
-//            case TipiDiStanzaFLag.Boss:
+//            case TipiDiStanzaFlag.Boss:
 //                roomDistribution.boss = (SottoCategoriaStanzaBoss)EditorGUILayout.EnumPopup("Sottocategoria Boss", roomDistribution.boss);
 //                break;
-//            case TipiDiStanzaFLag.Evento:
+//            case TipiDiStanzaFlag.Evento:
 //                roomDistribution.evento = (SottoCategoriaStanzaEvento)EditorGUILayout.EnumPopup("Sottocategoria Evento", roomDistribution.evento);
 //                break;
-//            case TipiDiStanzaFLag.Storia:
+//            case TipiDiStanzaFlag.Storia:
 //                //roomDistribution.storia = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup("Sottocategoria Storia", roomDistribution.storia, typeof(SottoCategoriaStanzaStoria), true);
 //                roomDistribution.storia = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup(new GUIContent("Sottocategoria Storia"), roomDistribution.storia);
 //                break;

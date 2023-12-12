@@ -576,6 +576,10 @@ PrefabInstance:
       propertyPath: currentArea
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2973093587929163369, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: m_puntiDiInteresseSpawnatiNellArea._serializedList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5394531132089578228, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
       propertyPath: m_NavMeshData
       value: 
@@ -624,5 +628,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8795614818685495207, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: firstArea
+      value: 
+      objectReference: {fileID: 11400000, guid: 7e4c27aa72b47e845b5be01421f6fdc9, type: 2}
+    - target: {fileID: 8795614818685495207, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: areeDaEsplorare.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8795614818685495207, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: areeDaEsplorare.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: e9872ea90c1cb3742ba450564af52b26, type: 2}
+    - target: {fileID: 8795614818685495207, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: areeDaEsplorare.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: ccab79e51e046314080524786535d205, type: 2}
+    - target: {fileID: 8795614818685495207, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: areeDaEsplorare.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: f79cc760caa9b9e45a4ddb27b45213c4, type: 2}
+    - target: {fileID: 8795614818685495207, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: areeDaEsplorare.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 7da81268baec24f49b69305dea3b38ee, type: 2}
+    - target: {fileID: 8795614818685495207, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
+      propertyPath: areeDaEsplorare.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 7ea8fa8962b5a1049a06cd6db3537325, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff8164ca03c057346a566da3d2a9cf9a, type: 3}
