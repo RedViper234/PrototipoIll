@@ -79,6 +79,14 @@ public abstract class AAttack : MonoBehaviour
     /// <param name="attackSO">The AttackSO containing the attack values.</param>
     public virtual void InitAttackValues(AttackSO attackSO, AWeapon weaponRef, Vector2 direction)
     {
+        weaponReference = weaponRef;
+
+        ActualDirection = direction;
+
+        attackSODefault = attackSO;
+
+        ManageAttackColliders(false);
+
         // Set the attack values based on the AttackSO
         TimeToActivateHitbox = attackSO.TimeToActivateHitbox;
 
@@ -92,7 +100,7 @@ public abstract class AAttack : MonoBehaviour
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
         
-        playerDrag = attackSO.PlayerDrag;
+        playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;
         
         DamageTypeAttack = attackSO.DamageType.Count > 0 ? attackSO.DamageType : weaponRef.DamageType;
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
@@ -101,7 +109,7 @@ public abstract class AAttack : MonoBehaviour
 
         AttackRangeAttack = attackSO.AttackRangeAttack != AttackRange.None ? attackSO.AttackRangeAttack : weaponRef.AttackRangeWeapon;
 
-        StatusEffects = attackSO.StatusEffects;
+        StatusEffects = attackSO.StatusEffects.Count > 0 ? attackSO.StatusEffects : weaponRef.StatusEffects;
 
         KnockbackForceAttack = attackSO.KnockbackForceAttack == 0 ? weaponRef.KnockbackForceWeapon : attackSO.KnockbackForceAttack;
 
@@ -112,12 +120,6 @@ public abstract class AAttack : MonoBehaviour
         BulletAliveTime = attackSO.BulletAliveTime;
 
         attackCollider2d = GetComponents<Collider2D>();
-
-        ManageAttackColliders(false);
-
-        weaponReference = weaponRef;
-        ActualDirection = direction;
-        attackSODefault = attackSO;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -236,8 +238,7 @@ public abstract class AAttack : MonoBehaviour
 
     protected IEnumerator DraggingPlayer()
     {
-        var wpController = weaponReference.transform.parent
-            .GetComponent<WeaponController>();
+        var wpController = weaponReference.transform.parent.GetComponent<WeaponController>();
        
         var playerCtrl = wpController.playerController;
        
@@ -265,7 +266,7 @@ public abstract class AAttack : MonoBehaviour
 
         var distance = Vector2.Distance(initPos, finalPos);
 
-        UnityEngine.Debug.Log($"Player Distance Run: {Math.Round(distance, 2)} in direction: {playerDrag.direction}");
+        // UnityEngine.Debug.Log($"Player Distance Run: {Math.Round(distance, 2)} in direction: {playerDrag.direction}");
         
         playerCtrl.ManageMovement(true);
     }
