@@ -21,9 +21,9 @@ MonoBehaviour:
   TimeComboProgression: 0
   PlayerSpeedModifier: 0.1
   PlayerDrag:
-    force: 600
+    force: 150
     waiting: 0.1
-    duration: 1
+    duration: 20
     direction: {x: 0, y: 0}
     dragDirection: 9
   BaseDamageAttack: 0

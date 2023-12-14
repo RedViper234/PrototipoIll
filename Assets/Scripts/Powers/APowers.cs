@@ -171,7 +171,7 @@ public abstract class APowers : MonoBehaviour
                 EventManager.HandleOnEnemyHit += TriggerOnEvent;
                 break;
             case TriggerType.OnEnemyDie:
-                EventManager.HandleOnEnemyDie += TriggerOnEvent;
+                EventManager.HandleOnEnemyDeath += TriggerOnEvent;
                 break;
             case TriggerType.OnEndOfDash:
                 EventManager.HandleEndOfDash += TriggerOnEvent;

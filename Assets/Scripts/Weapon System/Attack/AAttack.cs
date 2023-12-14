@@ -70,7 +70,7 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference;
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
     [field: SerializeField, MyReadOnly] public AttackSO attackSODefault;
-    [field: SerializeField, MyReadOnly] public Coroutine playerDragCoroutine;
+    [field: SerializeField, MyReadOnly] public GameObject playerDragCoroutine;
 
 
     /// <summary>
@@ -164,7 +164,7 @@ public abstract class AAttack : MonoBehaviour
 
             // UnityEngine.Debug.Log("Disattivato");
 
-            yield return new WaitForSeconds(TimeToEndHitbox + playerDrag.duration);
+            yield return new WaitForSeconds(TimeToEndHitbox);
 
             //End of attack
 
@@ -179,20 +179,22 @@ public abstract class AAttack : MonoBehaviour
         if(AttackRangeAttack == AttackRange.Melee) EventManager.HandlePlayerAttackBegin?.Invoke(true);
 
         if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
-
-        if(playerDragCoroutine != null)
-        {
-            StopCoroutine(playerDragCoroutine);
-            
-            playerDragCoroutine = null;
-        } 
     }
 
     public virtual void DoAfterWaitHitboxActivation()
     {
         ManageAttackColliders(true);
 
-        playerDragCoroutine = StartCoroutine(DraggingPlayer());
+        CreateDragObject();
+    }
+
+    private void CreateDragObject()
+    {
+        UnityEngine.Debug.Log("CreateDragObject");
+        GameObject dragobj = new GameObject();
+        dragobj.name = "DragObject";
+        dragobj.AddComponent<PlayerDrag>();
+        dragobj.GetComponent<PlayerDrag>().StartDragging(weaponReference, playerDrag, ActualDirection);
     }
 
     public virtual void DoBeforeAttackEnd()
@@ -233,84 +235,6 @@ public abstract class AAttack : MonoBehaviour
         foreach (Collider2D collider in attackCollider2d)
         {
             collider.enabled = isEnabled;
-        }
-    }
-
-    protected IEnumerator DraggingPlayer()
-    {
-        var wpController = weaponReference.transform.parent.GetComponent<WeaponController>();
-       
-        var playerCtrl = wpController.playerController;
-       
-        var playerRb = playerCtrl.GetComponent<Rigidbody2D>();
-
-        playerCtrl.ManageMovement(false);
-        
-        var initPos = playerCtrl.transform.position;
-        
-        ChooseDirection();
-
-        var dragForce = playerDrag.direction.normalized * playerDrag.force;
-        var startTime = Time.time;
-        var endTime = startTime + playerDrag.duration;
-
-        while (Time.time < endTime)
-        {
-            playerRb.AddForce(dragForce, ForceMode2D.Force);
-            yield return new WaitForFixedUpdate();
-        }
-
-        playerRb.velocity = Vector2.zero;
-
-        var finalPos = playerCtrl.transform.position;
-
-        var distance = Vector2.Distance(initPos, finalPos);
-
-        // UnityEngine.Debug.Log($"Player Distance Run: {Math.Round(distance, 2)} in direction: {playerDrag.direction}");
-        
-        playerCtrl.ManageMovement(true);
-    }
-
-    private void ChooseDirection()
-    {
-        switch(playerDrag.dragDirection)
-        {
-            case DragDirection.WeaponDefault:
-                playerDrag.direction = weaponReference.playerDrag.direction;
-                break;
-            case DragDirection.Up:
-                playerDrag.direction = Vector2.up;
-                break;
-            case DragDirection.Down:
-                playerDrag.direction = Vector2.down;
-                break;
-            case DragDirection.Left:
-                playerDrag.direction = Vector2.left;
-                break;
-            case DragDirection.Right:
-                playerDrag.direction = Vector2.right;
-                break;
-            case DragDirection.UpLeft:
-                playerDrag.direction = Vector2.up + Vector2.left;
-                break;
-            case DragDirection.UpRight:
-                playerDrag.direction = Vector2.up + Vector2.right;
-                break;
-            case DragDirection.DownLeft:
-                playerDrag.direction = Vector2.down + Vector2.left;
-                break;
-            case DragDirection.DownRight:
-                playerDrag.direction = Vector2.down + Vector2.right;
-                break;
-            case DragDirection.Forward:
-                playerDrag.direction = ActualDirection;
-                break;
-            case DragDirection.Backward:
-                playerDrag.direction = -ActualDirection;
-                break;
-            default:
-                playerDrag.direction = ActualDirection;
-                break;
         }
     }
 }

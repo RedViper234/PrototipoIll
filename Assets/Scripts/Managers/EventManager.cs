@@ -14,10 +14,10 @@ public static class EventManager
     public static UnityAction HandleDeath;
     public static UnityAction<int> HandleEveryNRoom;
     public static UnityAction<float> HandleEveryNTime;
-    public static UnityAction<GameObject> HandleOnPlayerHit;
+    public static UnityAction<GameObject> HandleOnPlayerHit; //Quando il player colpisce un nemico
     public static UnityAction HandlePlayerDeath;
-    public static UnityAction HandleOnEnemyHit;
-    public static UnityAction HandleOnEnemyDie;
+    public static UnityAction HandleOnEnemyHit; //Quando un nemico colpisce il player
+    public static UnityAction HandleOnEnemyDeath;
     public static UnityAction HandlePlayerDash;
     public static UnityAction HandlePlayerJump;
     public static UnityAction HandlePlayerDashEnd;

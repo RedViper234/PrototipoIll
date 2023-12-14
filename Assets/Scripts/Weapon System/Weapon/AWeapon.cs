@@ -15,7 +15,7 @@ public enum AttackRange
 [Serializable]
 public struct StatusStruct
 {
-    public PowerSubType type;
+    public DamageType.DamageTypes type;
     [Range(0, 1)] public float probability;
 }
 
