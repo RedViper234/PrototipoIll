@@ -90,6 +90,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = -1;
+
         EventManager.HandlePlayerAttackBegin += SetInAttack;
 
         if (rb == null)
@@ -645,6 +647,31 @@ public class PlayerController : MonoBehaviour
     public void SetInAttack(bool isAttacking)
     {
         waitingForAttackPerformed = isAttacking;
+    }
+
+    public void ManageMovement(bool isActivate)
+    {
+        if(isActivate)
+        {
+            if(!actions.Player.Move.enabled)
+            {
+                Debug.Log("Enable Move");
+                actions.Player.Move.Enable();
+                actions.Player.Move.performed += OnMove;
+                actions.Player.Move.canceled += OnMove;
+            }
+        }
+        else if(!isActivate)
+        {
+            if(actions.Player.Move.enabled)
+            {
+                Debug.Log("Disable Move");
+                actions.Player.Move.Disable();
+
+                actions.Player.Move.performed -= OnMove;
+                actions.Player.Move.canceled -= OnMove;
+            }
+        }
     }
 }
 

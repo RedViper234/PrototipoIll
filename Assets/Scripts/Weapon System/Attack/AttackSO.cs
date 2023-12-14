@@ -24,7 +24,7 @@ public class AttackSO : ScriptableObject
     public PlayerDragStruct PlayerDrag;
     public float BaseDamageAttack;
     public AttackRange AttackRangeAttack;
-    public DamageType.DamageTypes DamageType;
+    public List<DamageType.DamageTypes> DamageType;
     [SerializeField] public List<StatusStruct> StatusEffects;
     public float KnockbackForceAttack;
     public MultiAttack MultiAttack;

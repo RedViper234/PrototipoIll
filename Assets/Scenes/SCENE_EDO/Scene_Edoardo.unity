@@ -464,6 +464,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6451886822264406442, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: AttackRangeWeapon
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451886822264406442, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: playerDrag.dragDirection
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
 --- !u!1 &1596141155

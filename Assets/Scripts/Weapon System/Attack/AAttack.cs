@@ -55,7 +55,7 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField] public PlayerDragStruct playerDrag;
     [field: SerializeField] public float BaseDamageAttack;
     [field: SerializeField] public AttackRange AttackRangeAttack;
-    [field: SerializeField] public DamageType.DamageTypes DamageType;
+    [field: SerializeField] public List<DamageType.DamageTypes> DamageTypeAttack;
     [field: SerializeField] public List<StatusStruct> StatusEffects;
     [field: SerializeField] public float KnockbackForceAttack;
     [field: SerializeField] public MultiAttack MultiAttack;
@@ -91,19 +91,19 @@ public abstract class AAttack : MonoBehaviour
         AttackCooldown = attackSO.AttackCooldown;
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
+        
         playerDrag = attackSO.PlayerDrag;
-
+        
+        DamageTypeAttack = attackSO.DamageType.Count > 0 ? attackSO.DamageType : weaponRef.DamageType;
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
         damageInstance.damageValueAtkOrSec = BaseDamageAttack;
-        damageInstance.type = attackSO.DamageType;
+        damageInstance.type = DamageTypeAttack[0];
 
-        AttackRangeAttack = attackSO.AttackRangeAttack;
-
-        DamageType = attackSO.DamageType;
+        AttackRangeAttack = attackSO.AttackRangeAttack != AttackRange.None ? attackSO.AttackRangeAttack : weaponRef.AttackRangeWeapon;
 
         StatusEffects = attackSO.StatusEffects;
 
-        KnockbackForceAttack = attackSO.KnockbackForceAttack;
+        KnockbackForceAttack = attackSO.KnockbackForceAttack == 0 ? weaponRef.KnockbackForceWeapon : attackSO.KnockbackForceAttack;
 
         MultiAttack = attackSO.MultiAttack;
 
@@ -204,6 +204,8 @@ public abstract class AAttack : MonoBehaviour
 
         EventManager.HandlePlayerAttackBegin?.Invoke(false);
 
+        weaponReference.transform.parent.GetComponent<WeaponController>().playerController.ManageMovement(true);
+    
         if(AttackRangeAttack == AttackRange.Melee) Destroy(this.gameObject);   
     }
 
@@ -211,7 +213,7 @@ public abstract class AAttack : MonoBehaviour
     {
         if(other.GetComponent<Damageable>())
         {
-            UnityEngine.Debug.Log("HIT");
+            // UnityEngine.Debug.Log("HIT");
 
             EventManager.HandleOnPlayerHit?.Invoke(other.gameObject);
 
@@ -234,33 +236,44 @@ public abstract class AAttack : MonoBehaviour
 
     protected IEnumerator DraggingPlayer()
     {
-        GameObject player = weaponReference.transform.parent.GetComponent<WeaponController>().playerController.gameObject;
+        WeaponController wpController = weaponReference.transform.parent
+            .GetComponent<WeaponController>();
 
-        // Wait for the specified amount of time before applying the drag
+        GameObject player = wpController.playerController.gameObject;
+
+        PlayerController playerCtrl = player.GetComponent<PlayerController>();
+        Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+
+        playerCtrl.ManageMovement(false);
+
+        Vector2 initPos = player.transform.position;
+
         yield return new WaitForSeconds(playerDrag.waiting);
 
-        // Calculate the end time of the dragging effect
-        var endDragTime = Time.time + playerDrag.duration;
-        var timer = 0f;
+        float endDragTime = Time.time + playerDrag.duration;
+        float timer = 0f;
         
         ChooseDirection();
 
-        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        playerRb.velocity = Vector2.zero;
 
-        // Continue to apply the drag effect until the end time is reached
-        while (timer <= playerDrag.duration)
+        Vector2 dragForce = playerDrag.direction.normalized * playerDrag.force;
+
+        while (timer < playerDrag.duration - 0.02)
         {
-            timer += Time.deltaTime;
-            
-            // Apply the dragging force in the specified direction
-            // UnityEngine.Debug.Log($" DIR: {playerDrag.direction.normalized * playerDrag.force} - T: {timer}");
+            timer += Time.fixedDeltaTime;
+            // UnityEngine.Debug.Log("timer: " + timer);
+            // UnityEngine.Debug.Log("fixedtimer" + Time.fixedDeltaTime);
 
-            player.GetComponent<Rigidbody2D>().AddForce(playerDrag.direction.normalized * playerDrag.force, ForceMode2D.Force);
-            
+            playerRb.AddForce(dragForce);
+
             yield return null;
         }
 
-        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        // Vector2 finalPos = player.transform.position;
+        // UnityEngine.Debug.Log($"Player Distance Run: {Math.Round(Vector2.Distance(initPos, finalPos), 2)} in direction: {playerDrag.direction}");
+
+        playerRb.velocity = Vector2.zero;
     }
 
     private void ChooseDirection()
