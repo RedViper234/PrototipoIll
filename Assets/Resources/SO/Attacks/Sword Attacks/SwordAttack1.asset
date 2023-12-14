@@ -21,14 +21,14 @@ MonoBehaviour:
   TimeComboProgression: 0
   PlayerSpeedModifier: 0.1
   PlayerDrag:
-    force: 50
+    force: 600
     waiting: 0.1
-    duration: 0.1
+    duration: 1
     direction: {x: 0, y: 0}
     dragDirection: 9
   BaseDamageAttack: 0
-  AttackRangeAttack: 2
-  DamageType: 1
+  AttackRangeAttack: 0
+  DamageType: 
   StatusEffects: []
   KnockbackForceAttack: 0
   MultiAttack:

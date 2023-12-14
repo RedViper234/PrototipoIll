@@ -236,44 +236,38 @@ public abstract class AAttack : MonoBehaviour
 
     protected IEnumerator DraggingPlayer()
     {
-        WeaponController wpController = weaponReference.transform.parent
+        var wpController = weaponReference.transform.parent
             .GetComponent<WeaponController>();
-
-        GameObject player = wpController.playerController.gameObject;
-
-        PlayerController playerCtrl = player.GetComponent<PlayerController>();
-        Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+       
+        var playerCtrl = wpController.playerController;
+       
+        var playerRb = playerCtrl.GetComponent<Rigidbody2D>();
 
         playerCtrl.ManageMovement(false);
-
-        Vector2 initPos = player.transform.position;
-
-        yield return new WaitForSeconds(playerDrag.waiting);
-
-        float endDragTime = Time.time + playerDrag.duration;
-        float timer = 0f;
+        
+        var initPos = playerCtrl.transform.position;
         
         ChooseDirection();
 
-        playerRb.velocity = Vector2.zero;
+        var dragForce = playerDrag.direction.normalized * playerDrag.force;
+        var startTime = Time.time;
+        var endTime = startTime + playerDrag.duration;
 
-        Vector2 dragForce = playerDrag.direction.normalized * playerDrag.force;
-
-        while (timer < playerDrag.duration - 0.02)
+        while (Time.time < endTime)
         {
-            timer += Time.fixedDeltaTime;
-            // UnityEngine.Debug.Log("timer: " + timer);
-            // UnityEngine.Debug.Log("fixedtimer" + Time.fixedDeltaTime);
-
-            playerRb.AddForce(dragForce);
-
-            yield return null;
+            playerRb.AddForce(dragForce, ForceMode2D.Force);
+            yield return new WaitForFixedUpdate();
         }
 
-        // Vector2 finalPos = player.transform.position;
-        // UnityEngine.Debug.Log($"Player Distance Run: {Math.Round(Vector2.Distance(initPos, finalPos), 2)} in direction: {playerDrag.direction}");
-
         playerRb.velocity = Vector2.zero;
+
+        var finalPos = playerCtrl.transform.position;
+
+        var distance = Vector2.Distance(initPos, finalPos);
+
+        UnityEngine.Debug.Log($"Player Distance Run: {Math.Round(distance, 2)} in direction: {playerDrag.direction}");
+        
+        playerCtrl.ManageMovement(true);
     }
 
     private void ChooseDirection()
