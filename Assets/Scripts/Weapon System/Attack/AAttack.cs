@@ -19,6 +19,14 @@ public struct PlayerDragStruct
     public float force, waiting, duration;
     [MyReadOnly] public Vector2 direction;
     public DragDirection dragDirection;
+    public PlayerDragActiovationMoment activationMoment;
+}
+
+[Serializable]
+public enum PlayerDragActiovationMoment
+{
+    BeforeAttack,
+    AfterAttack
 }
 
 [Serializable]
@@ -179,27 +187,21 @@ public abstract class AAttack : MonoBehaviour
         if(AttackRangeAttack == AttackRange.Melee) EventManager.HandlePlayerAttackBegin?.Invoke(true);
 
         if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
+
+        if(playerDrag.activationMoment == PlayerDragActiovationMoment.BeforeAttack) CreateDragObject();
     }
 
     public virtual void DoAfterWaitHitboxActivation()
     {
         ManageAttackColliders(true);
-
-        CreateDragObject();
     }
 
-    private void CreateDragObject()
-    {
-        UnityEngine.Debug.Log("CreateDragObject");
-        GameObject dragobj = new GameObject();
-        dragobj.name = "DragObject";
-        dragobj.AddComponent<PlayerDrag>();
-        dragobj.GetComponent<PlayerDrag>().StartDragging(weaponReference, playerDrag, ActualDirection);
-    }
 
     public virtual void DoBeforeAttackEnd()
     {
         ManageAttackColliders(false);
+
+        if(playerDrag.activationMoment == PlayerDragActiovationMoment.AfterAttack) CreateDragObject();
     }
 
     public virtual void DoInAttackEnd()
@@ -236,5 +238,13 @@ public abstract class AAttack : MonoBehaviour
         {
             collider.enabled = isEnabled;
         }
+    }
+
+    private void CreateDragObject()
+    {
+        GameObject dragobj = new GameObject();
+        dragobj.name = "DragObject";
+        dragobj.AddComponent<PlayerDrag>();
+        dragobj.GetComponent<PlayerDrag>().StartDragging(weaponReference, playerDrag, ActualDirection);
     }
 }

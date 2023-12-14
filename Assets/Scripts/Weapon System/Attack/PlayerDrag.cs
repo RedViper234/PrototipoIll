@@ -30,8 +30,6 @@ public class PlayerDrag: MonoBehaviour
         var startTime = Time.time;
         var endTime = startTime + playerDrag.duration;
 
-        Debug.Log("Drag force: " + dragForce);
-
         while (Time.time < endTime)
         {
             playerRb.AddForce(dragForce, ForceMode2D.Force);
@@ -43,8 +41,6 @@ public class PlayerDrag: MonoBehaviour
         var finalPos = playerCtrl.transform.position;
 
         var distance = Vector2.Distance(initPos, finalPos);
-
-        // UnityEngine.Debug.Log($"Player Distance Run: {Math.Round(distance, 2)} in direction: {playerDrag.direction}");
         
         playerCtrl.ManageMovement(true);
 
