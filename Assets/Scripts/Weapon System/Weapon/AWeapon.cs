@@ -145,7 +145,7 @@ public abstract class AWeapon : MonoBehaviour
 
     protected virtual IEnumerator AttackCoroutine()
     {
-        if (t_cooldownAttack <= 0 || !CheckAttackChildren())
+        if (t_cooldownAttack <= 0 && !CheckAttackChildren())
         {
             if(comboIndex == ComboList.Count) 
             {

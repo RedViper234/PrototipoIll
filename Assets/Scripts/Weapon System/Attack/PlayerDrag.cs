@@ -38,9 +38,9 @@ public class PlayerDrag: MonoBehaviour
 
         playerRb.velocity = Vector2.zero;
 
-        var finalPos = playerCtrl.transform.position;
+        // var finalPos = playerCtrl.transform.position;
 
-        var distance = Vector2.Distance(initPos, finalPos);
+        // var distance = Vector2.Distance(initPos, finalPos);
         
         playerCtrl.ManageMovement(true);
 

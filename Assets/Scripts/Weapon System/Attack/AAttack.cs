@@ -16,6 +16,7 @@ public struct MultiAttack
 [Serializable]
 public struct PlayerDragStruct
 {
+    public bool canDrag;
     public float force, waiting, duration;
     [MyReadOnly] public Vector2 direction;
     public DragDirection dragDirection;
@@ -108,7 +109,7 @@ public abstract class AAttack : MonoBehaviour
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
         
-        playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;
+        if(playerDrag.canDrag) playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;
         
         DamageTypeAttack = attackSO.DamageType.Count > 0 ? attackSO.DamageType : weaponRef.DamageType;
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
@@ -156,7 +157,7 @@ public abstract class AAttack : MonoBehaviour
 
             DoBeforeWaitHitboxActivation();
 
-            yield return new WaitForSeconds(TimeToActivateHitbox);
+            yield return new WaitForSeconds(TimeToActivateHitbox + (playerDrag.activationMoment == PlayerDragActiovationMoment.BeforeAttack ? playerDrag.duration : 0));
 
             //Activate Hitbox
             
@@ -172,7 +173,7 @@ public abstract class AAttack : MonoBehaviour
 
             // UnityEngine.Debug.Log("Disattivato");
 
-            yield return new WaitForSeconds(TimeToEndHitbox);
+            yield return new WaitForSeconds(TimeToEndHitbox + (playerDrag.activationMoment == PlayerDragActiovationMoment.AfterAttack ? playerDrag.duration : 0));
 
             //End of attack
 
@@ -244,6 +245,7 @@ public abstract class AAttack : MonoBehaviour
     {
         GameObject dragobj = new GameObject();
         dragobj.name = "DragObject";
+        dragobj.transform.parent = weaponReference.transform;
         dragobj.AddComponent<PlayerDrag>();
         dragobj.GetComponent<PlayerDrag>().StartDragging(weaponReference, playerDrag, ActualDirection);
     }
