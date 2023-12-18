@@ -16,7 +16,7 @@ public struct MultiAttack
 [Serializable]
 public struct PlayerDragStruct
 {
-    // public bool canDrag;
+    public bool canDrag;
     public float force, waiting, duration;
     [MyReadOnly] public Vector2 direction;
     public DragDirection dragDirection;
@@ -110,7 +110,16 @@ public abstract class AAttack : MonoBehaviour
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
         
-        playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;
+        if(attackSO.PlayerDrag.canDrag == true)
+        {
+            playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;  
+        }
+        else
+        {
+            playerDrag.force = 0;
+            playerDrag.duration = 0;
+            playerDrag.waiting = 0;
+        }
         
         DamageTypeAttack = attackSO.DamageType.Count > 0 ? attackSO.DamageType : weaponRef.DamageType;
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
