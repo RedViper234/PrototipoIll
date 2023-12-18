@@ -119,6 +119,7 @@ public abstract class AAttack : MonoBehaviour
             playerDrag.force = 0;
             playerDrag.duration = 0;
             playerDrag.waiting = 0;
+            playerDrag.activationMoment = PlayerDragActiovationMoment.None;
         }
         
         DamageTypeAttack = attackSO.DamageType.Count > 0 ? attackSO.DamageType : weaponRef.DamageType;
