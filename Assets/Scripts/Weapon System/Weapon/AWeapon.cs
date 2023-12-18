@@ -15,7 +15,7 @@ public enum AttackRange
 [Serializable]
 public struct StatusStruct
 {
-    public PowerSubType type;
+    public DamageType.DamageTypes type;
     [Range(0, 1)] public float probability;
 }
 
@@ -145,7 +145,7 @@ public abstract class AWeapon : MonoBehaviour
 
     protected virtual IEnumerator AttackCoroutine()
     {
-        if (t_cooldownAttack <= 0 || !CheckAttackChildren())
+        if (t_cooldownAttack <= 0 && !CheckAttackChildren())
         {
             if(comboIndex == ComboList.Count) 
             {

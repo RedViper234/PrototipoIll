@@ -412,6 +412,14 @@ PrefabInstance:
       propertyPath: m_Interpolate
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5664604751966636653, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5664604751966636653, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 5664604751966636654, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -463,6 +471,26 @@ PrefabInstance:
     - target: {fileID: 5664604751966636657, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451886822264406442, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: AttackRangeWeapon
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451886822264406442, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: DamageType.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451886822264406442, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: ComboList.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
+    - target: {fileID: 6451886822264406442, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: ComboList.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: f05905b2e805c3240aab6571c1fbb7f6, type: 2}
+    - target: {fileID: 6451886822264406442, guid: baea1d1e125063640923cb8763fb25c3, type: 3}
+      propertyPath: playerDrag.dragDirection
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baea1d1e125063640923cb8763fb25c3, type: 3}

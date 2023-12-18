@@ -16,9 +16,18 @@ public struct MultiAttack
 [Serializable]
 public struct PlayerDragStruct
 {
+    public bool canDrag;
     public float force, waiting, duration;
     [MyReadOnly] public Vector2 direction;
     public DragDirection dragDirection;
+    public PlayerDragActiovationMoment activationMoment;
+}
+
+[Serializable]
+public enum PlayerDragActiovationMoment
+{
+    BeforeAttack,
+    AfterAttack
 }
 
 [Serializable]
@@ -55,7 +64,7 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField] public PlayerDragStruct playerDrag;
     [field: SerializeField] public float BaseDamageAttack;
     [field: SerializeField] public AttackRange AttackRangeAttack;
-    [field: SerializeField] public DamageType.DamageTypes DamageType;
+    [field: SerializeField] public List<DamageType.DamageTypes> DamageTypeAttack;
     [field: SerializeField] public List<StatusStruct> StatusEffects;
     [field: SerializeField] public float KnockbackForceAttack;
     [field: SerializeField] public MultiAttack MultiAttack;
@@ -70,7 +79,7 @@ public abstract class AAttack : MonoBehaviour
     [field: SerializeField, MyReadOnly] public AWeapon weaponReference;
     [field: SerializeField, MyReadOnly] public Vector2 ActualDirection;
     [field: SerializeField, MyReadOnly] public AttackSO attackSODefault;
-    [field: SerializeField, MyReadOnly] public Coroutine playerDragCoroutine;
+    [field: SerializeField, MyReadOnly] public GameObject playerDragCoroutine;
 
 
     /// <summary>
@@ -79,6 +88,14 @@ public abstract class AAttack : MonoBehaviour
     /// <param name="attackSO">The AttackSO containing the attack values.</param>
     public virtual void InitAttackValues(AttackSO attackSO, AWeapon weaponRef, Vector2 direction)
     {
+        weaponReference = weaponRef;
+
+        ActualDirection = direction;
+
+        attackSODefault = attackSO;
+
+        ManageAttackColliders(false);
+
         // Set the attack values based on the AttackSO
         TimeToActivateHitbox = attackSO.TimeToActivateHitbox;
 
@@ -91,19 +108,19 @@ public abstract class AAttack : MonoBehaviour
         AttackCooldown = attackSO.AttackCooldown;
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
-        playerDrag = attackSO.PlayerDrag;
-
+        
+        if(playerDrag.canDrag) playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;
+        
+        DamageTypeAttack = attackSO.DamageType.Count > 0 ? attackSO.DamageType : weaponRef.DamageType;
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
         damageInstance.damageValueAtkOrSec = BaseDamageAttack;
-        damageInstance.type = attackSO.DamageType;
+        damageInstance.type = DamageTypeAttack[0];
 
-        AttackRangeAttack = attackSO.AttackRangeAttack;
+        AttackRangeAttack = attackSO.AttackRangeAttack != AttackRange.None ? attackSO.AttackRangeAttack : weaponRef.AttackRangeWeapon;
 
-        DamageType = attackSO.DamageType;
+        StatusEffects = attackSO.StatusEffects.Count > 0 ? attackSO.StatusEffects : weaponRef.StatusEffects;
 
-        StatusEffects = attackSO.StatusEffects;
-
-        KnockbackForceAttack = attackSO.KnockbackForceAttack;
+        KnockbackForceAttack = attackSO.KnockbackForceAttack == 0 ? weaponRef.KnockbackForceWeapon : attackSO.KnockbackForceAttack;
 
         MultiAttack = attackSO.MultiAttack;
 
@@ -112,12 +129,6 @@ public abstract class AAttack : MonoBehaviour
         BulletAliveTime = attackSO.BulletAliveTime;
 
         attackCollider2d = GetComponents<Collider2D>();
-
-        ManageAttackColliders(false);
-
-        weaponReference = weaponRef;
-        ActualDirection = direction;
-        attackSODefault = attackSO;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -146,7 +157,7 @@ public abstract class AAttack : MonoBehaviour
 
             DoBeforeWaitHitboxActivation();
 
-            yield return new WaitForSeconds(TimeToActivateHitbox);
+            yield return new WaitForSeconds(TimeToActivateHitbox + (playerDrag.activationMoment == PlayerDragActiovationMoment.BeforeAttack ? playerDrag.duration : 0));
 
             //Activate Hitbox
             
@@ -162,7 +173,7 @@ public abstract class AAttack : MonoBehaviour
 
             // UnityEngine.Debug.Log("Disattivato");
 
-            yield return new WaitForSeconds(TimeToEndHitbox + playerDrag.duration);
+            yield return new WaitForSeconds(TimeToEndHitbox + (playerDrag.activationMoment == PlayerDragActiovationMoment.AfterAttack ? playerDrag.duration : 0));
 
             //End of attack
 
@@ -178,24 +189,20 @@ public abstract class AAttack : MonoBehaviour
 
         if(AttackRangeAttack == AttackRange.Ranged) Destroy(this.gameObject, BulletAliveTime);
 
-        if(playerDragCoroutine != null)
-        {
-            StopCoroutine(playerDragCoroutine);
-            
-            playerDragCoroutine = null;
-        } 
+        if(playerDrag.activationMoment == PlayerDragActiovationMoment.BeforeAttack) CreateDragObject();
     }
 
     public virtual void DoAfterWaitHitboxActivation()
     {
         ManageAttackColliders(true);
-
-        playerDragCoroutine = StartCoroutine(DraggingPlayer());
     }
+
 
     public virtual void DoBeforeAttackEnd()
     {
         ManageAttackColliders(false);
+
+        if(playerDrag.activationMoment == PlayerDragActiovationMoment.AfterAttack) CreateDragObject();
     }
 
     public virtual void DoInAttackEnd()
@@ -204,6 +211,8 @@ public abstract class AAttack : MonoBehaviour
 
         EventManager.HandlePlayerAttackBegin?.Invoke(false);
 
+        weaponReference.transform.parent.GetComponent<WeaponController>().playerController.ManageMovement(true);
+    
         if(AttackRangeAttack == AttackRange.Melee) Destroy(this.gameObject);   
     }
 
@@ -211,7 +220,7 @@ public abstract class AAttack : MonoBehaviour
     {
         if(other.GetComponent<Damageable>())
         {
-            UnityEngine.Debug.Log("HIT");
+            // UnityEngine.Debug.Log("HIT");
 
             EventManager.HandleOnPlayerHit?.Invoke(other.gameObject);
 
@@ -232,77 +241,12 @@ public abstract class AAttack : MonoBehaviour
         }
     }
 
-    protected IEnumerator DraggingPlayer()
+    private void CreateDragObject()
     {
-        GameObject player = weaponReference.transform.parent.GetComponent<WeaponController>().playerController.gameObject;
-
-        // Wait for the specified amount of time before applying the drag
-        yield return new WaitForSeconds(playerDrag.waiting);
-
-        // Calculate the end time of the dragging effect
-        var endDragTime = Time.time + playerDrag.duration;
-        var timer = 0f;
-        
-        ChooseDirection();
-
-        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-
-        // Continue to apply the drag effect until the end time is reached
-        while (timer <= playerDrag.duration)
-        {
-            timer += Time.deltaTime;
-            
-            // Apply the dragging force in the specified direction
-            // UnityEngine.Debug.Log($" DIR: {playerDrag.direction.normalized * playerDrag.force} - T: {timer}");
-
-            player.GetComponent<Rigidbody2D>().AddForce(playerDrag.direction.normalized * playerDrag.force, ForceMode2D.Force);
-            
-            yield return null;
-        }
-
-        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-    }
-
-    private void ChooseDirection()
-    {
-        switch(playerDrag.dragDirection)
-        {
-            case DragDirection.WeaponDefault:
-                playerDrag.direction = weaponReference.playerDrag.direction;
-                break;
-            case DragDirection.Up:
-                playerDrag.direction = Vector2.up;
-                break;
-            case DragDirection.Down:
-                playerDrag.direction = Vector2.down;
-                break;
-            case DragDirection.Left:
-                playerDrag.direction = Vector2.left;
-                break;
-            case DragDirection.Right:
-                playerDrag.direction = Vector2.right;
-                break;
-            case DragDirection.UpLeft:
-                playerDrag.direction = Vector2.up + Vector2.left;
-                break;
-            case DragDirection.UpRight:
-                playerDrag.direction = Vector2.up + Vector2.right;
-                break;
-            case DragDirection.DownLeft:
-                playerDrag.direction = Vector2.down + Vector2.left;
-                break;
-            case DragDirection.DownRight:
-                playerDrag.direction = Vector2.down + Vector2.right;
-                break;
-            case DragDirection.Forward:
-                playerDrag.direction = ActualDirection;
-                break;
-            case DragDirection.Backward:
-                playerDrag.direction = -ActualDirection;
-                break;
-            default:
-                playerDrag.direction = ActualDirection;
-                break;
-        }
+        GameObject dragobj = new GameObject();
+        dragobj.name = "DragObject";
+        dragobj.transform.parent = weaponReference.transform;
+        dragobj.AddComponent<PlayerDrag>();
+        dragobj.GetComponent<PlayerDrag>().StartDragging(weaponReference, playerDrag, ActualDirection);
     }
 }
