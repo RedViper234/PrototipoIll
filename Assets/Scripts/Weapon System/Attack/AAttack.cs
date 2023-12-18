@@ -16,7 +16,7 @@ public struct MultiAttack
 [Serializable]
 public struct PlayerDragStruct
 {
-    public bool canDrag;
+    // public bool canDrag;
     public float force, waiting, duration;
     [MyReadOnly] public Vector2 direction;
     public DragDirection dragDirection;
