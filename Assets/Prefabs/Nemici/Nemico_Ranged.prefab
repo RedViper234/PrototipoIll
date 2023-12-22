@@ -72,7 +72,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1885312813
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -591307083, guid: d82aec5dd233d204eb150793e176c485, type: 3}
   m_Color: {r: 0.6792453, g: 0, b: 0.6077176, a: 1}
@@ -175,6 +175,8 @@ MonoBehaviour:
   m_statisticheNemico: {fileID: 11400000, guid: 9a6c90e10f9e9e54dbaaa142005b6a36, type: 2}
   isNotAttacking: 1
   target: {fileID: 0}
+  enemyIsMutated: 0
+  ID: Nemico_Ranged
   currentAgent: {fileID: 0}
   enemyStats: {fileID: 0}
   damageable: {fileID: 0}
@@ -193,9 +195,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 5
   currentHealth: 5
-  damageResistance: 0
+  ustioniAccumulate: 0
+  additiveDamageResistances: []
+  staticDamageResistances: []
+  additiveDamageVulnerabilities: []
+  staticDamageVulnerabilities: []
+  ResistanceDamageCap: []
+  VulnerabilityDamageCap: []
   damageImmunity: 0
-  immunityFrameDuration: 0
 --- !u!61 &1033136582417549656
 BoxCollider2D:
   m_ObjectHideFlags: 0

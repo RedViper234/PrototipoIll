@@ -26,6 +26,7 @@ public class StateMachineController : MonoBehaviour
         {
             currentState?.UpdateState(this);
         }
+        
     }
     private void OnDrawGizmos() => currentState?.DrawMyGizmos(this);
     public void TransitionToState(State nextState)

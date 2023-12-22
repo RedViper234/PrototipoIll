@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI_Toolkit/StyleSheets/StyleSheetTemplatePuntoDiInteresse.uss?fileID=7433441132597879392&amp;guid=a29fc3e7974696946a2239ca734be71b&amp;type=3#StyleSheetTemplatePuntoDiInteresse" />
+    <ui:Button text="Button" display-tooltip-when-elided="true" name="PuntoDiInteresse" style="background-image: url(&apos;project://database/Assets/Sprites/00_Player/atlas.png?fileID=-997972493423046422&amp;guid=e8a7dce99228999418862e20730d6551&amp;type=3#atlas_0&apos;); width: 10%;" />
+</ui:UXML>

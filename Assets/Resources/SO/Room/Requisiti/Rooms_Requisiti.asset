@@ -23,8 +23,8 @@ MonoBehaviour:
     operatori: 0
     quantita: 0
   valoreQuantitaUstioni:
-    operatori: 2
-    quantitaUstioni: 0
+    operatori: 1
+    quantitaUstioni: 10
   valoriPerPoteri:
     listaTipiPoteriPerRequisiti: 1
     operatori: 0

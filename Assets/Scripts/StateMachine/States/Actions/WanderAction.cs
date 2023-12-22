@@ -68,7 +68,7 @@ public class WanderAction : Action
                 bool isDestinationValid = NavMesh.SamplePosition(randomDestination, out hit, 1f, controller.currentEnemy.currentAgent.areaMask);
                 if (isDestinationValid)
                 {
-                    controller.currentEnemy.currentAgent.SetDestination(randomDestination);
+                    controller.currentEnemy?.currentAgent?.SetDestination(randomDestination);
                     return; // Uscita dalla funzione se viene trovata una destinazione valida
                 }
             }

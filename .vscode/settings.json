@@ -56,9 +56,9 @@
         "Cooldown",
         "Hitbox",
         "Knockback",
-        "Lanciafiamme",
         "Meeleattack",
-        "Scriptable",
-        "Spargere"
-    ]
+        "Scriptable"
+    ],
+    "editor.foldingStrategy": "indentation",
+    "editor.stickyScroll.defaultModel": "indentationModel"
 }

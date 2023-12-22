@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9b879268eee46f448aacdba69744836, type: 3}
+  m_Name: Punto Di Prova Tutorial 7
+  m_EditorClassIdentifier: 
+  listaDiStanzeUniche: []
+  spawnAutomatico: 0
+  spawnRicompense: []
+  numeroRicompenseSpawn: 0
+  accettaRipetizioneRicompense: 0
+  respawn: 0
+  respawnLimit: 0
+  descrizione: "Entro in quella stanza decadente, le tende scure e pesanti che celano
+    le finestre, gettano l'ambiente nell'oscurit\xE0, interrotta solo da una luce
+    fioca proveniente da candele sporadicamente posizionate. Le ombre danzano sulle
+    pareti, creando forme inquietanti che sembrano raccontare storie di tempi passati.\r"
+  movementCost: -1
+  secTimeBattleProbability: -1
+  points: []
+  flagOnEnter: []
+  flagOnEnterOnlyFirstTime: 0
+  blockSpecialRoom: 0

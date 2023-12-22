@@ -54,9 +54,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   disactivated: 0
-  damage: 10
-  Illdamage: 10
-  CorruptionDamage: 0
+  damageInstance: []
   destroyOnTouch: 0
   targetLayer:
     serializedVersion: 2
@@ -92,6 +90,8 @@ MonoBehaviour:
   m_statisticheNemico: {fileID: 11400000, guid: 3ba6f1bde39e5e345b9506ce735e7db0, type: 2}
   isNotAttacking: 1
   target: {fileID: 0}
+  enemyIsMutated: 0
+  ID: Nemico_Zombi
   currentAgent: {fileID: 0}
   enemyStats: {fileID: 0}
   damageable: {fileID: 0}
@@ -110,7 +110,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 1
   currentHealth: 1
-  damageResistance: 0
+  ustioniAccumulate: 0
+  additiveDamageResistances: []
+  staticDamageResistances: []
+  additiveDamageVulnerabilities: []
+  staticDamageVulnerabilities: []
+  ResistanceDamageCap: []
+  VulnerabilityDamageCap: []
   damageImmunity: 0
 --- !u!61 &4387930199647561571
 BoxCollider2D:
@@ -206,9 +212,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   disactivated: 0
-  damage: 0
-  Illdamage: 3
-  CorruptionDamage: 0
+  damageInstance:
+  - type: 1
+    damageValueAtkOrSec: 2
+    ignoreDamageResistance: 1
+    damageOverTime: 0
+    durationDamageOverTime: 0
+    ignoreImmunityFrame: 0
   destroyOnTouch: 0
   targetLayer:
     serializedVersion: 2
@@ -285,7 +295,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1885312813
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -591307083, guid: d82aec5dd233d204eb150793e176c485, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

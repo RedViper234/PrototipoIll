@@ -381,6 +381,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""67f4c32d-ddf8-41b9-a725-f3f2313d530e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -812,6 +821,28 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""action"": ""Option"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f0db9874-0b9b-4afb-b9d0-ad5b454f89fc"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""519ba7d8-8c0d-4e1d-a443-89754571e5ec"",
+                    ""path"": ""<Gamepad>/touchpadButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -902,6 +933,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         m_UI_Option = m_UI.FindAction("Option", throwIfNotFound: true);
+        m_UI_OpenMap = m_UI.FindAction("OpenMap", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1061,6 +1093,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
     private readonly InputAction m_UI_Option;
+    private readonly InputAction m_UI_OpenMap;
     public struct UIActions
     {
         private @PlayerInput m_Wrapper;
@@ -1076,6 +1109,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
         public InputAction @Option => m_Wrapper.m_UI_Option;
+        public InputAction @OpenMap => m_Wrapper.m_UI_OpenMap;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1118,6 +1152,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Option.started -= m_Wrapper.m_UIActionsCallbackInterface.OnOption;
                 @Option.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnOption;
                 @Option.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnOption;
+                @OpenMap.started -= m_Wrapper.m_UIActionsCallbackInterface.OnOpenMap;
+                @OpenMap.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnOpenMap;
+                @OpenMap.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnOpenMap;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -1155,6 +1192,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Option.started += instance.OnOption;
                 @Option.performed += instance.OnOption;
                 @Option.canceled += instance.OnOption;
+                @OpenMap.started += instance.OnOpenMap;
+                @OpenMap.performed += instance.OnOpenMap;
+                @OpenMap.canceled += instance.OnOpenMap;
             }
         }
     }
@@ -1228,5 +1268,6 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
         void OnOption(InputAction.CallbackContext context);
+        void OnOpenMap(InputAction.CallbackContext context);
     }
 }

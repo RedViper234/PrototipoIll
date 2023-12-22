@@ -12,11 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f0d5d5cf050964b8edbf1aa150e28a, type: 3}
   m_Name: Area1 1
   m_EditorClassIdentifier: 
-  puntiDiInteresse: []
+  puntiDiInteresse:
+  - {fileID: 11400000, guid: 94910a7ff0a51594f85f93a95ea72683, type: 2}
   descrizioneArea: 
   sottoAree: []
   movementCost: -1
+  breakPointsMin: 0
+  breakPointsMax: 0
   secondTimeBattleProbablity: -1
   onCompleteFlags: []
+  stanzeSpeciali: []
   onlyOneSpecialRoom: 0
   enemySet: []
+  roomList: []
+  roomDistributions: []
+  percentualRoomDistributions: []
+  minStaticRoom: 0
+  maxStaticRoom: 1
+  defaultRoom: {fileID: 0}
+  mutationProbabilityVariance: 0

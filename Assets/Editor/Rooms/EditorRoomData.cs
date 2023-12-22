@@ -56,24 +56,24 @@ public class EditorRoomData : Editor
         GUILayout.Label("<size=20><b><color=#ffffffff>Tipologia Stanze</color></b></size>", styleLabel);
 
         // Mostra il campo per la scelta del tipo di stanza
-        roomData.tipiDiStanza = (TipiDiStanza)EditorGUILayout.EnumFlagsField("Tipo di Stanza", roomData.tipiDiStanza);
+        roomData.tipiDiStanza = (TipiDiStanzaFlag)EditorGUILayout.EnumFlagsField("Tipo di Stanza", roomData.tipiDiStanza);
 
         // Mostra solo le enum relative alle sottocategorie selezionate
         EditorGUILayout.LabelField("Sottocategorie:");
 
         EditorGUI.indentLevel++;
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Combattimento) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFlag.Combattimento) != 0)
         {
             roomData.tipoStanzaCombattimento = (SottoCategoriaStanzaCombattimento)EditorGUILayout.EnumPopup("Combattimento", roomData.tipoStanzaCombattimento);
         }
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Boss) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFlag.Boss) != 0)
         {
             roomData.tipoStanzaBoss = (SottoCategoriaStanzaBoss)EditorGUILayout.EnumPopup("Boss", roomData.tipoStanzaBoss);
         }
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Evento) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFlag.Evento) != 0)
         {
             roomData.tipoStanzaEvento = (SottoCategoriaStanzaEvento)EditorGUILayout.EnumPopup("Evento", roomData.tipoStanzaEvento);
             switch (roomData.tipoStanzaEvento)
@@ -93,13 +93,13 @@ public class EditorRoomData : Editor
             }
         }
 
-        if ((roomData.tipiDiStanza & TipiDiStanza.Storia) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFlag.Storia) != 0)
         {
             roomData.tipoStanzaStoria = (SottoCategoriaStanzaStoria)EditorGUILayout.EnumPopup("Storia", roomData.tipoStanzaStoria);
         }
 
         EditorGUI.indentLevel--;
-        if ((roomData.tipiDiStanza & TipiDiStanza.Combattimento) != 0 || (roomData.tipiDiStanza & TipiDiStanza.Boss) != 0)
+        if ((roomData.tipiDiStanza & TipiDiStanzaFlag.Combattimento) != 0 || (roomData.tipiDiStanza & TipiDiStanzaFlag.Boss) != 0)
         {
             EditorGUILayout.PropertyField(setDiMostriDellaStanza,new GUIContent("Lista set mostri"));
         }
@@ -111,9 +111,9 @@ public class EditorRoomData : Editor
         DrawUILine(Color.gray, 1);
         EditorGUILayout.Space(5);
         GUILayout.Label("<size=20><b><color=#ffffffff>Altre Variabili</color></b></size>", styleLabel);
-        EditorGUILayout.PropertyField(priorita, new GUIContent("Priorità"), true);
-        EditorGUILayout.PropertyField(isFirstRoom, new GUIContent("È la prima stanza?"), true);
-        EditorGUILayout.PropertyField(raritaEValoreStanza, new GUIContent("Rarità e valore:"), true);
+        EditorGUILayout.PropertyField(priorita, new GUIContent("Prioritï¿½"), true);
+        EditorGUILayout.PropertyField(isFirstRoom, new GUIContent("ï¿½ la prima stanza?"), true);
+        EditorGUILayout.PropertyField(raritaEValoreStanza, new GUIContent("Raritï¿½ e valore:"), true);
         DrawUILine(Color.gray, 1);
         GUILayout.Label("<size=20><b><color=#ffffffff>Flags</color></b></size>", styleLabel);
         EditorGUILayout.PropertyField(flagsOnEnter, new GUIContent("Flags On Enter"), true);

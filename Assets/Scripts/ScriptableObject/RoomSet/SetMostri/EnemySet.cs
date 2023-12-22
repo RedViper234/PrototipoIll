@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
 /// 
@@ -56,7 +57,7 @@ public class EnemySet : ScriptableObject
     [System.Serializable]
     public class EnemyQuantity
     {
-        public GameObject nemicoDaIstanziare;
+        public AssetReferenceGameObject nemicoDaIstanziare;
         [Range(1, 100)]
         public float percentualeSpawnMostri = 1;
         public bool canMutate;
@@ -65,7 +66,7 @@ public class EnemySet : ScriptableObject
     [System.Serializable]
     public class StaticEnemy
     {
-        public GameObject nemicoDaIstanziare;
+        public AssetReferenceGameObject nemicoDaIstanziare;
         public int quantitaDiMostriDaIstanziare = 0;
         public bool canMutate;
         public EDistanzaPlayerDaNemico playerDistance;

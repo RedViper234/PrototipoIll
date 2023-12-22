@@ -49,12 +49,48 @@ MonoBehaviour:
   - minEnemyOndata: 8
     maxEnemyOndata: 10
     mostri:
-    - nemicoDaIstanziare: {fileID: 1033136582417549659, guid: dbf5e5b905f79a54b9d999dd6b93504a, type: 3}
+    - nemicoDaIstanziare:
+        m_AssetGUID: 094318a2f0caddb449cce1e1c92c2f0e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
       percentualeSpawnMostri: 100
       canMutate: 0
-      playerDistance: 0
+      playerDistance: 3
     staticMostri:
-    - nemicoDaIstanziare: {fileID: 4387930199647561568, guid: 094318a2f0caddb449cce1e1c92c2f0e, type: 3}
+    - nemicoDaIstanziare:
+        m_AssetGUID: 094318a2f0caddb449cce1e1c92c2f0e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      quantitaDiMostriDaIstanziare: 4
+      canMutate: 0
+      playerDistance: 1
+  - minEnemyOndata: 8
+    maxEnemyOndata: 10
+    mostri:
+    - nemicoDaIstanziare:
+        m_AssetGUID: 094318a2f0caddb449cce1e1c92c2f0e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      percentualeSpawnMostri: 25
+      canMutate: 0
+      playerDistance: 3
+    - nemicoDaIstanziare:
+        m_AssetGUID: dbf5e5b905f79a54b9d999dd6b93504a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
+      percentualeSpawnMostri: 75
+      canMutate: 0
+      playerDistance: 3
+    staticMostri:
+    - nemicoDaIstanziare:
+        m_AssetGUID: 094318a2f0caddb449cce1e1c92c2f0e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
       quantitaDiMostriDaIstanziare: 4
       canMutate: 0
       playerDistance: 1

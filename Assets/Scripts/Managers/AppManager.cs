@@ -40,24 +40,20 @@ public class AppManager : MonoBehaviour
     [HideInInspector] public PlayerController playerControllerInstance;
     [HideInInspector] public ControlloMalattiaManager controlloMalattiaManager;
     [HideInInspector] public InventoryManager inventoryManager;
+    [HideInInspector] public GameManager gameManager;
+    [HideInInspector] public MapManager mapManager;
     private void OnEnable()
     {
         m_instance= this;
         SpawnaManagersSeNonCiSono();
+        gameManager = GetComponent<GameManager>();
+        mapManager = GetComponent<MapManager>();
         enemyManager = GetComponentInChildren<EnemyManager>();
         roomManager = GetComponentInChildren<RoomManager>();
         flagManager = GetComponentInChildren<FlagManager>();
         controlloMalattiaManager = GetComponentInChildren<ControlloMalattiaManager>();
         inventoryManager = GetComponentInChildren<InventoryManager>();
-        if (FindAnyObjectByType(typeof(CinemachineVirtualCamera)) != null)
-        {
-            virtualMachineCameraPlayerPrefab = FindAnyObjectByType<CinemachineVirtualCamera>().gameObject;
-        }
-        else
-        {
-            GameObject camera = Instantiate(virtualMachineCameraPlayerPrefab, new Vector3(0,0,0),Quaternion.identity);
-            virtualMachineCameraPlayerPrefab = camera;
-        }
+        SpawnPlayerAndCamera();
     }
     private void Awake()
     {
@@ -70,6 +66,18 @@ public class AppManager : MonoBehaviour
         //{
         //    playerControllerInstance = playePrefabReference.GetComponent<PlayerController>();
         //}
+    }
+    public void SpawnPlayerAndCamera()
+    {
+        if (FindAnyObjectByType(typeof(CinemachineVirtualCamera)) != null)
+        {
+            virtualMachineCameraPlayerPrefab = FindAnyObjectByType<CinemachineVirtualCamera>().gameObject;
+        }
+        else
+        {
+            GameObject camera = Instantiate(virtualMachineCameraPlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            virtualMachineCameraPlayerPrefab = camera;
+        }
     }
     public void SpawnaManagersSeNonCiSono()
     {

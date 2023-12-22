@@ -2,14 +2,39 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using NavMeshPlus.Components;
-using UnityEditor;
 using UnityEngine.Tilemaps;
+using UnityEngine.AI;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEditor;
+
+
+[Serializable]
+public struct StrutturaPerDictionaryRoom
+{
+    public RoomData room;
+    public bool isOccupied;
+    public TipiDiStanzaFlag tipiDiStanzaRoomDistribution;
+    public TipiDiStanzaFlag tipiDiStanzaPresiDallaStanza;
+    public List<SpawnRicompensa> tipoRicompensaDellaStanza;
+
+    //SPAZIO
+    [Space(20)]
+    public SottoCategoriaStanzaBoss sottoCategoriaStanzaBoss;
+    public SottoCategoriaStanzaCombattimento sottoCategoriaStanzaCombattimento;
+    public SottoCategoriaStanzaEvento sottoCategoriaStanzaEvento;
+    public SottoCategoriaStanzaStoria sottoCategoriaStanzaStoria;
+
+}
 
 public class RoomManager : Manager
 {
+    [SerializeField] List<StrutturaPerDictionaryRoom> visualizzazioneStruttaraRoomDistribution = new();
+    [SerializeField] List<PuntoDiInteresse> visualizzazionePuntiDiInteresse = new();
     [Header("FIRST ROOM")]
 
     [Expandable]
@@ -17,106 +42,482 @@ public class RoomManager : Manager
     [Header("CURRENT SETTINGS")]
     [MyReadOnly] public PuntoDiInteresse currentPoint;
     [MyReadOnly] public RoomData currentRoom;
-    [MyReadOnly] public AreaSO currentArea;
+    [MyReadOnly] public AreaSO currentArea = null;
     [MyReadOnly] public EnemySet currentEnemySet;
-    [MyReadOnly,SerializeField] private int m_enemyQuantity;
+    [MyReadOnly, SerializeField] private int m_enemyQuantity;
     [Expandable]
     public List<AreaSO> areeDaEsplorare;
+    public Dictionary<PuntoDiInteresse, StrutturaPerDictionaryRoom> m_puntiDiInteresseSpawnatiNellArea;
     public UnityEvent OnAreaChanged;
     [Header("READONLY VARIABLE")]
     [SerializeField, MyReadOnly] public int m_stanzeAttraversate = 0;
+    [SerializeField, MyReadOnly] private int m_indiceOndataCorrente = 0;
+    [SerializeField, MyReadOnly] private int m_indicePuntoDiInteresseCorrente = 0;
 
 
-    private PlayerController m_playerControllerInstance;
     private FlagManager m_flagManager;
-    private int m_indiceOndataCorrente = 0;
-    public void Start()
+    private PlayerController m_playerControllerInstance;
+    private NavMeshSurface m_surface;
+    private Vector2 m_lastMonsterSpawnPosition;
+    private GameObject m_currentRoomGameObject;
+
+    private GameObject m_currentPlayerGameOBject;
+    public void Update()
     {
+
+    }
+    public IEnumerator Start()
+    {
+        m_puntiDiInteresseSpawnatiNellArea = new Dictionary<PuntoDiInteresse, StrutturaPerDictionaryRoom>();
         m_indiceOndataCorrente = 0;
         m_playerControllerInstance = AppManager.Instance.playePrefabReference.GetComponent<PlayerController>();
         m_flagManager = AppManager.Instance?.flagManager;
-        Initialize();
+        CoroutineHandle coroutineDiInizializzazione = this.RunCoroutine(Initialize());
+        yield return new WaitUntil(() => coroutineDiInizializzazione.IsDone);
+        CoroutineHandle coroutinePerRiempimentoTuttiIPuntiDiInteresse = this.RunCoroutine(ControllaLaStaticRoomDistribution());
+        yield return new WaitUntil(() => coroutinePerRiempimentoTuttiIPuntiDiInteresse.IsDone);
+        CoroutineHandle coroutinePerPercentualRoomDistribution = this.RunCoroutine(ControllaLaPercentualRoomDistribution());
+        yield return new WaitUntil(() => coroutinePerPercentualRoomDistribution.IsDone);
         SpawnCurrentRoom();
+        visualizzazioneStruttaraRoomDistribution = m_puntiDiInteresseSpawnatiNellArea.Values.ToList();
+        visualizzazionePuntiDiInteresse = m_puntiDiInteresseSpawnatiNellArea.Keys.ToList();
     }
 
 
+
+    // DEVI FARLO SOLO SUI PUNTI CHE ESISTONO NON DEVI CREARLI TE
+    private IEnumerator ControllaLaStaticRoomDistribution()
+    {
+        for (int y = 0; y < currentArea.staticRoomDistributions.Count; y++)
+        {
+            StaticRoomDistribution roomDistribution = currentArea.staticRoomDistributions[y];
+            if (roomDistribution == null) { yield break; }
+            int randomValue = UnityEngine.Random.Range(roomDistribution.min, roomDistribution.max);
+            if (randomValue <= currentArea.maxStaticRoom && randomValue >= currentArea.minStaticRoom)
+            {
+                Debug.Log("rispetta il min e max di static distribution");
+                int elementsCount = m_puntiDiInteresseSpawnatiNellArea.Where(a => a.Value.tipiDiStanzaRoomDistribution == roomDistribution.tipoStanzaArea).Count();
+                Debug.Log($"<color=red>{elementsCount} elementi nell'area: {currentArea.name}</color>");
+                StrutturaPerDictionaryRoom strutturaPerDictionaryRoom = new()
+                {
+                    room = null,
+                    tipiDiStanzaRoomDistribution = roomDistribution.tipoStanzaArea,
+                    isOccupied = true,
+                    tipoRicompensaDellaStanza = roomDistribution.tipoRicompensa
+                };
+                switch (roomDistribution.tipoStanzaArea){
+                    case TipiDiStanzaFlag.Boss:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaBoss = roomDistribution.boss;
+                        break;
+                    case TipiDiStanzaFlag.Combattimento:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaCombattimento = roomDistribution.combattimento;
+                        break;
+                    case TipiDiStanzaFlag.Storia:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaStoria = roomDistribution.storia;
+                        break;
+                    case TipiDiStanzaFlag.Evento:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaEvento = roomDistribution.evento;
+                        break;
+                }
+                int counter = 0;
+                for (int i = 0; i < m_puntiDiInteresseSpawnatiNellArea.Count; i++){
+                    PuntoDiInteresse item = m_puntiDiInteresseSpawnatiNellArea.ElementAt(i).Key;
+                    StrutturaPerDictionaryRoom struttura = m_puntiDiInteresseSpawnatiNellArea.ElementAt(i).Value;
+                    if(counter < randomValue){
+                        if(struttura.isOccupied == false){
+                            m_puntiDiInteresseSpawnatiNellArea[item] = strutturaPerDictionaryRoom ;
+                            counter++;
+                        }
+                    }
+                    else{
+                        continue;
+                    }
+                }
+            }
+        }
+        foreach (AreaSO item in currentArea.sottoAree)
+        {
+            CoroutineHandle recursiveCouroutine = this.RunCoroutine(ControllaLaStaticRoomDistribution(item));
+            yield return new WaitUntil(() => recursiveCouroutine.IsDone);
+        }
+        yield return null;
+    }
+    private IEnumerator ControllaLaStaticRoomDistribution(AreaSO area)
+    {
+        for (int y = 0; y < area.staticRoomDistributions.Count; y++)
+        {
+            StaticRoomDistribution roomDistribution = area.staticRoomDistributions[y];
+            if (roomDistribution == null) { yield break; }
+            int randomValue = UnityEngine.Random.Range(roomDistribution.min, roomDistribution.max);
+            if (randomValue < area.maxStaticRoom && randomValue > area.minStaticRoom)
+            {
+                Debug.Log("rispetta il min e max di static distribution");
+                int elementsCount = m_puntiDiInteresseSpawnatiNellArea.Where(a => a.Value.tipiDiStanzaPresiDallaStanza == roomDistribution.tipoStanzaArea).Count();
+                Debug.Log($"<color=orange>{elementsCount} elementi nell'area: {currentArea.name}</color>");
+                int index = elementsCount;
+                StrutturaPerDictionaryRoom strutturaPerDictionaryRoom = new()
+                {
+                    room = null,
+                    tipiDiStanzaRoomDistribution = roomDistribution.tipoStanzaArea,
+                    isOccupied = true,
+                    tipoRicompensaDellaStanza = roomDistribution.tipoRicompensa
+                };
+                switch (roomDistribution.tipoStanzaArea){
+                    case TipiDiStanzaFlag.Boss:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaBoss = roomDistribution.boss;
+                        break;
+                    case TipiDiStanzaFlag.Combattimento:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaCombattimento = roomDistribution.combattimento;
+                        break;
+                    case TipiDiStanzaFlag.Storia:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaStoria = roomDistribution.storia;
+                        break;
+                    case TipiDiStanzaFlag.Evento:
+                        strutturaPerDictionaryRoom.sottoCategoriaStanzaEvento = roomDistribution.evento;
+                        break;
+                }
+                int counter = 0;
+                for (int i = 0; i < m_puntiDiInteresseSpawnatiNellArea.Count; i++){
+                    PuntoDiInteresse item = m_puntiDiInteresseSpawnatiNellArea.ElementAt(i).Key;
+                    StrutturaPerDictionaryRoom struttura = m_puntiDiInteresseSpawnatiNellArea.ElementAt(i).Value;
+                    if(counter < randomValue){
+                        if(struttura.isOccupied == false){
+                            m_puntiDiInteresseSpawnatiNellArea[item] = strutturaPerDictionaryRoom ;
+                            counter++;
+                        }
+                    }
+                    else{
+                        continue;
+                    }
+                }
+            }
+        }
+        foreach (AreaSO item in area.sottoAree)
+        {
+            CoroutineHandle recursiveCouroutine = this.RunCoroutine(ControllaLaStaticRoomDistribution(item));
+            yield return new WaitUntil(() => recursiveCouroutine.IsDone);
+        }
+        yield return null;
+    }
+
+
+
+
+
+
+    private IEnumerator ControllaLaPercentualRoomDistribution()
+    {
+        int sommaDelPesoTotale = currentArea.percentualRoomDistributions.Sum(x => x.peso);
+        int numeroDiStanzaCheDovrannoAvere = 0;
+        for (int i = 0; i < currentArea.percentualRoomDistributions.Count; i++)
+        {
+            PercentualRoomDistribution percentualRoomDistribution = currentArea.percentualRoomDistributions[i];
+            if (percentualRoomDistribution.maxAppereance != 0 &&
+            m_puntiDiInteresseSpawnatiNellArea.Where((x) => x.Value.tipiDiStanzaPresiDallaStanza == percentualRoomDistribution.tipoStanzaArea).Count() > percentualRoomDistribution.maxAppereance)
+            {
+                sommaDelPesoTotale -= percentualRoomDistribution.peso;
+            }
+            if (sommaDelPesoTotale <= 0)
+            {
+                Debug.Assert(false, "somma del peso totale negativa e quindi tutte le stanze hanno raggiunto il massimo");
+            }
+            if (percentualRoomDistribution != null)
+            {
+                float percentuale = ((float)percentualRoomDistribution.peso / (float)sommaDelPesoTotale) * 100f;
+                Debug.Log($"Questa è la percentuale: {percentuale}");
+                int sommaDelleStanzeDaSettare = m_puntiDiInteresseSpawnatiNellArea.Where((x) => x.Value.isOccupied == false).Count();
+                int percentualeInt = (int)percentuale;
+                float temp = percentualeInt / 100f;
+                numeroDiStanzaCheDovrannoAvere = Mathf.FloorToInt(sommaDelleStanzeDaSettare * temp);
+                Debug.Log($"Numero di stanze da settare: {numeroDiStanzaCheDovrannoAvere}");
+            }
+            for (int y = 0; y < m_puntiDiInteresseSpawnatiNellArea.Count; y++)
+            {
+                KeyValuePair<PuntoDiInteresse, StrutturaPerDictionaryRoom> item = m_puntiDiInteresseSpawnatiNellArea.ElementAt(y);
+                if (item.Value.isOccupied == false)
+                {
+                    if(numeroDiStanzaCheDovrannoAvere > 0){
+                        numeroDiStanzaCheDovrannoAvere--;
+                        m_puntiDiInteresseSpawnatiNellArea[item.Key] = new StrutturaPerDictionaryRoom
+                        {
+                            isOccupied = true,
+                            tipiDiStanzaRoomDistribution = percentualRoomDistribution.tipoStanzaArea,
+                            room = null
+                        };
+                    }
+                    else{
+                        break;
+                    }
+                }
+                else
+                {
+                    Debug.Log("<color=green>Questo punto di interesse è occupato da una stanza</color>");
+                }
+            }
+            foreach (AreaSO item in currentArea.sottoAree)
+            {
+                CoroutineHandle coroutine = this.RunCoroutine(ControllaLaPercentualRoomDistribution(item));
+                yield return new WaitUntil(() => coroutine.IsDone);
+            }
+        }
+        
+    }
+    private IEnumerator ControllaLaPercentualRoomDistribution(AreaSO area)
+    {
+        int sommaDelPesoTotale = area.percentualRoomDistributions.Sum(x => x.peso);
+        int numeroDiStanzaCheDovrannoAvere = 0;
+        for (int i = 0; i < area.percentualRoomDistributions.Count; i++)
+        {
+            PercentualRoomDistribution percentualRoomDistribution = area.percentualRoomDistributions[i];
+            if (percentualRoomDistribution.maxAppereance != 0 &&
+            m_puntiDiInteresseSpawnatiNellArea.Where((x) => x.Value.tipiDiStanzaPresiDallaStanza == percentualRoomDistribution.tipoStanzaArea).Count() > percentualRoomDistribution.maxAppereance)
+            {
+                sommaDelPesoTotale -= percentualRoomDistribution.peso;
+            }
+            if (sommaDelPesoTotale <= 0)
+            {
+                Debug.Assert(false, "somma del peso totale negativa e quindi tutte le stanze hanno raggiunto il massimo");
+            }
+            if (percentualRoomDistribution != null)
+            {
+                float percentuale = ((float)percentualRoomDistribution.peso / (float)sommaDelPesoTotale) * 100f;
+                Debug.Log($"Questa è la percentuale: {percentuale}");
+                int sommaDelleStanzeDaSettare = m_puntiDiInteresseSpawnatiNellArea.Where((x) => x.Value.isOccupied == false).Count();
+                int percentualeInt = (int)percentuale;
+                float temp = percentualeInt / 100f;
+                numeroDiStanzaCheDovrannoAvere = Mathf.FloorToInt(sommaDelleStanzeDaSettare * temp);
+                Debug.Log($"Numero di stanze da settare: {numeroDiStanzaCheDovrannoAvere}");
+            }
+            for (int y = 0; y < numeroDiStanzaCheDovrannoAvere; y++)
+            {
+                KeyValuePair<PuntoDiInteresse, StrutturaPerDictionaryRoom> item = m_puntiDiInteresseSpawnatiNellArea.ElementAt(y);
+                if (item.Value.isOccupied == false)
+                {
+                    m_puntiDiInteresseSpawnatiNellArea[item.Key] = new StrutturaPerDictionaryRoom
+                    {
+                        isOccupied = true,
+                        tipiDiStanzaRoomDistribution = percentualRoomDistribution.tipoStanzaArea,
+                        room = null
+                    };
+                }
+                else
+                {
+                    Debug.Log("<color=green>Questo punto di interesse è occupato da una stanza</color>");
+                }
+            }
+        }
+        foreach (AreaSO item in area.sottoAree)
+        {
+            CoroutineHandle coroutine = this.RunCoroutine(ControllaLaPercentualRoomDistribution(item));
+            yield return new WaitUntil(() => coroutine.IsDone);
+        }
+    }
     /// <summary>
     /// Inizializza il room manager impostando l'Area iniziale, e i punti di interesse e subito dopo
     /// una stanza per volta
     /// </summary>
-    private void Initialize()
+    private IEnumerator Initialize()
     {
-        SetCurrentArea(firstArea);
-        SetPuntiDiInteresse();
-        SetRoom(true);
-
+        var coroutineArea = this.RunCoroutine(SetCurrentArea(firstArea, false));
+        currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
+        var coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea());
+        var coroutineSpawnStanza = this.RunCoroutine(SetRoom(true));
+        yield return new WaitUntil(() => coroutineArea.IsDone && coroutinePuntiDiInteresse.IsDone && coroutineSpawnStanza.IsDone);
+        Debug.Log("<color=red>Initialized</color>");
     }
 
 
 
     // FUNZIONI AREE
-    public void SetCurrentArea(AreaSO newArea)
+    public IEnumerator SetCurrentArea(AreaSO newArea, bool firstTime = false)
     {
-        try
+        if (currentArea != newArea)
         {
-            if (currentArea != newArea)
+            // Debug.Log($"<color=red>SetCurrentArea {newArea.name}</color>");
+            CoroutineHandle coroutinePuntiDiInteresse = null;
+            CoroutineHandle coroutineSpawnStanza = null;
+            OnAreaChanged.Invoke();
+            currentArea = newArea;
+            currentPoint = currentArea.puntiDiInteresse.FirstOrDefault();
+            if (currentPoint != null)
             {
-                currentArea = newArea;
-                OnAreaChanged.Invoke();
-                Initialize();
+                /* DEVO DIFFERENZIARE TRA LA PRIMA VOLTA CHE SI ENTRA NELL'AREA E LE ALTRE VOLTE. PERCHE' LA PRIMA VOLTA SI DECIDE LA PRIMA STANZA E PUNTO CORRENTE
+                MENTRE LA SECONDA VOLTA SI COSTRUISCONO LE SOTTOAREE E I RELATIVI PUNTI DI INTERESSE*/
+                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea());
+                coroutineSpawnStanza = this.RunCoroutine(SetRoom(true));
+                yield return new WaitUntil(() => coroutinePuntiDiInteresse.IsDone && coroutineSpawnStanza.IsDone);
+                if (currentArea.sottoAree.Count > 0)
+                {
+                    foreach (AreaSO sottoArea in currentArea.sottoAree)
+                    {
+                        CoroutineHandle coroutineSottoArea = this.RunCoroutine(SetCurrentArea(sottoArea));
+                        yield return new WaitUntil(() => coroutineSottoArea.IsDone);
+                    }
+                }
+            }
+            else
+            {
+                // ALLORA FAI IN MODO CHE L'AREA SCELGA TUTTO QUANTO PER QUANTO RIGUARDA IL PUNTO DI INTERESSE
             }
         }
-        catch (Exception e)
+    }
+    private AreaSO m_tempArea = null;
+    public IEnumerator SetCurrentArea(AreaSO newArea)
+    {
+        if (m_tempArea != newArea)
         {
-            Debug.LogException(e);
+            m_tempArea = newArea;
+            CoroutineHandle coroutinePuntiDiInteresse = null;
+            OnAreaChanged.Invoke();
+            if (m_tempArea.puntiDiInteresse.Count > 0)
+            {
+                /* DEVO DIFFERENZIARE TRA LA PRIMA VOLTA CHE SI ENTRA NELL'AREA E LE ALTRE VOLTE. PERCHE' LA PRIMA VOLTA SI DECIDE LA PRIMA STANZA E PUNTO CORRENTE
+                MENTRE LA SECONDA VOLTA SI COSTRUISCONO LE SOTTOAREE E I RELATIVI PUNTI DI INTERESSE*/
+                coroutinePuntiDiInteresse = this.RunCoroutine(CostruisciTuttiIPuntiDiInteresseDellArea(m_tempArea));
+                yield return new WaitUntil(() => coroutinePuntiDiInteresse.IsDone);
+                if (m_tempArea.sottoAree.Count > 0)
+                {
+                    foreach (AreaSO sottoArea in m_tempArea.sottoAree)
+                    {
+                        CoroutineHandle coroutineSottoArea = this.RunCoroutine(SetCurrentArea(sottoArea));
+                        yield return new WaitUntil(() => coroutineSottoArea.IsDone);
+                    }
+                }
+            }
+            else
+            {
+                // ALLORA FAI IN MODO CHE L'AREA SCELGA TUTTO QUANTO PER QUANTO RIGUARDA IL PUNTO DI INTERESSE
+            }
         }
-
     }
 
     //FUNZIONI PUNTI DI INTERESSE
-    public void SetPuntiDiInteresse()
+    public IEnumerator CostruisciTuttiIPuntiDiInteresseDellArea()
     {
         for (int i = 0; i < currentArea.puntiDiInteresse.Count; i++)
         {
-            if (currentArea.puntiDiInteresse[i] == null) { continue; }
-            Debug.Log(currentArea.puntiDiInteresse[i]);
-            for (int y = 0; y < currentArea.puntiDiInteresse[i].points.Count; y++)
+            PuntoDiInteresse punto = currentArea.puntiDiInteresse[i];
+            CoroutineHandle coroutine = this.RunCoroutine(CostruisciPuntoDiInteresseAsync(punto, 0));
+            yield return new WaitUntil(() => coroutine.IsDone);
+        }
+    }
+    public IEnumerator CostruisciTuttiIPuntiDiInteresseDellArea(AreaSO area)
+    {
+        for (int i = 0; i < area.puntiDiInteresse.Count; i++)
+        {
+            PuntoDiInteresse punto = area.puntiDiInteresse[i];
+            CoroutineHandle coroutine = this.RunCoroutine(CostruisciPuntoDiInteresseAsync(punto, 0));
+            yield return new WaitUntil(() => coroutine.IsDone);
+        }
+    }
+
+
+
+    private IEnumerator CostruisciPuntoDiInteresseAsync(PuntoDiInteresse punto, int level)
+    {
+        var room = SetRoom(punto, true);
+        if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(punto)) { yield break; }
+        StrutturaPerDictionaryRoom strutturaPerDictionaryRoom = new StrutturaPerDictionaryRoom
+        {
+            room = room,
+            isOccupied = room != null,
+            tipiDiStanzaPresiDallaStanza = room != null ? room.tipiDiStanza : TipiDiStanzaFlag.None
+        };
+        m_puntiDiInteresseSpawnatiNellArea.Add(punto, strutturaPerDictionaryRoom);
+        Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea, punto));
+        for (int i = 0; i < punto.points.Count; i++)
+        {
+            ConnectedPoints connectedPoints = punto.points[i];
+            for (int i1 = 0; i1 < connectedPoints.points.Count; i1++)
             {
-                currentPoint = currentArea.puntiDiInteresse[i];
+                PuntoDiInteresse subPunto = connectedPoints.points[i1];
+                if (subPunto == punto)
+                {
+#if UNITY_EDITOR
+                    Debug.ClearDeveloperConsole();
+                    Debug.LogError("Ricorsione infinita");
+                    EditorApplication.isPlaying = false;
+#else
+                    Application.Quit();
+#endif
+                    yield break;
+                }
+                if (subPunto == null) { yield break; }
+                var room1 = SetRoom(subPunto, true);
+                if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(subPunto)) { yield break; }
+                StrutturaPerDictionaryRoom strutturaPerDictionaryRoom1 = new StrutturaPerDictionaryRoom
+                {
+                    room = room1,
+                    isOccupied = room1 != null,
+                    tipiDiStanzaPresiDallaStanza = room1 != null ? room1.tipiDiStanza : TipiDiStanzaFlag.None
+                };
+                m_puntiDiInteresseSpawnatiNellArea.Add(subPunto, strutturaPerDictionaryRoom1);
+                Publisher.Publish(new CostruzionePuntiDiInteressi(m_puntiDiInteresseSpawnatiNellArea, subPunto));
+                // Start asynchronous recursion
+                yield return this.RunCoroutine(CostruisciPuntoDiInteresseAsync(subPunto, level + 1));
             }
         }
-
-
     }
-    public void VaiAlPuntoPrecedente(RoomData room)
-    {
 
+    public void VaiAlPuntoPrecedente()
+    {
+        if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(currentPoint))
+        {
+            var keys = new List<PuntoDiInteresse>(m_puntiDiInteresseSpawnatiNellArea.Keys);
+            int index = keys.IndexOf(currentPoint);
+            if (index != -1 && index < keys.Count - 1)
+            {
+                PuntoDiInteresse nextKey = keys[index - 1];
+                RoomData room = m_puntiDiInteresseSpawnatiNellArea[nextKey].room;
+                currentRoom = room;
+                currentPoint = nextKey;
+                SpawnCurrentRoom();
+            }
+        }
     }
-    public void VaiAlPuntoSuccessivo(RoomData data)
-    {
 
+    public void VaiAlPuntoSuccessivo()
+    {
+        if (m_puntiDiInteresseSpawnatiNellArea.ContainsKey(currentPoint))
+        {
+            var keys = new List<PuntoDiInteresse>(m_puntiDiInteresseSpawnatiNellArea.Keys);
+            int index = keys.IndexOf(currentPoint);
+            if (index != -1 && index < keys.Count - 1)
+            {
+                PuntoDiInteresse nextKey = keys[index + 1];
+                RoomData room = m_puntiDiInteresseSpawnatiNellArea[nextKey].room;
+                currentRoom = room;
+                currentPoint = nextKey;
+                m_stanzeAttraversate++;
+                SpawnCurrentRoom();
+            }
+        }
     }
 
     // FUNZIONI STANZE
-
     /// <summary>
-    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom � selezionato allora verr�
+    /// La funzione serve a settare la stanza per questo punto, se checkFirstRoom è selezionato allora verrà
     /// fatto in modo di pescare, se possibile, una stanza che ha il booleano attivo first room
     /// </summary>
     /// <param name="checkFirstRoom"></param>
-    private void SetRoom(bool checkFirstRoom)
+    private RoomData SetRoom(PuntoDiInteresse punto, bool checkFirstRoom)
     {
-        m_stanzeAttraversate = m_stanzeAttraversate + 1;
-        List<RoomData> stanzeCachateDaSO = currentPoint.roomPossibiliDaSpawnare;
+        RoomData roomDataInterno = null;
+        if (punto.listaDiStanzeUniche == null) { return null; }
+        List<RoomData> stanzeCachateDaSO = punto.listaDiStanzeUniche;
         stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
         // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
-        List<RoomData> roomFinaliCheRispettanoLeRegole = new ();
+        List<RoomData> roomFinaliCheRispettanoLeRegole = new();
         foreach (var room in stanzeCachateDaSO)
         {
-            if(CheckRequisiti(room))
+            if (CheckRequisiti(room))
             {
                 roomFinaliCheRispettanoLeRegole.Add(room);
             }
+        }
+        if (roomFinaliCheRispettanoLeRegole.Count == 0)
+        {
+            return null;
         }
         roomFinaliCheRispettanoLeRegole.Sort((a, b) => b.prioritaStanza.CompareTo(a.prioritaStanza));
         int massimaPriorita = roomFinaliCheRispettanoLeRegole[0].prioritaStanza;
@@ -126,9 +527,57 @@ public class RoomManager : Manager
         if (roomFinaliCheRispettanoLeRegole.Count > 1)
         {
             int temp = UnityEngine.Random.Range(0, roomFinaliCheRispettanoLeRegole.Count);
-            currentRoom = roomFinaliCheRispettanoLeRegole[temp];
+            roomDataInterno = roomFinaliCheRispettanoLeRegole[temp];
+
         }
-        else if(roomFinaliCheRispettanoLeRegole.Count == 1)
+        else if (roomFinaliCheRispettanoLeRegole.Count == 1)
+        {
+            roomDataInterno = roomFinaliCheRispettanoLeRegole[0];
+        }
+
+        Debug.Log($"<color=#00FF00>STANZA SELEZIONATA</color>");
+        print(roomDataInterno.name);
+
+        foreach (var item in roomDataInterno.flagsOnEnter.requiredFlagList)
+        {
+            bool hasFlag = m_flagManager.CheckFlag(item.flagList);
+            if (hasFlag)
+                m_flagManager.SetFlag(roomDataInterno.flagsOnEnter.flagToSet);
+        }
+        return roomDataInterno;
+    }
+    /// <summary>
+    /// Questa funzione ha di diverso che costruisce la stanza in base al punto corrente
+    /// </summary>
+    /// <param name="checkFirstRoom"></param>
+    /// <returns></returns>
+    private IEnumerator SetRoom(bool checkFirstRoom)
+    {
+        if (currentPoint.listaDiStanzeUniche == null || currentPoint == null) { yield break; }
+        List<RoomData> stanzeCachateDaSO = currentPoint.listaDiStanzeUniche;
+        stanzeCachateDaSO = stanzeCachateDaSO.OrderByDescending(x => x.prioritaStanza).ToList();
+        // CONTROLLARE SE UNA STANZA HA IL FIRST ROOM SU TRUE
+        List<RoomData> roomFinaliCheRispettanoLeRegole = new();
+        foreach (var room in stanzeCachateDaSO)
+        {
+            if (CheckRequisiti(room))
+            {
+                roomFinaliCheRispettanoLeRegole.Add(room);
+            }
+        }
+        if(roomFinaliCheRispettanoLeRegole.Count == 0){yield break;}
+        roomFinaliCheRispettanoLeRegole.Sort((a, b) => b.prioritaStanza.CompareTo(a.prioritaStanza));
+        int massimaPriorita = roomFinaliCheRispettanoLeRegole[0].prioritaStanza;
+        roomFinaliCheRispettanoLeRegole = roomFinaliCheRispettanoLeRegole.FindAll(x => x.prioritaStanza == massimaPriorita);
+
+
+        if (roomFinaliCheRispettanoLeRegole.Count > 1)
+        {
+            int temp = UnityEngine.Random.Range(0, roomFinaliCheRispettanoLeRegole.Count);
+            currentRoom = roomFinaliCheRispettanoLeRegole[temp];
+
+        }
+        else if (roomFinaliCheRispettanoLeRegole.Count == 1)
         {
             currentRoom = roomFinaliCheRispettanoLeRegole[0];
         }
@@ -141,16 +590,12 @@ public class RoomManager : Manager
             if (hasFlag)
                 m_flagManager.SetFlag(currentRoom.flagsOnEnter.flagToSet);
         }
-        
-
+        yield return null;
     }
 
-   
-
-
-
+    #region  PER REQUISITI MOSTRI E STANZE
     //CHECK REQUISITI
-    private bool CheckRequisiti(RoomData room) 
+    private bool CheckRequisiti(RoomData room)
     {
         bool roomCanSpawn = false;
         for (int i = 0; i < room.requisitiStanza.Count; i++)
@@ -194,45 +639,45 @@ public class RoomManager : Manager
         }
 
         return roomCanSpawn;
-    }    
-    private bool CheckRequisiti(EnemySet enemySet) 
+    }
+    private bool CheckRequisiti(EnemySet enemySet)
     {
         bool roomCanSpawn = false;
-            switch (enemySet.tipoRequisito)
-            {
-                case TipoRequisito.PercentualeCorruzione:
-                    roomCanSpawn = ControllaPercentualeCorruzione(enemySet);
-                    break;
-                case TipoRequisito.NumeroPoteriOttenuti:
-                    roomCanSpawn = ControllaSeNumeroPoteriCorrisponde(enemySet);
-                    break;
-                case TipoRequisito.PoterSpecifico:
-                    roomCanSpawn = true;
-                    break;
-                case TipoRequisito.NumeroStanzeAttraversate:
-                    roomCanSpawn = ControlloNumeroStanzeAttraversate(enemySet);
-                    break;
-                case TipoRequisito.DistanzaPercorsa:
-                    roomCanSpawn = true;
-                    break;
-                case TipoRequisito.ValoreDiStatistica:
-                    roomCanSpawn = ControlloStatistiche(enemySet);
-                    break;
-                case TipoRequisito.QuantitaVitaMassima:
-                    roomCanSpawn = ControlloQuantitaVitaMassima(enemySet);
-                    break;
-                case TipoRequisito.PercentualeVitaRimasta:
-                    roomCanSpawn = ControlloPercentualeVitaPlayer(enemySet);
-                    break;
-                case TipoRequisito.Ustioni:
-                    roomCanSpawn = ControlloQuantitaUstioni(enemySet);
-                    break;
-                case TipoRequisito.Flag:
-                    roomCanSpawn = true;
-                    break;
-                default:
-                    break;
-            }
+        switch (enemySet.tipoRequisito)
+        {
+            case TipoRequisito.PercentualeCorruzione:
+                roomCanSpawn = ControllaPercentualeCorruzione(enemySet);
+                break;
+            case TipoRequisito.NumeroPoteriOttenuti:
+                roomCanSpawn = ControllaSeNumeroPoteriCorrisponde(enemySet);
+                break;
+            case TipoRequisito.PoterSpecifico:
+                roomCanSpawn = true;
+                break;
+            case TipoRequisito.NumeroStanzeAttraversate:
+                roomCanSpawn = ControlloNumeroStanzeAttraversate(enemySet);
+                break;
+            case TipoRequisito.DistanzaPercorsa:
+                roomCanSpawn = true;
+                break;
+            case TipoRequisito.ValoreDiStatistica:
+                roomCanSpawn = ControlloStatistiche(enemySet);
+                break;
+            case TipoRequisito.QuantitaVitaMassima:
+                roomCanSpawn = ControlloQuantitaVitaMassima(enemySet);
+                break;
+            case TipoRequisito.PercentualeVitaRimasta:
+                roomCanSpawn = ControlloPercentualeVitaPlayer(enemySet);
+                break;
+            case TipoRequisito.Ustioni:
+                roomCanSpawn = ControlloQuantitaUstioni(enemySet);
+                break;
+            case TipoRequisito.Flag:
+                roomCanSpawn = true;
+                break;
+            default:
+                break;
+        }
 
         return roomCanSpawn;
     }
@@ -294,20 +739,19 @@ public class RoomManager : Manager
         switch (requisiti.valoreQuantitaUstioni.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == requisiti.valoreQuantitaUstioni.quantitaUstioni);
-                Debug.Log(roomCanSpawn);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= requisiti.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= requisiti.valoreQuantitaUstioni.quantitaUstioni;
                 break;
         }
         return roomCanSpawn;
@@ -320,19 +764,19 @@ public class RoomManager : Manager
         switch (set.valoreQuantitaUstioni.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate > set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate >= set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate == set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate < set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= set.valoreQuantitaUstioni.quantitaUstioni);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().ustioniAccumulate <= set.valoreQuantitaUstioni.quantitaUstioni;
                 break;
         }
         return roomCanSpawn;
@@ -346,19 +790,19 @@ public class RoomManager : Manager
         switch (requisiti.valoreQuantitaVitaMassima.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth > requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth > requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth == requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth == requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth < requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth < requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= requisiti.valoreQuantitaVitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= requisiti.valoreQuantitaVitaMassima.quantita;
                 break;
         }
         return roomCanSpawn;
@@ -370,19 +814,19 @@ public class RoomManager : Manager
         switch (set.valoreQuantitaMassima.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth > set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth > set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth >= set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth == set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth == set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth < set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth < set.valoreQuantitaMassima.quantita;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= set.valoreQuantitaMassima.quantita);
+                roomCanSpawn = m_playerControllerInstance.GetComponent<Damageable>().maxHealth <= set.valoreQuantitaMassima.quantita;
                 break;
         }
         return roomCanSpawn;
@@ -393,22 +837,22 @@ public class RoomManager : Manager
     private bool ControlloPercentualeVitaPlayer(RequisitiStanza requisiti)
     {
         bool roomCanSpawn = false;
-        switch(requisiti.valoreVitaRimasta.operatori)
+        switch (requisiti.valoreVitaRimasta.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) > requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) > requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) >= requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) >= requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) == requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) == requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) < requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) < requisiti.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) <= requisiti.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) <= requisiti.valoreVitaRimasta.percentuale;
                 break;
         }
         return roomCanSpawn;
@@ -419,19 +863,19 @@ public class RoomManager : Manager
         switch (set.valoreVitaRimasta.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) > set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) > set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) >= set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) >= set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Uguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) == set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) == set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.Minore:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) < set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) < set.valoreVitaRimasta.percentuale;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                roomCanSpawn = (((m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth) * 100) <= set.valoreVitaRimasta.percentuale);
+                roomCanSpawn = (m_playerControllerInstance.GetComponent<Damageable>().currentHealth / m_playerControllerInstance.GetComponent<Damageable>().maxHealth * 100) <= set.valoreVitaRimasta.percentuale;
                 break;
         }
         return roomCanSpawn;
@@ -474,7 +918,7 @@ public class RoomManager : Manager
             }
         }
         return roomCanSpawn;
-         // Ritorna false se il tipo di statistica non � valido
+        // Ritorna false se il tipo di statistica non � valido
     }
     private bool ControlloStatistiche(EnemySet set)
     {
@@ -536,19 +980,19 @@ public class RoomManager : Manager
         switch (requisiti.valoreCorruzione.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Uguale:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Minore:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                temp = (requisiti.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = requisiti.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             default:
                 break;
@@ -561,19 +1005,19 @@ public class RoomManager : Manager
         switch (set.valoreCorruzione.operatori)
         {
             case OperatoriDiComparamento.Maggiore:
-                temp = (set.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare > m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MaggioreOUguale:
-                temp = (set.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare >= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Uguale:
-                temp = (set.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare == m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.Minore:
-                temp = (set.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare < m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             case OperatoriDiComparamento.MinoreOUguale:
-                temp = (set.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione);
+                temp = set.valoreCorruzione.valoreDaComparare <= m_playerControllerInstance.GetComponent<MalattiaHandler>().currentCorruzione;
                 break;
             default:
                 break;
@@ -583,7 +1027,7 @@ public class RoomManager : Manager
 
 
 
-
+    #endregion
 
 
 
@@ -594,22 +1038,71 @@ public class RoomManager : Manager
 
 
     // ROOMS
-    public void SpawnCurrentRoom()
+    //PROVA A RENDERE ASINCRONO IL DESTROY
+    public async void SpawnCurrentRoom()
     {
         try
         {
-            GameObject roomSpawned = Instantiate(currentRoom.prefabStanza);
-            GameObject playerSpawnato = SetPlayerInRoom(roomSpawned);
-            AppManager.Instance.SetPlayerObject(playerSpawnato);
-            m_playerControllerInstance = playerSpawnato.GetComponent<PlayerController>();
-            AppManager.Instance.SetCameraPlayer();
-            if ((currentRoom.tipiDiStanza & TipiDiStanza.Combattimento) != 0)
+            if (m_currentRoomGameObject != null)
             {
-                List<EnemySet> validEnemyList = new List<EnemySet>();
-                validEnemyList = GetValidEnemySet(currentRoom.setDiMostriDellaStanza);
-                SetEnemySet(validEnemyList);
-                Debug.Log($"<b><color=#00ff00ff>ENEMY SET FINALE: {currentEnemySet}</color></b>");
-                StartOndate();
+                m_surface.RemoveData();
+                await DestroyAndWait(m_currentRoomGameObject);
+            }
+            if (currentRoom != null)
+            {
+                m_currentRoomGameObject = Instantiate(currentRoom.prefabStanza);
+                m_surface = m_currentRoomGameObject.GetComponentInChildren<NavMeshSurface>();
+                m_currentPlayerGameOBject = SetPlayerInRoom(m_currentRoomGameObject);
+                AppManager.Instance.SetPlayerObject(m_currentPlayerGameOBject);
+                m_playerControllerInstance = m_currentPlayerGameOBject.GetComponent<PlayerController>();
+                AppManager.Instance.SetCameraPlayer();
+                m_surface?.BuildNavMesh();
+                m_currentPlayerGameOBject.SetActive(true);
+                if ((currentRoom.tipiDiStanza & TipiDiStanzaFlag.Combattimento) != 0)
+                {
+                    List<EnemySet> validEnemyList = new List<EnemySet>();
+                    validEnemyList = GetValidEnemySet(currentRoom.setDiMostriDellaStanza);
+                    SetEnemySet(validEnemyList);
+                    Debug.Log($"<b><color=#00ff00ff>ENEMY SET FINALE: {currentEnemySet}</color></b>");
+                    GameManager.ChangeGameState(GameStates.Combattimento);
+                    StartCoroutine(StartOndate());
+                }
+                else if ((currentRoom.tipiDiStanza & TipiDiStanzaFlag.Evento) != 0)
+                {
+                    GameManager.ChangeGameState(GameStates.InizioEvento);
+                }
+                else if ((currentRoom.tipiDiStanza & TipiDiStanzaFlag.Storia) != 0)
+                {
+                    GameManager.ChangeGameState(GameStates.InizioParteStoria);
+                }
+                else if ((currentRoom.tipiDiStanza & TipiDiStanzaFlag.Boss) != 0)
+                {
+                    GameManager.ChangeGameState(GameStates.CombattimentoBoss);
+                }
+            }
+            else{
+                Debug.LogError("Current Room is null");
+                if(currentArea.listaPerPescaggioStanzePerRoomsDistribution.Count > 0){
+                    StrutturaPerDictionaryRoom strutturaPerDictionaryRoom = m_puntiDiInteresseSpawnatiNellArea[currentPoint];
+                    List<RoomData> arr = currentArea.listaPerPescaggioStanzePerRoomsDistribution.Where((x)=> x.tipiDiStanza == strutturaPerDictionaryRoom.tipiDiStanzaRoomDistribution).ToList();
+                    if(arr.Count > 0){
+                        int randomArr = UnityEngine.Random.Range(0,arr.Count());
+                        currentRoom = arr.ElementAt(randomArr);
+                        SpawnCurrentRoom();
+                    }
+                    else{
+                        if(currentArea.defaultRoom != null){
+                            currentRoom = currentArea.defaultRoom;
+                            SpawnCurrentRoom();
+                        }
+                    }
+                }
+                else{
+                    if(currentArea.defaultRoom != null){
+                        currentRoom = currentArea.defaultRoom;
+                        SpawnCurrentRoom();
+                    }
+                }
             }
         }
         catch (Exception e)
@@ -618,7 +1111,19 @@ public class RoomManager : Manager
         }
 
     }
+    private async Task DestroyAndWait(GameObject obj)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        StartCoroutine(DestroyCoroutine(obj, tcs));
+        await tcs.Task;
+    }
 
+    private IEnumerator DestroyCoroutine(GameObject obj, TaskCompletionSource<bool> tcs)
+    {
+        Destroy(obj);
+        yield return null;
+        tcs.SetResult(true);
+    }
 
 
 
@@ -632,14 +1137,13 @@ public class RoomManager : Manager
             {
                 enemySetValidiAiRequisiti.Add(setDiMostri);
                 Debug.Log($"<b><color=#FF00e1>MONSTER SET VALIDO: {setDiMostri}</color> <quad=2></b>");
-               
             }
             else
             {
                 Debug.Log($"<b><color=#FF0000>MONSTER SET NON VALIDO: {setDiMostri}</color> <quad=2></b>");
             }
         }
-        if(enemySetValidiAiRequisiti.Count == 0)
+        if (enemySetValidiAiRequisiti.Count == 0)
         {
             foreach (var setMostriArea in currentArea.enemySet)
             {
@@ -650,22 +1154,23 @@ public class RoomManager : Manager
                 }
             }
         }
-        if(enemySetValidiAiRequisiti.Count == 0)
+        if (enemySetValidiAiRequisiti.Count == 0)
         {
-            int rangeRandomPerSpwanForzatoSet = UnityEngine.Random.Range(0,currentArea.enemySet.Count);
+            int rangeRandomPerSpwanForzatoSet = UnityEngine.Random.Range(0, currentArea.enemySet.Count);
             enemySetValidiAiRequisiti.Add(currentArea.enemySet[rangeRandomPerSpwanForzatoSet]);
             Debug.LogError("Zero enemy set validi, metti almeno un'enemy set valido.\n E stato scelto un set casuale dall'area in modo forzato, risolvere");
         }
         return enemySetValidiAiRequisiti;
     }
     public void SetEnemySet(List<EnemySet> enemySets)
+
     {
-        if(enemySets.Count == 1)
+        if (enemySets.Count == 1)
         {
             currentEnemySet = enemySets[0];
-            
+
         }
-        else if(enemySets.Count > 1)
+        else if (enemySets.Count > 1)
         {
             int pesoTotale = 0;
             for (int i = 0; i < enemySets.Count; i++)
@@ -681,9 +1186,9 @@ public class RoomManager : Manager
                 float percentuale = (float)enemySets[i].pesoSet / pesoTotale;
                 if (randomValue >= pesoAccumulato && randomValue < pesoAccumulato + enemySets[i].pesoSet)
                 {
-                    Debug.Log($"<b>Hai selezionato l'elemento</b>{i}<quad material=1 size=20 x=0.1 y=0.1 width=0.5 height=0.5> ");
+                    // Debug.Log($"<b>Hai selezionato l'elemento</b>{i}<quad material=1 size=20 x=0.1 y=0.1 width=0.5 height=0.5> ");
                     currentEnemySet = enemySets[i];
-                    break; 
+                    break;
                 }
 
                 pesoAccumulato += enemySets[i].pesoSet;
@@ -691,17 +1196,26 @@ public class RoomManager : Manager
 
         }
     }
-    private void StartOndate()
-    {
-        try
-        {
-            var ondata = currentEnemySet.listaDiOndate[m_indiceOndataCorrente];
-            float enemyQuantity = (int)UnityEngine.Random.Range(ondata.minEnemyOndata, ondata.maxEnemyOndata);
-            //QUI SI CALCOLANO O POTERI E/O MORTALITA
-            m_enemyQuantity = (int)enemyQuantity;
-            enemyQuantity = AppManager.Instance.controlloMalattiaManager.mortality.applyMortalityToEnemySet(m_enemyQuantity, currentEnemySet.tipologiaNemico);
-            //ISTANZIAMO I NEMICI NON STATICI
 
+
+    private IEnumerator StartOndate()
+    {
+        yield return new WaitForSeconds(2f);
+        GameManager.ChangeGameState(GameStates.Combattimento);
+        EnemySet.Ondata ondata = new();
+        if (m_indiceOndataCorrente + 1 <= currentEnemySet.listaDiOndate.Count)
+        {
+            ondata = currentEnemySet.listaDiOndate[m_indiceOndataCorrente];
+        }
+        else
+        {
+            yield return null;
+        }
+        float enemyQuantity = (int)UnityEngine.Random.Range(ondata.minEnemyOndata, ondata.maxEnemyOndata);
+        m_enemyQuantity = (int)enemyQuantity;
+        enemyQuantity = AppManager.Instance.controlloMalattiaManager.mortality.applyMortalityToEnemySet(m_enemyQuantity, currentEnemySet.tipologiaNemico);
+        if (ondata.mostri.Count > 0 || ondata.mostri != null)
+        {
             foreach (var enemy in ondata.mostri)
             {
                 int quantitaDaTogliere = Mathf.RoundToInt(enemyQuantity * (enemy.percentualeSpawnMostri / 100));
@@ -709,38 +1223,220 @@ public class RoomManager : Manager
                 if (enemyQuantity <= 0) { break; }
                 for (int y = 0; y < quantitaDaTogliere; y++)
                 {
-                    GameObject nemico;
                     Vector2 posizioneMostro = CalcolaPosizioneGiustaPerMostro(enemy.playerDistance);
-                    nemico = Instantiate(enemy.nemicoDaIstanziare, new Vector3((float)UnityEngine.Random.Range(0, 10), (float)UnityEngine.Random.Range(0, 10), 0), Quaternion.identity);
-
+                    SpawnOrMoveEnemy(enemy.nemicoDaIstanziare, posizioneMostro);
                 }
             }
         }
-        catch (Exception e)
+        else
         {
-            Debug.LogException(e);
+            throw new Exception("Non ci sono nemici da istanziare");
         }
-        
-
     }
+
+    private void SpawnOrMoveEnemy(AssetReferenceGameObject nemicoDaIstanziare, Vector2 posizioneMostro)
+    {
+        string tipoDiNemicoDaIstanziare = nemicoDaIstanziare.RuntimeKey.ToString(); // Ottieni l'identificatore univoco come stringa
+        GameObject nemico = GetInactiveEnemyFromPool(tipoDiNemicoDaIstanziare);
+        if (nemico != null)
+        {
+            if (!nemico.activeSelf)
+                nemico.SetActive(true);
+            nemico.transform.position = posizioneMostro;
+        }
+        else
+        {
+            LoadAndInstantiateAddressable(nemicoDaIstanziare, posizioneMostro);
+        }
+    }
+
+    private GameObject GetInactiveEnemyFromPool(string tipoDiNemicoDaIstanziare)
+    {
+        foreach (var enemy in AppManager.Instance.enemyManager.activeEnemyList)
+        {
+            if (!enemy.activeSelf && tipoDiNemicoDaIstanziare.Equals(enemy.GetComponent<EnemyController>().ID))
+            {
+                AppManager.Instance.enemyManager.AddEnemyToLists(enemy);
+                return enemy;
+            }
+        }
+        return null;
+    }
+
+    private async void LoadAndInstantiateAddressable(AssetReferenceGameObject nemicoDaIstanziare, Vector2 posizioneMostro)
+    {
+        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(nemicoDaIstanziare);
+        await handle.Task;
+        if (handle.Status == AsyncOperationStatus.Succeeded)
+        {
+            GameObject nemico = Instantiate(handle.Result, posizioneMostro, Quaternion.identity);
+            nemico.GetComponent<EnemyController>().ID = nemicoDaIstanziare.RuntimeKey.ToString(); // Assegna l'identificatore univoco
+            AppManager.Instance.enemyManager.AddEnemyToLists(nemico);
+        }
+        else
+        {
+            // Debug.LogError("Failed to load addressable: " + nemicoDaIstanziare);
+        }
+        Addressables.Release(handle);
+    }
+
+    public void VaiAvantiDiOndata()
+    {
+        if (currentEnemySet != null)
+        {
+
+            if (currentEnemySet.listaDiOndate.Count > m_indiceOndataCorrente + 1)
+            {
+                m_indiceOndataCorrente++;
+                StartCoroutine(StartOndate());
+            }
+            else
+            {
+                StartCoroutine(DichiaraFineCombattimento());
+            }
+        }
+        else
+        {
+            // Debug.LogError("ERRORE: currentEnemySet == null");
+        }
+    }
+
+
+
+    public void VaiIndietroOndate()
+    {
+        if (m_indiceOndataCorrente == 0) { return; }
+        m_indiceOndataCorrente--;
+        StartCoroutine(StartOndate());
+    }
+
+
+    /// <summary>
+    /// Aspetta x secondi prima di dichiarare il cambio di stato
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator DichiaraFineCombattimento()
+    {
+        m_enemyQuantity = 0;
+        GameManager.ChangeGameState(GameStates.FineCombattimento);
+        AppManager.Instance.enemyManager.RemoveEveryEnemyFromScene();
+        yield return null;
+    }
+
+
+
+
+
+
+
+
 
     private Vector2 CalcolaPosizioneGiustaPerMostro(EDistanzaPlayerDaNemico playerDistance)
     {
+
+        Vector2 spawnPosition = Vector2.zero;
+
+        Bounds navMeshBounds = m_surface.navMeshData.sourceBounds;
+        Vector2 roomSize = new Vector2(navMeshBounds.size.x, navMeshBounds.size.z);
+
+        float rangeMin = 0f;
+        float rangeMax = 0f;
+
         switch (playerDistance)
         {
             case EDistanzaPlayerDaNemico.NonSpecificato:
+                rangeMin = 1;
+                rangeMax = 1;
                 break;
             case EDistanzaPlayerDaNemico.Vicino:
+                rangeMin = UnityEngine.Random.Range(0.0f, 0.3f);
+                rangeMax = UnityEngine.Random.Range(rangeMin, 0.3f);
                 break;
             case EDistanzaPlayerDaNemico.Intermedia:
+                rangeMin = UnityEngine.Random.Range(0.3f, 0.7f);
+                rangeMax = UnityEngine.Random.Range(rangeMin, 0.7f);
                 break;
             case EDistanzaPlayerDaNemico.Lontano:
+                rangeMin = UnityEngine.Random.Range(0.7f, 1.0f);
+                rangeMax = UnityEngine.Random.Range(rangeMin, 1.0f);
                 break;
             default:
                 break;
         }
-        return Vector2.zero;
+
+        spawnPosition = FindValidSpawnPosition(rangeMin, rangeMax, roomSize);
+
+        return spawnPosition;
     }
+
+    private Vector2 FindValidSpawnPosition(float rangeMin, float rangeMax, Vector2 roomSize)
+    {
+        NavMeshHit hit;
+        Vector2 spawnPosition = Vector2.zero;
+        bool positionFound = false;
+
+        Vector2 roomCenter = new Vector2(m_surface.navMeshData.sourceBounds.center.x, m_surface.navMeshData.sourceBounds.center.y);
+        int maxAttempts = 200;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            var randomPosition = new Vector2(
+            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.x * rangeMin, m_surface.navMeshData.sourceBounds.max.x * rangeMax),
+            UnityEngine.Random.Range(m_surface.navMeshData.sourceBounds.min.z * rangeMin, m_surface.navMeshData.sourceBounds.max.z * rangeMax));
+            spawnPosition = new Vector2(randomPosition.x, randomPosition.y);
+            int walkableAreaMask = 1 << NavMesh.GetAreaFromName("Walkable");
+            float distanceToPlayer = Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position);
+            if (Vector2.Distance(spawnPosition, m_playerControllerInstance.gameObject.transform.position) < 1)
+            {
+                continue;
+            }
+            if (!NavMesh.SamplePosition(spawnPosition, out hit, 1.0f, walkableAreaMask))
+            {
+                continue;
+            }
+            if (distanceToPlayer < rangeMin || distanceToPlayer > rangeMax)
+            {
+                continue;
+            }
+            bool tooCloseToEdges = Vector2.Distance(spawnPosition, roomCenter) < 1;
+            bool tooCloseToOtherSpawns = IsTooCloseToOtherSpawns(spawnPosition);
+            if (tooCloseToEdges || tooCloseToOtherSpawns)
+                continue;
+
+            positionFound = true;
+            break;
+        }
+
+        // Debug.Log("<color=blue>Posizione trovata: " + spawnPosition + "</color>");
+        return spawnPosition;
+    }
+
+    private bool IsTooCloseToOtherSpawns(Vector2 spawnPosition)
+    {
+        // Implementa il codice per verificare se la posizione è troppo vicina ad altri punti di spawn
+        // Ritorna true se è troppo vicina, altrimenti false
+        bool notCloseToOtherSpawns = false;
+        if (m_lastMonsterSpawnPosition == null)
+        {
+            m_lastMonsterSpawnPosition = spawnPosition;
+        }
+        else
+        {
+            if (Vector2.Distance(spawnPosition, m_lastMonsterSpawnPosition) < 1.5f)
+            {
+                notCloseToOtherSpawns = true;
+            }
+            else
+            {
+                m_lastMonsterSpawnPosition = spawnPosition;
+            }
+        }
+
+        return notCloseToOtherSpawns;
+    }
+
+
+
 
     private GameObject SetPlayerInRoom(GameObject roomSpawned)
     {
@@ -752,12 +1448,27 @@ public class RoomManager : Manager
             if (roomScript.puntiDiSpawnPossibili.Count > 1)
             {
                 range = UnityEngine.Random.Range(0, roomScript.puntiDiSpawnPossibili.Count);
-                playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[range].localPosition, Quaternion.identity);
+                if (m_currentPlayerGameOBject == null)
+                {
+                    playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[range].localPosition, Quaternion.identity);
+                }
+                else
+                {
+                    playerSpawned = m_currentPlayerGameOBject;
+                }
+
                 print("<color=#00000>PLAYER SPAWNATO</color>");
             }
             else if (roomScript.puntiDiSpawnPossibili.Count == 1)
             {
-                playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[0].localPosition, Quaternion.identity);
+                if (m_currentPlayerGameOBject == null)
+                {
+                    playerSpawned = Instantiate(AppManager.Instance.playePrefabReference, roomScript.puntiDiSpawnPossibili[0].localPosition, Quaternion.identity);
+                }
+                else
+                {
+                    playerSpawned = m_currentPlayerGameOBject;
+                }
             }
             else if (roomScript.puntiDiSpawnPossibili.Count == 0 || roomScript.puntiDiSpawnPossibili == null)
             {
@@ -767,21 +1478,19 @@ public class RoomManager : Manager
                 if (tilemap != null)
                 {
                     BoundsInt bounds = tilemap.cellBounds;
-
                     Vector3 cellSize = tilemap.cellSize;
                     Vector3 gridMin = tilemap.GetCellCenterWorld(bounds.min);
                     Vector3 gridMax = tilemap.GetCellCenterWorld(bounds.max);
-
-                    // Genera un punto casuale all'interno delle dimensioni della tilemap
                     float randomX = UnityEngine.Random.Range(gridMin.x, gridMax.x);
                     float randomY = UnityEngine.Random.Range(gridMin.y, gridMax.y);
-
-                    // Crea il punto casuale
                     Vector3 randomPointInTilemap = new Vector3(randomX, randomY, 0f);
                 }
 
             }
         }
+        playerSpawned.SetActive(false);
         return playerSpawned;
     }
+
+
 }

@@ -45,6 +45,7 @@ public class WeaponController : MonoBehaviour
 
     void OnDisable()
     {
-        attackAction.performed -= Attack;
+        if(attackAction != null)
+            attackAction.performed -= Attack;
     }
 }
