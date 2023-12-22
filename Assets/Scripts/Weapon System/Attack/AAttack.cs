@@ -27,7 +27,8 @@ public struct PlayerDragStruct
 public enum PlayerDragActiovationMoment
 {
     BeforeAttack,
-    AfterAttack
+    AfterAttack,
+    None
 }
 
 [Serializable]
@@ -109,7 +110,17 @@ public abstract class AAttack : MonoBehaviour
 
         PlayerSpeedModifier = attackSO.PlayerSpeedModifier;
         
-        if(playerDrag.canDrag) playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;
+        if(attackSO.PlayerDrag.canDrag == true)
+        {
+            playerDrag = attackSO.PlayerDrag.force == 0 ? weaponRef.playerDrag : attackSO.PlayerDrag;  
+        }
+        else
+        {
+            playerDrag.force = 0;
+            playerDrag.duration = 0;
+            playerDrag.waiting = 0;
+            playerDrag.activationMoment = PlayerDragActiovationMoment.None;
+        }
         
         DamageTypeAttack = attackSO.DamageType.Count > 0 ? attackSO.DamageType : weaponRef.DamageType;
         BaseDamageAttack = BaseDamageAttack > 0 ? BaseDamageAttack : weaponRef.BaseDamageWeapon;
